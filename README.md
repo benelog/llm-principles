@@ -9,22 +9,24 @@ main 브랜치에 push하면 GitHub Actions가 원고를 빌드해서 위 주소
 ## 구성
 
 ```
-book/                  AsciiDoc 원고 (4개 부, 12개 장)
+book/                  AsciiDoc 원고 (4개 부, 13개 장)
   book.adoc            책 전체 (부 구성과 장별 파일 include)
   ch01-model-layer.adoc            1부 1장. 모델 레이어: 가중치에 새기는 정보
   ch02-prompt-layer.adoc           1부 2장. 프롬프트 레이어: 추론 시점에 넣는 정보
   ch03-gray-zone.adoc              1부 3장. 회색지대와 컨텍스트 공급 레이어
   ch04-microgpt-basics.adoc        2부 4장. 다음 토큰 예측과 자동 미분
   ch05-microgpt-model.adoc         2부 5장. GPT의 구조와 학습, 추론
-  ch06-weight-formats.adoc         3부 6장. 가중치 저장 포맷
-  ch07-architecture-conventions.adoc  3부 7장. 아키텍처 규약과 추론 엔진
-  ch08-tokenizer-chat-template.adoc   3부 8장. 토크나이저와 채팅 템플릿
-  ch09-rag-pipeline.adoc           4부 9장. RAG 파이프라인과 검색의 원리
-  ch10-korean-rag.adoc             4부 10장. 한국어 처리와 실무 구성
-  ch11-rag-tuning.adoc             4부 11장. 성능 진단과 개선 우선순위
-  ch12-rag-frontier.adoc           4부 12장. RAG의 경계: 긴 컨텍스트와 에이전틱 검색
+  ch06-inference-serving.adoc      2부 6장. 추론 서빙의 원리: 토큰은 왜 그 가격인가
+  ch07-weight-formats.adoc         3부 7장. 가중치 저장 포맷
+  ch08-architecture-conventions.adoc  3부 8장. 아키텍처 규약과 추론 엔진
+  ch09-tokenizer-chat-template.adoc   3부 9장. 토크나이저와 채팅 템플릿
+  ch10-rag-pipeline.adoc           4부 10장. RAG 파이프라인과 검색의 원리
+  ch11-korean-rag.adoc             4부 11장. 한국어 처리와 실무 구성
+  ch12-rag-tuning.adoc             4부 12장. 성능 진단과 개선 우선순위
+  ch13-rag-frontier.adoc           4부 13장. RAG의 경계: 긴 컨텍스트와 에이전틱 검색
 examples/
   go/microgpt/         microGPT의 Go 포팅 (자동 미분, GPT 학습과 추론)
+  go/serving/          프리필·디코드와 KV 캐시의 추론 비용 구조 측정
   go/safetensors/      safetensors 파일을 만들고 읽는 파서
   go/bpe/              BPE 토크나이저의 병합 학습과 인코딩
   go/minirag/          청킹, BM25, 벡터 검색, RRF 하이브리드 검색
@@ -48,6 +50,7 @@ Go 예제는 표준 라이브러리만 사용하므로 Go만 있으면 됩니다
 
 ```bash
 cd examples/go/microgpt && go run .      # 이름 생성 GPT 학습 (약 20초)
+cd examples/go/serving && go run .       # KV 캐시·프리필 비용 측정 (약 10초)
 cd examples/go/safetensors && go run .   # safetensors 쓰기/읽기
 cd examples/go/bpe && go run .           # BPE 병합 학습과 인코딩
 cd examples/go/minirag && go run .       # 하이브리드 검색 파이프라인
