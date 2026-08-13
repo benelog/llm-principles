@@ -15,14 +15,15 @@
 
 * *1부*는 LLM에 정보를 전달하는 방법의 전체 지도를 그린다. 파인튜닝, RAG, 프롬프트 엔지니어링처럼 이름과 유행이 제각각인 기법들을 모델 레이어와 프롬프트 레이어라는 두 분류로 정돈하고, 어느 쪽에도 깔끔하게 속하지 않는 회색지대까지 다룬다.
 * *2부*는 그 지도의 밑바탕인 LLM의 동작 원리를 코드로 확인한다. Andrej Karpathy의 microGPT를 해설하면서 토크나이저, 자동 미분, 어텐션, 학습과 추론을 직접 실행되는 작은 구현으로 살펴본다.
-* *3부*는 학습된 모델이 유통되는 방식을 다룬다. Hugging Face에서 받은 모델이 누가 만들었든 바로 실행되는 배경에 어떤 표준이 있는지 확인한다.
-* *4부*는 실무에서 가장 자주 만드는 응용인 RAG를 구성요소 단위로 분해하고, 성능이 안 나올 때의 진단 순서를 제시한다.
+* *3부*는 학습된 모델이 유통되는 방식을 다룬다. Hugging Face에서 받은 모델이 누가 만들었든 바로 실행되는 배경에 어떤 표준이 있는지 확인하고, 응용 개발과 가장 가까운 규약인 토크나이저와 채팅 템플릿까지 내려간다.
+* *4부*는 실무에서 가장 자주 만드는 응용인 RAG를 구성요소 단위로 분해하고, 성능이 안 나올 때의 진단 순서를 제시한다. 마지막으로 긴 컨텍스트와 에이전틱 검색이 RAG의 경계를 어떻게 옮기는지 확인한다.
 
 이론만 읽고 끝나지 않도록 실행 가능한 예제를 함께 제공한다. 예제는 이 책의 저장소 `examples/` 디렉토리에 있으며, 두 가지 환경으로 준비했다.
 
 * *Go*: 외부 의존성 없이 표준 라이브러리만으로 핵심 원리를 구현했다. `go run .` 한 번으로 실행된다.
 ** `examples/go/microgpt`: microGPT의 Go 포팅 (2부)
 ** `examples/go/safetensors`: safetensors 파일을 만들고 읽는 파서 (3부)
+** `examples/go/bpe`: BPE 토크나이저의 병합 학습과 인코딩 (3부)
 ** `examples/go/minirag`: 청킹, BM25, 벡터 검색, 하이브리드 융합을 담은 검색 파이프라인 (4부)
 * *Spring AI*: 자바 생태계에서 같은 개념을 어떻게 다루는지 보여 준다. API 키 없이 로컬 임베딩 모델로 실행된다.
 ** `examples/spring-ai`: RAG 파이프라인과 디코딩 파라미터 제어 (1부, 4부)
@@ -60,23 +61,27 @@ include::ch05-microgpt-model.adoc[leveloffset=+1]
 
 [partintro]
 --
-2부에서 우리가 직접 학습시킨 모델은 메모리 안의 숫자 배열이었다. 그 숫자들이 파일로 저장되어 유통되는 순간부터는 호환성 문제가 생긴다. Hugging Face에서 받은 모델이 누가 만들었든 바로 실행되는 것은 당연한 일이 아니다. 3부는 그 배경에 있는 세 가지 사실상 표준(de facto standard)인 가중치 저장 포맷, 모델 아키텍처 규약, 소수 아키텍처로의 수렴을 확인한다.
+2부에서 우리가 직접 학습시킨 모델은 메모리 안의 숫자 배열이었다. 그 숫자들이 파일로 저장되어 유통되는 순간부터는 호환성 문제가 생긴다. Hugging Face에서 받은 모델이 누가 만들었든 바로 실행되는 것은 당연한 일이 아니다. 3부는 그 배경에 있는 세 가지 사실상 표준(de facto standard)인 가중치 저장 포맷, 모델 아키텍처 규약, 소수 아키텍처로의 수렴을 확인한다. 그리고 그 규약들 가운데 응용 개발자의 비용과 장애 진단에 바로 닿는 토크나이저와 채팅 템플릿을 따로 한 장으로 살펴본다.
 --
 
 include::ch06-weight-formats.adoc[leveloffset=+1]
 
 include::ch07-architecture-conventions.adoc[leveloffset=+1]
 
+include::ch08-tokenizer-chat-template.adoc[leveloffset=+1]
+
 [[part-rag]]
 = 4부: RAG 시스템
 
 [partintro]
 --
-4부는 1부에서 컨텍스트 공급 레이어로 분류했던 RAG를 실무 시스템으로 다룬다. 먼저 검색 파이프라인을 Go 표준 라이브러리만으로 바닥부터 구현해서 각 단계의 원리를 확인하고, Spring AI로 실제 임베딩 모델을 쓰는 구성으로 확장한다. 이어서 한국어 처리에서 결정적인 구성요소들을 짚고, 성능이 안 나올 때 어디부터 손봐야 하는지 진단 순서를 정리한다.
+4부는 1부에서 컨텍스트 공급 레이어로 분류했던 RAG를 실무 시스템으로 다룬다. 먼저 검색 파이프라인을 Go 표준 라이브러리만으로 바닥부터 구현해서 각 단계의 원리를 확인하고, Spring AI로 실제 임베딩 모델을 쓰는 구성으로 확장한다. 이어서 한국어 처리에서 결정적인 구성요소들을 짚고, 성능이 안 나올 때 어디부터 손봐야 하는지 진단 순서를 정리한다. 마지막 장에서는 긴 컨텍스트와 에이전틱 검색이 이 그림을 어떻게 바꾸는지 확인한다.
 --
 
-include::ch08-rag-pipeline.adoc[leveloffset=+1]
+include::ch09-rag-pipeline.adoc[leveloffset=+1]
 
-include::ch09-korean-rag.adoc[leveloffset=+1]
+include::ch10-korean-rag.adoc[leveloffset=+1]
 
-include::ch10-rag-tuning.adoc[leveloffset=+1]
+include::ch11-rag-tuning.adoc[leveloffset=+1]
+
+include::ch12-rag-frontier.adoc[leveloffset=+1]
