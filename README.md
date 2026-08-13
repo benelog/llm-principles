@@ -2,6 +2,10 @@
 
 동작 원리부터 오픈 모델 표준, RAG까지, LLM을 쓰는 시스템을 만드는 개발자에게 필요한 원리를 정리한 책의 원고와 실행 가능한 예제 프로젝트입니다.
 
+**📖 책 읽기: https://benelog.github.io/llm-principles/**
+
+main 브랜치에 push하면 GitHub Actions가 원고를 빌드해서 위 주소로 자동 배포합니다.
+
 ## 구성
 
 ```
