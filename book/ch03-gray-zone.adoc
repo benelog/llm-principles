@@ -46,7 +46,7 @@ include::../examples/spring-ai/src/main/java/com/example/springai/DecodingExampl
 모델/프롬프트 두 레이어 구분에 다음 차원들을 추가하면 회색지대의 기법들이 제자리를 찾는다.
 
 아키텍처 레이어::
-정보 처리 구조 자체의 설계. 전문가 네트워크를 여럿 두고 토큰마다 일부만 활성화하는 MoE(Mixture of Experts), 검색 모듈을 모델 구조에 통합한 REALM과 RETRO, 메모리 전용 토큰 슬롯 같은 설계가 여기에 속한다. 학습 전에 결정되며, 3부에서 다룰 `config.json`이 이 레이어의 기술서다.
+정보 처리 구조 자체의 설계. 전문가 네트워크를 여럿 두고 토큰마다 일부만 활성화하는 MoE(Mixture of Experts), 검색 모듈을 모델 구조에 통합한 REALM과 RETRO, 메모리 전용 토큰 슬롯 같은 설계가 여기에 속한다. 학습 전에 결정되며, 3부에서 다룰 ``config.json``이 이 레이어의 기술서다.
 
 표현/활성값 레이어::
 forward pass 중간 상태에 대한 개입. activation steering과 KV 캐시 조작이 여기에 해당한다.

@@ -41,14 +41,14 @@ Cohere Rerank 다국어판, BGE-reranker, Jina reranker가 자주 쓰인다. 한
 
 이제 앞 장의 장난감 구현을 실제 구성으로 바꾼다. Spring AI는 RAG 파이프라인의 각 단계를 컴포넌트로 제공한다. 예제 프로젝트(`examples/spring-ai`)는 ONNX로 변환된 임베딩 모델(all-MiniLM-L6-v2)을 자바 프로세스 안에서 로컬 실행하므로 API 키가 필요 없다. 3부에서 본 추론 엔진 호환성(ONNX Runtime) 덕에 가능한 구성이다.
 
-청킹은 `TokenTextSplitter`가 담당한다. 문자 수가 아니라 토큰 수 기준으로 나누므로 LLM 컨텍스트 예산과 단위가 일치한다.
+청킹은 ``TokenTextSplitter``가 담당한다. 문자 수가 아니라 토큰 수 기준으로 나누므로 LLM 컨텍스트 예산과 단위가 일치한다.
 
 [source,java]
 ----
 include::../examples/spring-ai/src/main/java/com/example/springai/RagExample.java[tag=chunking,indent=0]
 ----
 
-임베딩과 저장은 `EmbeddingModel`과 `VectorStore` 추상화를 쓴다. 여기서는 인메모리 구현인 `SimpleVectorStore`를 쓰지만, 운영에서는 같은 인터페이스로 pgvector, Elasticsearch, Qdrant 등을 붙인다. 애플리케이션 코드는 그대로 두고 저장소만 교체할 수 있다는 것이 추상화의 이득이다.
+임베딩과 저장은 ``EmbeddingModel``과 `VectorStore` 추상화를 쓴다. 여기서는 인메모리 구현인 ``SimpleVectorStore``를 쓰지만, 운영에서는 같은 인터페이스로 pgvector, Elasticsearch, Qdrant 등을 붙인다. 애플리케이션 코드는 그대로 두고 저장소만 교체할 수 있다는 것이 추상화의 이득이다.
 
 [source,java]
 ----
