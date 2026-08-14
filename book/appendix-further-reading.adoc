@@ -8,6 +8,7 @@
 * https://www.manning.com/books/build-a-large-language-model-from-scratch[_Build a Large Language Model (From Scratch)_] (Sebastian Raschka, Manning, 2024): PyTorch로 GPT를 바닥부터 구현하면서 사전학습과 파인튜닝까지 진행한다. 이 책의 2부에서 한 일을 파이썬 생태계에서 더 큰 규모로 반복해 보기에 가장 좋은 책이다. 한국어 번역서도 출간되어 있다.
 * https://github.com/HandsOnLLM/Hands-On-Large-Language-Models[_Hands-On Large Language Models_] (Jay Alammar, Maarten Grootendorst, O'Reilly, 2024): 토큰화, 임베딩, 시맨틱 검색, 프롬프트 엔지니어링을 그림 중심으로 설명한다. 1부와 4부의 내용을 시각 자료로 보강하기에 알맞다.
 * https://huyenchip.com/books/[_AI Engineering_] (Chip Huyen, O'Reilly, 2025): 모델 선택, 평가, RAG와 파인튜닝 사이의 결정 같은 응용 관점의 주제를 폭넓게 다룬다. 1부의 레이어 분류와 12장의 평가 논의를 실무 의사결정으로 확장한다.
+* http://incompleteideas.net/book/the-book.html[_Reinforcement Learning: An Introduction_] (Richard S. Sutton, Andrew G. Barto, MIT Press, 2판 2018): 강화학습의 표준 교과서로, 저자 사이트에서 무료로 읽을 수 있다. 부록 수학·통계 기초에서 소개한 벨만 방정식과 가치 함수, 그리고 1장의 RLHF·RLVR이 서 있는 이론적 바탕을 다룬다.
 
 == 강의와 시각 자료
 
@@ -20,6 +21,8 @@
 * "Language Models are Few-Shot Learners" (Brown 외, 2020, https://arxiv.org/abs/2005.14165): GPT-3 논문. 2장에서 다룬 인컨텍스트 학습이 대규모 모델에서 처음 확인된 기록이다.
 * "Training language models to follow instructions with human feedback" (Ouyang 외, 2022, https://arxiv.org/abs/2203.02155): InstructGPT 논문. 1장의 감독형 미세조정과 선호 학습(RLHF)으로 이어지는 파이프라인의 원형이다.
 * "Direct Preference Optimization" (Rafailov 외, 2023, https://arxiv.org/abs/2305.18290): 별도의 보상 모델 없이 선호 데이터로 바로 학습하는 DPO를 제안한다. 1장 선호 학습의 후속 흐름이다.
+* "Proximal Policy Optimization Algorithms" (Schulman 외, 2017, https://arxiv.org/abs/1707.06347): RLHF에 주로 쓰이는 강화학습 알고리즘 PPO의 원 논문. 부록 수학·통계 기초의 벨만 방정식 절과 이어진다.
+* "Scaling Laws for Neural Language Models" (Kaplan 외, 2020, https://arxiv.org/abs/2001.08361)와 "Training Compute-Optimal Large Language Models" (Hoffmann 외, 2022, https://arxiv.org/abs/2203.15556): 부록 수학·통계 기초에서 소개한 스케일링 법칙의 원 논문들이다. 후자(Chinchilla)가 파라미터당 토큰 수의 균형점을 제시했고, 1장 규모의 감각의 배경이 된다.
 * "LoRA: Low-Rank Adaptation of Large Language Models" (Hu 외, 2021, https://arxiv.org/abs/2106.09685)와 "QLoRA: Efficient Finetuning of Quantized LLMs" (Dettmers 외, 2023, https://arxiv.org/abs/2305.14314): 3장에서 회색지대로 분류한 PEFT의 근거 논문들이다.
 * "Chain-of-Thought Prompting Elicits Reasoning in Large Language Models" (Wei 외, 2022, https://arxiv.org/abs/2201.11903): 2장의 추론 패턴 유도가 처음 정리된 논문이다.
 * "Locating and Editing Factual Associations in GPT" (Meng 외, 2022, https://arxiv.org/abs/2202.05262): 1장에서 소개한 모델 편집(ROME)의 원 논문이다.
