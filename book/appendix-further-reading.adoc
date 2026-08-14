@@ -1,0 +1,66 @@
+[appendix]
+= 더 읽을거리
+
+본문에서 다룬 주제를 더 깊이 파고들 때 출발점이 될 자료를 골라 정리했다. 각 항목에는 이 책의 어느 장과 이어지는지를 함께 적었다. 논문은 arXiv 링크를 기준으로 했으므로, 링크가 바뀌더라도 제목과 저자로 검색하면 찾을 수 있다.
+
+== 책
+
+* https://www.manning.com/books/build-a-large-language-model-from-scratch[_Build a Large Language Model (From Scratch)_] (Sebastian Raschka, Manning, 2024): PyTorch로 GPT를 바닥부터 구현하면서 사전학습과 파인튜닝까지 진행한다. 이 책의 2부에서 한 일을 파이썬 생태계에서 더 큰 규모로 반복해 보기에 가장 좋은 책이다. 한국어 번역서도 출간되어 있다.
+* https://github.com/HandsOnLLM/Hands-On-Large-Language-Models[_Hands-On Large Language Models_] (Jay Alammar, Maarten Grootendorst, O'Reilly, 2024): 토큰화, 임베딩, 시맨틱 검색, 프롬프트 엔지니어링을 그림 중심으로 설명한다. 1부와 4부의 내용을 시각 자료로 보강하기에 알맞다.
+* https://huyenchip.com/books/[_AI Engineering_] (Chip Huyen, O'Reilly, 2025): 모델 선택, 평가, RAG와 파인튜닝 사이의 결정 같은 응용 관점의 주제를 폭넓게 다룬다. 1부의 레이어 분류와 12장의 평가 논의를 실무 의사결정으로 확장한다.
+
+== 강의와 시각 자료
+
+* https://karpathy.ai/zero-to-hero.html[Neural Networks: Zero to Hero] (Andrej Karpathy): 자동 미분 엔진 micrograd에서 시작해 GPT-2 재현까지 코드를 직접 짜며 진행하는 영상 강의. 4장의 자동 미분과 5장의 아키텍처를 복습하는 데 가장 좋은 자료다.
+* https://www.3blue1brown.com/topics/neural-networks[3Blue1Brown: Neural networks]: 역전파와 트랜스포머 내부 동작을 애니메이션으로 시각화한 시리즈. 수식이 그림으로 어떻게 움직이는지 감각을 잡을 수 있다.
+* https://jalammar.github.io/illustrated-transformer/[The Illustrated Transformer] (Jay Alammar): 어텐션의 행렬 연산을 단계별 그림으로 풀어낸 글. 5장의 어텐션 코드와 나란히 놓고 보면 좋다.
+
+== 1부: 정보 레이어
+
+* "Language Models are Few-Shot Learners" (Brown 외, 2020, https://arxiv.org/abs/2005.14165): GPT-3 논문. 2장에서 다룬 인컨텍스트 학습이 대규모 모델에서 처음 확인된 기록이다.
+* "Training language models to follow instructions with human feedback" (Ouyang 외, 2022, https://arxiv.org/abs/2203.02155): InstructGPT 논문. 1장의 감독형 미세조정과 선호 학습(RLHF)으로 이어지는 파이프라인의 원형이다.
+* "Direct Preference Optimization" (Rafailov 외, 2023, https://arxiv.org/abs/2305.18290): 별도의 보상 모델 없이 선호 데이터로 바로 학습하는 DPO를 제안한다. 1장 선호 학습의 후속 흐름이다.
+* "LoRA: Low-Rank Adaptation of Large Language Models" (Hu 외, 2021, https://arxiv.org/abs/2106.09685)와 "QLoRA: Efficient Finetuning of Quantized LLMs" (Dettmers 외, 2023, https://arxiv.org/abs/2305.14314): 3장에서 회색지대로 분류한 PEFT의 근거 논문들이다.
+* "Chain-of-Thought Prompting Elicits Reasoning in Large Language Models" (Wei 외, 2022, https://arxiv.org/abs/2201.11903): 2장의 추론 패턴 유도가 처음 정리된 논문이다.
+* "Locating and Editing Factual Associations in GPT" (Meng 외, 2022, https://arxiv.org/abs/2202.05262): 1장에서 소개한 모델 편집(ROME)의 원 논문이다.
+* "Distilling the Knowledge in a Neural Network" (Hinton 외, 2015, https://arxiv.org/abs/1503.02531): 1장 지식 증류의 출발점이 된 논문이다.
+* https://modelcontextprotocol.io[Model Context Protocol]: 2장에서 다룬 MCP의 공식 명세와 문서.
+
+== 2부: 동작 원리와 추론 서빙
+
+* https://karpathy.github.io/2026/02/12/microgpt/[microgpt] (Andrej Karpathy, 2026): 이 책 2부의 바탕이 된 원문 포스트. 원본 파이썬 코드는 https://gist.github.com/karpathy/8627fe009c40f57531cb18360106ce95[gist]에 있다. Go 포팅과 원본을 나란히 읽으면 두 언어의 표현 차이까지 보인다.
+* https://github.com/karpathy/nanoGPT[nanoGPT] (Andrej Karpathy): microGPT 다음 단계로 알맞은 프로젝트. PyTorch와 GPU로 GPT-2를 재현하는 최소 구현이다.
+* "Attention Is All You Need" (Vaswani 외, 2017, https://arxiv.org/abs/1706.03762): 트랜스포머를 제안한 원 논문. 5장에서 구현한 어텐션의 출처다.
+* "Language Models are Unsupervised Multitask Learners" (Radford 외, 2019, https://cdn.openai.com/better-language-models/language_models_are_unsupervised_multitask_learners.pdf): GPT-2 논문. 5장 마지막에서 microGPT와 프로덕션 LLM을 비교할 때의 기준 아키텍처다.
+* "FlashAttention: Fast and Memory-Efficient Exact Attention with IO-Awareness" (Dao 외, 2022, https://arxiv.org/abs/2205.14135): 6장에서 언급한, 어텐션의 메모리 접근을 줄이는 커널 최적화다.
+* "Efficient Memory Management for Large Language Model Serving with PagedAttention" (Kwon 외, 2023, https://arxiv.org/abs/2309.06180): vLLM 논문. 6장의 KV 캐시 관리와 배칭이 프로덕션 서빙 엔진에서 어떻게 구현되는지 보여 준다.
+* "Orca: A Distributed Serving System for Transformer-Based Generative Models" (Yu 외, OSDI 2022, https://www.usenix.org/conference/osdi22/presentation/yu): 6장 배칭에서 다룬 continuous batching을 제안한 논문이다.
+* "Fast Inference from Transformers via Speculative Decoding" (Leviathan 외, 2022, https://arxiv.org/abs/2211.17192): 6장의 투기적 디코딩 원 논문이다.
+* https://kipp.ly/transformer-inference-arithmetic/[Transformer Inference Arithmetic] (kipply, 2022): 파라미터 수와 메모리 대역폭만으로 추론 지연과 비용을 계산하는 방법을 정리한 글. 6장의 측정 결과를 이론 쪽에서 뒷받침한다.
+
+== 3부: 오픈 모델 표준
+
+* https://github.com/huggingface/safetensors[safetensors]: 7장에서 파서를 직접 만들며 다룬 포맷의 공식 저장소. 명세 문서가 함께 있다.
+* https://github.com/ggml-org/ggml/blob/master/docs/gguf.md[GGUF 명세]: 7장에서 비교한 단일 파일 포맷의 명세. 이 포맷을 쓰는 추론 엔진 https://github.com/ggml-org/llama.cpp[llama.cpp]와 함께 보면 좋다.
+* "GPTQ: Accurate Post-Training Quantization for Generative Pre-trained Transformers" (Frantar 외, 2022, https://arxiv.org/abs/2210.17323)와 "AWQ: Activation-aware Weight Quantization" (Lin 외, 2023, https://arxiv.org/abs/2306.00978): 7장에서 소개한 양자화 방식의 원 논문들이다.
+* https://huggingface.co/docs/transformers[Hugging Face transformers 문서]: 8장에서 규약의 진원지로 다룬 라이브러리의 공식 문서.
+* "The Llama 3 Herd of Models" (Grattafiori 외, 2024, https://arxiv.org/abs/2407.21783): 공개 모델 기술 보고서 가운데 학습 과정과 아키텍처 결정을 가장 상세히 공개한 문서. 8장에서 확인한 아키텍처 수렴의 대표 사례다.
+* "RoFormer: Enhanced Transformer with Rotary Position Embedding" (Su 외, 2021, https://arxiv.org/abs/2104.09864)와 "GQA: Training Generalized Multi-Query Transformer Models" (Ainslie 외, 2023, https://arxiv.org/abs/2305.13245): 8장의 config.json에 등장하는 RoPE와 GQA의 원 논문들이다.
+* "Neural Machine Translation of Rare Words with Subword Units" (Sennrich 외, 2016, https://arxiv.org/abs/1508.07909): BPE를 신경망 언어 처리에 도입한 논문. 9장에서 구현한 병합 학습 알고리즘의 출처다.
+* https://github.com/openai/tiktoken[tiktoken]: OpenAI의 토크나이저 구현. 9장에서 다룬 토큰 효율을 실제 서비스 모델 기준으로 확인해 볼 수 있다.
+* https://huggingface.co/docs/transformers/chat_templating[Chat Templates 문서]: 9장 채팅 템플릿의 공식 문서. Jinja2 템플릿 문법과 적용 규칙을 설명한다.
+
+== 4부: RAG
+
+* "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks" (Lewis 외, 2020, https://arxiv.org/abs/2005.11401): RAG라는 이름이 처음 등장한 논문이다.
+* "Dense Passage Retrieval for Open-Domain Question Answering" (Karpukhin 외, 2020, https://arxiv.org/abs/2004.04906): 10장 벡터 검색의 바탕이 된 밀집 검색 방식을 제안한다.
+* "Sentence-BERT: Sentence Embeddings using Siamese BERT-Networks" (Reimers, Gurevych, 2019, https://arxiv.org/abs/1908.10084): 문장 단위 임베딩 모델의 표준적인 구조를 만든 논문이다.
+* "Efficient and robust approximate nearest neighbor search using Hierarchical Navigable Small World graphs" (Malkov, Yashunin, 2016, https://arxiv.org/abs/1603.09320): 10장에서 언급한 Vector DB 대부분이 쓰는 HNSW 인덱스의 원 논문이다.
+* "Reciprocal Rank Fusion outperforms Condorcet and individual Rank Learning Methods" (Cormack 외, SIGIR 2009, https://plg.uwaterloo.ca/~gvcormac/cormacksigir09-rrf.pdf): 10장 하이브리드 융합에 사용한 RRF의 원 논문이다.
+* "Precise Zero-Shot Dense Retrieval without Relevance Labels" (Gao 외, 2022, https://arxiv.org/abs/2212.10496): 11장 쿼리 처리에서 소개한 HyDE의 원 논문이다.
+* "Lost in the Middle: How Language Models Use Long Contexts" (Liu 외, 2023, https://arxiv.org/abs/2307.03172): 긴 컨텍스트 중간에 놓인 정보의 활용도가 떨어진다는 사실을 측정한 논문. 13장 논의의 근거다.
+* https://www.anthropic.com/news/contextual-retrieval[Introducing Contextual Retrieval] (Anthropic, 2024): 청킹으로 잘린 조각이 문맥을 잃는 문제(11장, 12장)에 대한 실무 해법을 측정 결과와 함께 제시한다.
+* https://huggingface.co/spaces/mteb/leaderboard[MTEB 리더보드]: 임베딩 모델의 다국어 벤치마크 순위. 11장에서 다룬 임베딩 모델 선택의 출발점으로, 한국어 태스크 필터를 걸어 비교할 수 있다.
+* https://docs.ragas.io[Ragas]: 12장의 평가 부재 단계에서 언급한 RAG 평가 프레임워크의 공식 문서.
+* https://github.com/bab2min/Kiwi[Kiwi]: 오픈소스 한국어 형태소 분석기. 11장에서 다룬 형태소 분석과 사용자 사전을 Elasticsearch(Nori) 밖의 환경에서 실험해 볼 수 있다.
+* https://docs.spring.io/spring-ai/reference/[Spring AI 레퍼런스 문서]: 이 책의 자바 예제(1부, 4부)가 사용한 프레임워크의 공식 문서.
