@@ -7,3 +7,4 @@ examples/go/safetensors/model.safetensors
 
 # IDE 설정
 .idea/
+.mcp.json
