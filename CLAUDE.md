@@ -17,7 +17,7 @@
 
 ## 예제 코드
 
-- `examples/go/`: microgpt 포팅, serving 추론 비용 측정, safetensors 파서, bpe 토크나이저, minirag 하이브리드 검색. 순수 표준 라이브러리만 사용.
+- `examples/go/`: microgpt 포팅, serving 추론 비용 측정, safetensors 파서, quantize 양자화 오차 측정, bpe 토크나이저, minirag 하이브리드 검색. 순수 표준 라이브러리만 사용.
 - `examples/spring-ai/`: Spring Boot 3.5 + Spring AI 1.0.9. 내장 ONNX 임베딩으로 API 키 없이 실행 가능하고 Ollama는 선택.
 - 원고의 코드는 반드시 `include::../examples/...[tag=...,indent=0]` 태그 문법으로 예제 소스를 인용한다(코드 복사 금지).
 - 예제 코드에는 `// tag::이름[]` 주석이 있으니 수정 시 태그를 깨뜨리면 안 된다. 수정 후 `cd book && asciidoctor book.adoc`으로 include 해석을 검증한다.

@@ -55,6 +55,7 @@ Go는 원리 구현을 맡았다. 외부 의존성 없이 표준 라이브러리
 ** `examples/go/microgpt`: microGPT의 Go 포팅 (2부)
 ** `examples/go/serving`: 프리필·디코드와 KV 캐시의 비용 구조 측정 (2부)
 ** `examples/go/safetensors`: safetensors 파일을 만들고 읽는 파서 (3부)
+** `examples/go/quantize`: 선형 양자화, 블록 배율, 정규 분포 격자의 오차 측정 (3부)
 ** `examples/go/bpe`: BPE 토크나이저의 병합 학습과 인코딩 (3부)
 ** `examples/go/minirag`: 청킹, BM25, 벡터 검색, 하이브리드 융합을 담은 검색 파이프라인 (4부)
 * *Spring AI*: 자바 생태계에서 같은 개념을 어떻게 다루는지 보여 준다. API 키 없이 로컬 임베딩 모델로 실행된다.

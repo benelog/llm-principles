@@ -45,7 +45,8 @@
 
 * https://github.com/huggingface/safetensors[safetensors]: 7장에서 파서를 직접 만들며 다룬 포맷의 공식 저장소. 명세 문서가 함께 있다.
 * https://github.com/ggml-org/ggml/blob/master/docs/gguf.md[GGUF 명세]: 7장에서 비교한 단일 파일 포맷의 명세. 이 포맷을 쓰는 추론 엔진 https://github.com/ggml-org/llama.cpp[llama.cpp]와 함께 보면 좋다.
-* "GPTQ: Accurate Post-Training Quantization for Generative Pre-trained Transformers" (Frantar 외, 2022, https://arxiv.org/abs/2210.17323)와 "AWQ: Activation-aware Weight Quantization" (Lin 외, 2023, https://arxiv.org/abs/2306.00978): 7장에서 소개한 양자화 방식의 원 논문들이다.
+* "GPTQ: Accurate Post-Training Quantization for Generative Pre-trained Transformers" (Frantar 외, 2022, https://arxiv.org/abs/2210.17323)와 "AWQ: Activation-aware Weight Quantization" (Lin 외, 2023, https://arxiv.org/abs/2306.00978): 7장에서 소개한 보정 데이터 기반 양자화의 원 논문들이다.
+* "LLM.int8(): 8-bit Matrix Multiplication for Transformers at Scale" (Dettmers 외, 2022, https://arxiv.org/abs/2208.07339): 트랜스포머에서 아웃라이어가 양자화를 어떻게 어렵게 만드는지 측정하고 우회한 논문. 7장의 블록 단위 배율 논의와 이어진다.
 * https://huggingface.co/docs/transformers[Hugging Face transformers 문서]: 8장에서 규약의 진원지로 다룬 라이브러리의 공식 문서.
 * "The Llama 3 Herd of Models" (Grattafiori 외, 2024, https://arxiv.org/abs/2407.21783): 공개 모델 기술 보고서 가운데 학습 과정과 아키텍처 결정을 가장 상세히 공개한 문서. 8장에서 확인한 아키텍처 수렴의 대표 사례다.
 * "RoFormer: Enhanced Transformer with Rotary Position Embedding" (Su 외, 2021, https://arxiv.org/abs/2104.09864)와 "GQA: Training Generalized Multi-Query Transformer Models" (Ainslie 외, 2023, https://arxiv.org/abs/2305.13245): 8장의 config.json에 등장하는 RoPE와 GQA의 원 논문들이다.
