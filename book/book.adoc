@@ -110,4 +110,6 @@ include::ch12-rag-tuning.adoc[leveloffset=+1]
 
 include::ch13-rag-frontier.adoc[leveloffset=+1]
 
+include::appendix-math-stats.adoc[]
+
 include::appendix-further-reading.adoc[]
