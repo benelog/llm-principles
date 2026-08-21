@@ -76,7 +76,7 @@ include::../examples/spring-ai/src/main/java/com/example/springai/RagExample.jav
 include::../examples/spring-ai/src/main/java/com/example/springai/RagExample.java[tag=generation,indent=0]
 ----
 
-실행하면 "쓰지 않고 남은 연차는 내년으로 이월되나요?" 같은 질의에 휴가 규정 문서가 상위로 검색된다. 한편 이 예제의 임베딩 모델은 영어 중심이라 한국어 동의어("재택근무"와 "원격 근무")의 매칭이 약한 것도 관찰할 수 있는데, 이 절 첫머리에서 임베딩 모델의 한국어 이해가 왜 첫 번째 구성요소인지를 보여 주는 실례다.
+실행하면 "쓰지 않고 남은 연차는 내년으로 이월되나요?" 같은 질의에 휴가 규정 문서가 상위로 검색된다. 한편 이 예제의 임베딩 모델은 영어 중심이라 한국어 동의어("재택근무"와 "원격 근무")의 매칭이 약한 것도 관찰할 수 있다. 이 장 첫머리에서 임베딩 모델의 한국어 이해를 첫 번째 구성요소로 꼽은 이유를 보여 주는 실례다.
 
 == RAG 안에서 쓰이는 LLM들
 
