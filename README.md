@@ -33,6 +33,8 @@ examples/
   java/bpe/            BPE 토크나이저의 병합 학습과 인코딩
   java/minirag/        청킹, BM25, 벡터 검색, RRF 하이브리드 검색
   spring-ai/           Spring AI RAG 파이프라인과 디코딩 파라미터 제어
+  java-tests/          위 순수 자바 예제들의 JUnit 테스트 (Gradle, AssertJ)
+  math-lab/            7장의 수치를 Apache Commons Math로 검산하는 실습 (Gradle)
 ```
 
 원고의 코드는 전부 `examples/` 아래 소스를 AsciiDoc의 `include` 태그 문법으로 인용합니다. 책의 코드와 예제 프로젝트의 코드는 항상 같습니다.
@@ -60,6 +62,12 @@ cd examples/java/minirag && java Main.java       # 하이브리드 검색 파이
 ```
 
 JDK 21에서는 `javac -d out *.java && java -cp out Main`으로 실행합니다.
+
+예제 클래스들의 동작을 확인하는 JUnit 테스트는 `examples/java-tests`에서 실행합니다.
+
+```bash
+cd examples/java-tests && ./gradlew test
+```
 
 Spring AI 예제는 JDK 21 이상과 Maven이 필요하며, 임베딩 모델이 라이브러리에 내장되어 있어 API 키 없이 실행됩니다.
 

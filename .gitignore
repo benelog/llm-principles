@@ -2,6 +2,8 @@
 examples/spring-ai/target/
 examples/math-lab/java/build/
 examples/math-lab/java/.gradle/
+examples/java-tests/.gradle/
+examples/java-tests/*/build/
 book/*.html
 
 # 예제 실행 시 생성되는 파일

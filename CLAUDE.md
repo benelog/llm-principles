@@ -18,6 +18,8 @@
 ## 예제 코드
 
 - `examples/java/`: microgpt 포팅, serving 추론 비용 측정, safetensors 파서, quantize 양자화 오차 측정, bpe 토크나이저, minirag 하이브리드 검색. JDK 표준 라이브러리만 사용하고 package 선언 없이 `java Main.java`(JDK 22 이상의 다중 파일 소스 실행기)로 실행한다. 빌드 파일을 두지 않는다.
+- `examples/java-tests/`: `examples/java/` 예제들의 JUnit 5 테스트. Gradle 하위 프로젝트가 예제 디렉터리를 소스 경로로 가리키므로 예제에는 빌드 파일을 두지 않는다. 검증문은 AssertJ를 쓰고, 확률·시간처럼 통계적 불확실성이 있는 값은 범위나 관계만 확인한다. 예제 클래스나 메서드 이름을 바꾸면 이 테스트도 함께 고친다.
+- 클래스·메서드·변수 이름은 약어도 CamelCase로 쓴다(`Gpt`, `KvCache`, `baseLr`). 대문자 약어(`GPT`, `KVCache`)를 쓰지 않는다. `static final` 상수만 UPPER_SNAKE_CASE다.
 - `examples/math-lab/`: 7장의 수치를 Apache Commons Math로 검산하는 Gradle 프로젝트. 검산 절 순서와 제목은 7장의 절 구성을 따르므로 7장의 절을 바꾸면 함께 갱신한다.
 - `examples/spring-ai/`: Spring Boot 3.5 + Spring AI 1.0.9. 내장 ONNX 임베딩으로 API 키 없이 실행 가능하고 Ollama는 선택.
 - 원고의 코드는 반드시 `include::../examples/...[tag=...,indent=0]` 태그 문법으로 예제 소스를 인용한다(코드 복사 금지).
