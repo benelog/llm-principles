@@ -4,11 +4,11 @@
 
 ## 원고 구조
 
-- `book/`에 AsciiDoc 원고가 도입 장(ch00, 번호 없는 장)과 4개 부, 13개 장으로 구성된다. ch00은 book.adoc에서 `:sectnums!:`로 감싸 번호 없이 include되므로 "N장" 번호에 포함되지 않는다.
+- `book/`에 AsciiDoc 원고가 도입 장(ch00, 번호 없는 장)과 4개 부, 14개 장으로 구성된다. ch00은 book.adoc에서 `:sectnums!:`로 감싸 번호 없이 include되므로 "N장" 번호에 포함되지 않는다.
   - 1부 정보 레이어: ch01 모델 레이어, ch02 프롬프트 레이어, ch03 회색지대
-  - 2부 microGPT와 동작 원리: ch04, ch05, ch06 추론 서빙의 원리
-  - 3부 오픈 모델 표준: ch07 가중치 포맷, ch08 아키텍처 규약, ch09 토크나이저·채팅 템플릿
-  - 4부 RAG: ch10 파이프라인, ch11 한국어, ch12 진단, ch13 RAG의 경계
+  - 2부 microGPT와 동작 원리: ch04, ch05, ch06 추론 서빙의 원리, ch07 코드 뒤의 수학과 통계(원래 부록이던 수학·통계 기초를 정식 장으로 옮긴 것)
+  - 3부 오픈 모델 표준: ch08 가중치 포맷, ch09 아키텍처 규약, ch10 토크나이저·채팅 템플릿
+  - 4부 RAG: ch11 파이프라인, ch12 한국어, ch13 진단, ch14 RAG의 경계
 - 본문의 장 상호 참조는 "N장" 텍스트로 쓰므로 장 추가·삭제 시 번호를 일괄 갱신해야 한다.
 - 부 구성과 partintro는 `book.adoc`에 있고, 장 파일은 `= 제목`으로 시작해 leveloffset=+1로 include된다.
 - `book/book.html`은 gitignore된 로컬 빌드 산출물이고 배포는 GitHub Actions가 한다.
@@ -18,6 +18,7 @@
 ## 예제 코드
 
 - `examples/java/`: microgpt 포팅, serving 추론 비용 측정, safetensors 파서, quantize 양자화 오차 측정, bpe 토크나이저, minirag 하이브리드 검색. JDK 표준 라이브러리만 사용하고 package 선언 없이 `java Main.java`(JDK 22 이상의 다중 파일 소스 실행기)로 실행한다. 빌드 파일을 두지 않는다.
+- `examples/math-lab/`: 7장의 수치를 Apache Commons Math로 검산하는 Gradle 프로젝트. 검산 절 순서와 제목은 7장의 절 구성을 따르므로 7장의 절을 바꾸면 함께 갱신한다.
 - `examples/spring-ai/`: Spring Boot 3.5 + Spring AI 1.0.9. 내장 ONNX 임베딩으로 API 키 없이 실행 가능하고 Ollama는 선택.
 - 원고의 코드는 반드시 `include::../examples/...[tag=...,indent=0]` 태그 문법으로 예제 소스를 인용한다(코드 복사 금지).
 - 예제 코드에는 `// tag::이름[]` 주석이 있으니 수정 시 태그를 깨뜨리면 안 된다. 수정 후 `cd book && asciidoctor book.adoc`으로 include 해석을 검증한다.

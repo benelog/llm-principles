@@ -1,7 +1,7 @@
 package llmprinciples.mathlab;
 
 /**
- * 부록이 본문에 적어 둔 값과 라이브러리가 계산한 값을 비교하고 결과를 한 줄씩 출력한다.
+ * 7장이 본문에 적어 둔 값과 라이브러리가 계산한 값을 비교하고 결과를 한 줄씩 출력한다.
  * 마지막에 통과와 실패 개수를 집계한다.
  */
 public class Checker {
@@ -15,11 +15,11 @@ public class Checker {
 
     /**
      * 두 값이 허용 오차 안에서 같은지 확인한다.
-     * expected에는 부록 본문에 적힌 값을, actual에는 라이브러리 계산값을 넣는다.
+     * expected에는 7장 본문에 적힌 값을, actual에는 라이브러리 계산값을 넣는다.
      */
     public void near(String label, double expected, double actual, double tolerance) {
         mark(Math.abs(expected - actual) <= tolerance, label,
-                String.format("부록 %-12s 계산 %s", num(expected), num(actual)));
+                String.format("원고 %-12s 계산 %s", num(expected), num(actual)));
     }
 
     /** 수치 비교가 아니라 참·거짓으로 판정하는 주장을 확인한다. */

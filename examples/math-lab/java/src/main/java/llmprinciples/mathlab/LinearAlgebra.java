@@ -11,34 +11,34 @@ import org.apache.commons.math3.linear.SingularValueDecomposition;
 import org.apache.commons.math3.stat.StatUtils;
 import org.apache.commons.math3.stat.correlation.Covariance;
 
-/** 부록의 선형대수 관련 절을 검산한다. */
+/** 7장의 선형대수 관련 절을 검산한다. */
 public final class LinearAlgebra {
 
     private LinearAlgebra() {
     }
 
-    /** 부록 "벡터와 행렬: 숫자 배열의 기하학" */
+    /** 7장 "벡터와 행렬: 모델이 다루는 표현" */
     public static void vectorsAndMatrices(Checker c) {
-        c.section("벡터와 행렬: 숫자 배열의 기하학");
+        c.section("벡터와 행렬: 모델이 다루는 표현");
 
         RealVector a = new ArrayRealVector(new double[] {1, 2});
         RealVector b = new ArrayRealVector(new double[] {3, 4});
 
-        // 부록: a·b = 1*3 + 2*4 = 11
+        // 7장: a·b = 1*3 + 2*4 = 11
         c.near("내적 a·b", 11, a.dotProduct(b), 1e-12);
 
-        // 부록: |a| = 2.236, |b| = 5
+        // 7장: |a| = 2.236, |b| = 5
         c.near("벡터 길이 |a|", 2.236, a.getNorm(), 5e-4);
         c.near("벡터 길이 |b|", 5, b.getNorm(), 1e-12);
 
-        // 부록: cos(a, b) = 11 / (2.236 * 5) ≈ 0.98
+        // 7장: cos(a, b) = 11 / (2.236 * 5) ≈ 0.98
         c.near("코사인 유사도 cos(a,b)", 0.98, a.cosine(b), 5e-3);
 
         // 라이브러리가 주는 cosine이 정의 그대로인지 직접 계산과 맞춰 본다.
         c.near("cosine = 내적 / (길이 곱)",
                 a.dotProduct(b) / (a.getNorm() * b.getNorm()), a.cosine(b), 1e-12);
 
-        // 부록: 코사인 유사도는 항상 -1에서 1 사이에 들어온다.
+        // 7장: 코사인 유사도는 항상 -1에서 1 사이에 들어온다.
         Random rnd = new Random(12);
         boolean inRange = true;
         for (int i = 0; i < 1000; i++) {
@@ -51,13 +51,13 @@ public final class LinearAlgebra {
         }
         c.ok("코사인 값의 범위", inRange, "무작위 32차원 벡터 1000쌍이 모두 [-1, 1]");
 
-        // 부록: 방향이 같으면 내적이 크고, 수직이면 0, 반대 방향이면 음수다.
+        // 7장: 방향이 같으면 내적이 크고, 수직이면 0, 반대 방향이면 음수다.
         c.near("수직 벡터의 내적", 0,
                 new ArrayRealVector(new double[] {1, 0})
                         .dotProduct(new ArrayRealVector(new double[] {0, 1})), 1e-12);
         c.ok("반대 방향의 내적", a.dotProduct(a.mapMultiply(-1)) < 0, "a·(-a) < 0");
 
-        // 부록: lmHead는 임베딩 차원의 벡터를 어휘 크기의 로짓으로 바꾸는 행렬 곱 하나다.
+        // 7장: lmHead는 임베딩 차원의 벡터를 어휘 크기의 로짓으로 바꾸는 행렬 곱 하나다.
         RealVector x = new ArrayRealVector(new double[] {0.5, -1.0, 0.25, 2.0});
         RealMatrix lmHead = MatrixUtils.createRealMatrix(new double[][] {
                 {1, 0, 0, 0},
@@ -70,15 +70,15 @@ public final class LinearAlgebra {
         c.near("행렬 곱이 섞은 결과", 0.875, logits.getEntry(2), 1e-12);
     }
 
-    /** 부록 "랭크와 주성분 분석: 행렬을 적은 숫자로 근사하기" */
+    /** 7장 "랭크와 저랭크 근사"와 "주성분 분석" */
     public static void rankAndPca(Checker c) {
-        c.section("랭크와 주성분 분석: 행렬을 적은 숫자로 근사하기");
+        c.section("랭크와 저랭크 근사 (주성분 분석 포함)");
 
         Random rnd = new Random(34);
         final int d = 6;
         final int r = 2;
 
-        // 부록: 랭크가 r이면 d×r 행렬과 r×d 행렬의 곱으로 정확히 표현할 수 있다.
+        // 7장: 랭크가 r이면 d×r 행렬과 r×d 행렬의 곱으로 정확히 표현할 수 있다.
         // LoRA의 ΔW = B×A가 정확히 이 형태다.
         RealMatrix bm = randomMatrix(rnd, d, r);
         RealMatrix am = randomMatrix(rnd, r, d);
@@ -87,11 +87,11 @@ public final class LinearAlgebra {
         SingularValueDecomposition svd = new SingularValueDecomposition(deltaW);
         c.ok("B×A로 만든 행렬의 랭크", svd.getRank() == r, "6×2 곱하기 2×6의 랭크는 2");
 
-        // 부록: 저장할 숫자가 d²개에서 2dr개로 줄어든다.
+        // 7장: 저장할 숫자가 d²개에서 2dr개로 줄어든다.
         c.near("저장할 숫자 d²", 36, d * d, 0);
         c.near("저장할 숫자 2dr", 24, 2 * d * r, 0);
 
-        // 부록: 랭크가 정확히 낮지 않아도 "거의 낮은" 경우에는 근사할 수 있다.
+        // 7장: 랭크가 정확히 낮지 않아도 "거의 낮은" 경우에는 근사할 수 있다.
         RealMatrix noisy = deltaW.copy();
         for (int i = 0; i < d; i++) {
             for (int j = 0; j < d; j++) {
@@ -103,7 +103,7 @@ public final class LinearAlgebra {
         c.ok("상위 2개 특이값만 남긴 근사", relative < 0.05,
                 Checker.num(relative * 100) + "% 상대 오차");
 
-        // 부록: 주성분 분석은 분산이 가장 큰 방향을 차례로 찾는다.
+        // 7장: 주성분 분석은 분산이 가장 큰 방향을 차례로 찾는다.
         // Commons Math에는 PCA가 없으므로 공분산 행렬의 고유분해로 직접 구한다.
         // x축 방향으로 길게 퍼진 데이터를 만들면 제1주성분이 x축과 나란해야 한다.
         final int n = 400;
@@ -127,9 +127,9 @@ public final class LinearAlgebra {
                 Checker.num(ratio * 100) + "%를 방향 하나로 설명");
     }
 
-    /** 부록 "판별 분석: 집단을 구분하는 방향" */
+    /** 7장 "판별 분석" */
     public static void discriminant(Checker c) {
-        c.section("판별 분석: 집단을 구분하는 방향");
+        c.section("판별 분석");
 
         // 3장 activation steering의 설정을 모사한다. 정직한 답변일 때의 활성값과
         // 그렇지 않을 때의 활성값을 각각 모아 두 집단으로 둔다.
@@ -143,12 +143,12 @@ public final class LinearAlgebra {
             other[i] = new double[] {-1 + 0.5 * rnd.nextGaussian(), 4 * rnd.nextGaussian()};
         }
 
-        // 부록: 가장 단순한 형태는 두 집단의 평균 벡터를 빼서 그 차이를 방향으로 삼는 것이다.
+        // 7장: 가장 단순한 형태는 두 집단의 평균 벡터를 빼서 그 차이를 방향으로 삼는 것이다.
         RealVector meanDiff = meanVector(honest).subtract(meanVector(other));
         meanDiff = meanDiff.unitVector();
         c.near("평균 차이 방향의 첫 성분", 1, Math.abs(meanDiff.getEntry(0)), 0.1);
 
-        // 부록: Fisher의 선형 판별 분석은 집단 안의 흩어짐까지 고려한다.
+        // 7장: Fisher의 선형 판별 분석은 집단 안의 흩어짐까지 고려한다.
         RealVector fisher = fisherDirection(honest, other);
 
         double sepMean = separation(honest, other, meanDiff);

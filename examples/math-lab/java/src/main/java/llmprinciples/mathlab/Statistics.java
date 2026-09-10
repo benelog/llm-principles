@@ -20,15 +20,31 @@ import org.apache.commons.math3.stat.correlation.Covariance;
 import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
-/** 부록의 기술통계와 분포 관련 절을 검산한다. */
+/** 7장의 기술통계와 분포 관련 절을 검산한다. */
 public final class Statistics {
 
     private Statistics() {
     }
 
-    /** 부록 "평균, 분산, 정규화" */
+    /** 7장 "평균, 분산, 표준편차"와 "정규화와 sqrt(d) 스케일링" */
     public static void moments(Checker c) {
-        c.section("평균, 분산, 정규화");
+        c.section("평균, 분산, 정규화와 sqrt(d) 스케일링");
+
+        // 7장: [2, 4, 4, 4, 5, 5, 7, 9]는 평균 5, 분산 4, 표준편차 2다.
+        double[] sample = {2, 4, 4, 4, 5, 5, 7, 9};
+        double mean = 0;
+        for (double v : sample) {
+            mean += v;
+        }
+        mean /= sample.length;
+        double var = 0;
+        for (double v : sample) {
+            var += (v - mean) * (v - mean);
+        }
+        var /= sample.length;
+        c.near("예제 값들의 평균", 5, mean, 1e-12);
+        c.near("예제 값들의 분산 (편차 제곱의 평균)", 4, var, 1e-12);
+        c.near("예제 값들의 표준편차", 2, Math.sqrt(var), 1e-12);
 
         double[] x = {2, 4, 4, 4, 5, 5, 7, 9};
         c.near("평균", 5, StatUtils.mean(x), 1e-12);
@@ -39,11 +55,11 @@ public final class Statistics {
         c.near("표준편차는 분산의 제곱근",
                 Math.sqrt(StatUtils.variance(x)), ds.getStandardDeviation(), 1e-12);
 
-        // 부록: 분산은 자기 자신과의 공분산이다.
+        // 7장: 분산은 자기 자신과의 공분산이다.
         c.near("분산 = 자기 자신과의 공분산",
                 StatUtils.variance(x), new Covariance().covariance(x, x), 1e-12);
 
-        // 부록: 평균 0, 분산 1인 값으로 이루어진 d차원 벡터 두 개를 내적하면
+        // 7장: 평균 0, 분산 1인 값으로 이루어진 d차원 벡터 두 개를 내적하면
         // 결과의 분산이 d가 되고 표준편차는 sqrt(d)가 된다.
         Random rnd = new Random(78);
         final int d = 64;
@@ -56,7 +72,7 @@ public final class Statistics {
         c.near("d차원 내적의 분산 (d=64)", 64, StatUtils.variance(dots), 3);
         c.near("d차원 내적의 표준편차", 8, Math.sqrt(StatUtils.variance(dots)), 0.3);
 
-        // 부록: 내적을 sqrt(d)로 나누면 차원이 몇이든 점수의 분산이 1 근처로 유지된다.
+        // 7장: 내적을 sqrt(d)로 나누면 차원이 몇이든 점수의 분산이 1 근처로 유지된다.
         double[] scaled = Arrays.stream(dots).map(v -> v / Math.sqrt(d)).toArray();
         c.near("sqrt(d)로 나눈 뒤의 분산", 1, StatUtils.variance(scaled), 0.05);
 
@@ -69,7 +85,7 @@ public final class Statistics {
         }
         c.near("차원을 256으로 바꿔도 분산 1", 1, StatUtils.variance(dots2), 0.05);
 
-        // 부록: 5장의 RMSNorm은 벡터를 자기 크기로 나눠 규모를 되돌린다.
+        // 7장: 5장의 RMSNorm은 벡터를 자기 크기로 나눠 규모를 되돌린다.
         RealVector v = new ArrayRealVector(new double[] {3, -4, 12, 0.5});
         double rms = v.getNorm() / Math.sqrt(v.getDimension());
         RealVector normed = v.mapDivide(rms);
@@ -77,25 +93,25 @@ public final class Statistics {
                 normed.getNorm() / Math.sqrt(normed.getDimension()), 1e-12);
     }
 
-    /** 부록 "정규 분포: 무작위가 합쳐질 때 나타나는 모양" */
+    /** 7장 "정규 분포와 중심 극한 정리" */
     public static void normalDistribution(Checker c) {
-        c.section("정규 분포: 무작위가 합쳐질 때 나타나는 모양");
+        c.section("정규 분포와 중심 극한 정리");
 
         NormalDistribution n = new NormalDistribution(0, 1);
 
-        // 부록: 값의 약 68%가 평균 ±1 표준편차 안에, 약 95%가 ±2 표준편차 안에 들어온다.
+        // 7장: 값의 약 68%가 평균 ±1 표준편차 안에, 약 95%가 ±2 표준편차 안에 들어온다.
         double within1 = n.cumulativeProbability(1) - n.cumulativeProbability(-1);
         double within2 = n.cumulativeProbability(2) - n.cumulativeProbability(-2);
         c.near("±1 표준편차 안의 비율", 0.68, within1, 0.005);
         c.near("±2 표준편차 안의 비율", 0.95, within2, 0.005);
         c.note("정확한 값은 %.4f와 %.4f다", within1, within2);
 
-        // 부록: 평균을 중심으로 좌우 대칭이다.
+        // 7장: 평균을 중심으로 좌우 대칭이다.
         c.near("좌우 대칭 (CDF(0) = 0.5)", 0.5, n.cumulativeProbability(0), 1e-12);
         c.near("대칭성 P(X<-1.5) = P(X>1.5)", n.cumulativeProbability(-1.5),
                 1 - n.cumulativeProbability(1.5), 1e-12);
 
-        // 부록: 중심 극한 정리. 개별 값이 어떤 분포를 따르든 여러 개를 더하면
+        // 7장: 중심 극한 정리. 개별 값이 어떤 분포를 따르든 여러 개를 더하면
         // 그 합은 정규 분포에 가까워진다. 균등 분포 12개의 합으로 확인한다.
         Random rnd = new Random(910);
         double[] sums12 = uniformSums(rnd, 12, 200000);
@@ -117,7 +133,7 @@ public final class Statistics {
         c.ok("항을 늘리면 정규 분포에 더 가까워짐", Math.abs(k48) < Math.abs(k12),
                 "12개 " + Checker.num(k12) + " → 48개 " + Checker.num(k48));
 
-        // 부록: 7장 NF4는 균등 간격 대신 정규 분포의 분위수에 격자를 배치해서
+        // 7장: 8장 NF4는 균등 간격 대신 정규 분포의 분위수에 격자를 배치해서
         // 같은 비트 수로 오차를 줄인다. 2비트(격자 4개)로 직접 비교한다.
         double[] sample = new double[20000];
         for (int i = 0; i < sample.length; i++) {
@@ -136,9 +152,9 @@ public final class Statistics {
         c.note("분위수 격자: %s", Arrays.toString(rounded(quantileGrid)));
     }
 
-    /** 부록 "공분산과 상관: 함께 움직이는 정도" */
+    /** 7장 "공분산과 상관계수" */
     public static void covarianceAndCorrelation(Checker c) {
-        c.section("공분산과 상관: 함께 움직이는 정도");
+        c.section("공분산과 상관계수");
 
         Random rnd = new Random(1112);
         final int n = 500;
@@ -154,18 +170,18 @@ public final class Statistics {
         c.ok("함께 커지면 공분산이 양수", cov > 0, "공분산 " + Checker.num(cov));
         c.ok("상관계수는 -1에서 1 사이", corr > 0 && corr < 1, "상관계수 " + Checker.num(corr));
 
-        // 부록: 공분산을 두 표준편차로 나눈 것이 상관계수다.
+        // 7장: 공분산을 두 표준편차로 나눈 것이 상관계수다.
         double sdX = new DescriptiveStatistics(x).getStandardDeviation();
         double sdY = new DescriptiveStatistics(y).getStandardDeviation();
         c.near("상관계수 = 공분산 / (표준편차 곱)", cov / (sdX * sdY), corr, 1e-12);
 
-        // 부록의 핵심 주장: 상관계수는 "평균을 뺀 두 값 배열의 코사인 유사도"와
-        // 정확히 같은 계산이다. 10장의 벡터 검색에 쓴 그 코사인이다.
+        // 7장의 핵심 주장: 상관계수는 "평균을 뺀 두 값 배열의 코사인 유사도"와
+        // 정확히 같은 계산이다. 11장의 벡터 검색에 쓴 그 코사인이다.
         RealVector cx = new ArrayRealVector(x).mapSubtract(StatUtils.mean(x));
         RealVector cy = new ArrayRealVector(y).mapSubtract(StatUtils.mean(y));
         c.near("상관계수 = 중심화한 벡터의 코사인", corr, cx.cosine(cy), 1e-12);
 
-        // 부록: 반대로 움직이면 음수, 무관하면 0 근처다.
+        // 7장: 반대로 움직이면 음수, 무관하면 0 근처다.
         double[] negated = Arrays.stream(y).map(v -> -v).toArray();
         double negCorr = new PearsonsCorrelation().correlation(x, negated);
         c.ok("반대로 움직이면 음수", negCorr < 0, Checker.num(negCorr));
@@ -177,7 +193,7 @@ public final class Statistics {
         c.near("무관하면 0 근처", 0,
                 new PearsonsCorrelation().correlation(x, independent), 0.1);
 
-        // 부록: 변수가 여러 개면 공분산 행렬이 되고, 주성분은 이 행렬에서 계산된다.
+        // 7장: 변수가 여러 개면 공분산 행렬이 되고, 주성분은 이 행렬에서 계산된다.
         double[][] data = new double[n][2];
         for (int i = 0; i < n; i++) {
             data[i][0] = x[i];
@@ -202,13 +218,13 @@ public final class Statistics {
                 eigenvalues[0], StatUtils.variance(projected), 1e-9);
     }
 
-    /** 부록 "k-평균 군집화: 데이터에서 대표점 찾기" */
+    /** 7장 "k-평균 군집화" */
     public static void kmeans(Checker c) {
-        c.section("k-평균 군집화: 데이터에서 대표점 찾기");
+        c.section("k-평균 군집화");
 
-        // 부록: 대표점 k개를 놓고 "가장 가까운 대표점에 배정한다, 대표점을 배정된
+        // 7장: 대표점 k개를 놓고 "가장 가까운 대표점에 배정한다, 대표점을 배정된
         // 데이터의 평균으로 옮긴다"를 반복하면 대표점이 밀집한 곳으로 이동한다.
-        // Commons Math는 Gonum과 달리 k-평균을 직접 제공한다.
+        // Commons Math는 k-평균을 직접 제공한다.
         Random rnd = new Random(1314);
         double[] trueCenters = {-5, 0, 7};
         List<DoublePoint> points = new ArrayList<>();
@@ -227,9 +243,9 @@ public final class Statistics {
                 "참값과 최대 차이 " + Checker.num(maxGap));
         c.note("찾은 대표점 %s", Arrays.toString(rounded(found)));
 
-        // 부록: 분포를 모른 채 데이터에서 직접 격자를 찾는 일반해가 1차원 k-평균이고,
+        // 7장: 분포를 모른 채 데이터에서 직접 격자를 찾는 일반해가 1차원 k-평균이고,
         // 값이 밀집한 곳에 대표점이 몰리는 최적의 양자화 격자가 같은 절차로 나온다.
-        // 7장의 NF4 자리에서 정규 분포 샘플에 대해 균등 격자와 비교한다.
+        // 8장의 NF4 자리에서 정규 분포 샘플에 대해 균등 격자와 비교한다.
         double[] sample = new double[20000];
         List<DoublePoint> samplePoints = new ArrayList<>(sample.length);
         for (int i = 0; i < sample.length; i++) {

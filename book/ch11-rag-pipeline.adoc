@@ -16,7 +16,7 @@ RAG(Retrieval-Augmented Generation)는 질문과 관련된 문서를 검색해�
 각 단계마다 별도의 모델이나 시스템이 개입하고, 서로 다른 튜닝이 필요하다. 성능 문제가 생겼을 때 "RAG가 잘 안 된다"가 아니라 "어느 단계가 실패했다"로 말할 수 있어야 개선이 시작된다. 그러려면 각 단계가 실제로 무슨 일을 하는지 알아야 한다.
 
 .RAG 파이프라인: 인덱싱 시점과 질의 시점
-image::diagrams/ch10-rag-pipeline.drawio.png[인덱싱과 질의의 두 트랙으로 이루어진 RAG 파이프라인,width=100%]
+image::diagrams/ch11-rag-pipeline.drawio.png[인덱싱과 질의의 두 트랙으로 이루어진 RAG 파이프라인,width=100%]
 
 이 장에서는 검색 파이프라인을 자바 표준 라이브러리만으로 바닥부터 구현한다(`examples/java/minirag`). 외부 서비스 없이 실행되므로 각 단계의 입출력을 눈으로 확인할 수 있다.
 

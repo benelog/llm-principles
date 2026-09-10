@@ -11,17 +11,22 @@ import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
 import org.apache.commons.math3.stat.regression.OLSMultipleLinearRegression;
 import org.apache.commons.math3.stat.regression.SimpleRegression;
 
-/** 부록의 회귀, 마르코프 체인, 강화학습, 스케일링 법칙 절을 검산한다. */
+/** 7장의 회귀, 마르코프 체인, 강화학습, 스케일링 법칙 절을 검산한다. */
 public final class Models {
 
     private Models() {
     }
 
-    /** 부록 "선형 회귀와 로지스틱 회귀: 가장 작은 신경망" */
+    /** 7장 "회귀: 가장 작은 신경망" */
     public static void regression(Checker c) {
-        c.section("선형 회귀와 로지스틱 회귀: 가장 작은 신경망");
+        c.section("회귀: 선형 회귀와 로지스틱 회귀");
 
-        // 부록: 선형 회귀는 데이터에 가장 잘 맞는 직선 y = ax + b를 찾는다.
+        // 7장: sigmoid(-2) ≈ 0.12, sigmoid(0) = 0.5, sigmoid(2) ≈ 0.88
+        c.near("sigmoid(-2)", 0.12, 1 / (1 + Math.exp(2)), 5e-3);
+        c.near("sigmoid(0)", 0.5, 1 / (1 + Math.exp(0)), 1e-12);
+        c.near("sigmoid(2)", 0.88, 1 / (1 + Math.exp(-2)), 5e-3);
+
+        // 7장: 선형 회귀는 데이터에 가장 잘 맞는 직선 y = ax + b를 찾는다.
         // 기울기 2.5, 절편 -1인 직선에 잡음을 얹고 계수를 되찾아 본다.
         Random rnd = new Random(1516);
         final int n = 300;
@@ -36,7 +41,7 @@ public final class Models {
         c.near("회귀가 되찾은 기울기 a", 2.5, reg.getSlope(), 0.05);
         c.near("회귀가 되찾은 절편 b", -1, reg.getIntercept(), 0.1);
 
-        // 부록: "가장 잘 맞는"의 기준은 오차 제곱합을 최소로 만드는 것이다(최소제곱법).
+        // 7장: "가장 잘 맞는"의 기준은 오차 제곱합을 최소로 만드는 것이다(최소제곱법).
         double base = sse(xs, ys, reg.getSlope(), reg.getIntercept());
         boolean worse = true;
         for (double delta : new double[] {-0.05, -0.01, 0.01, 0.05}) {
@@ -47,27 +52,27 @@ public final class Models {
         c.ok("계수를 흔들면 오차 제곱합이 늘어남", worse, "최소제곱 해가 맞음");
         c.near("잔차 제곱합이 라이브러리 값과 일치", reg.getSumSquaredErrors(), base, 1e-6);
 
-        // 부록: 시그모이드는 선택지가 두 개일 때의 softmax와 같은 함수다.
+        // 7장: 시그모이드는 선택지가 두 개일 때의 softmax와 같은 함수다.
         double z = 1.3;
         double sig = 1 / (1 + Math.exp(-z));
         c.near("시그모이드 = 2항 softmax", sig,
                 Probability.softmax(new double[] {z, 0}, 1.0)[0], 1e-12);
 
-        // 부록: 로지스틱 회귀의 손실(로그 손실)은 교차 엔트로피와 같은 식이다.
+        // 7장: 로지스틱 회귀의 손실(로그 손실)은 교차 엔트로피와 같은 식이다.
         double label = 1.0;
         double logLoss = -(label * Math.log(sig) + (1 - label) * Math.log(1 - sig));
         c.near("로그 손실 = 교차 엔트로피",
                 Probability.crossEntropy(new double[] {1, 0}, new double[] {sig, 1 - sig}),
                 logLoss, 1e-12);
 
-        // 부록: RLHF의 보상 모델은 "A가 B보다 선호될 확률 = sigmoid(A점수 - B점수)"라는
+        // 7장: RLHF의 보상 모델은 "A가 B보다 선호될 확률 = sigmoid(A점수 - B점수)"라는
         // Bradley-Terry 모형으로 학습된다.
         c.near("점수가 같으면 선호 확률 0.5", 0.5, sigmoid(0), 1e-12);
         c.ok("점수 차이가 커지면 확률이 1에 접근",
                 sigmoid(5) > 0.99 && sigmoid(1) > sigmoid(0.5),
                 "diff=5에서 " + Checker.num(sigmoid(5)));
 
-        // 부록: 다중공선성은 입력 변수들끼리 강하게 상관되어 있을 때,
+        // 7장: 다중공선성은 입력 변수들끼리 강하게 상관되어 있을 때,
         // 예측은 멀쩡한데 개별 계수의 추정이 불안정해지는 현상이다.
         double[][] inputs = new double[n][2];
         double[] target = new double[n];
@@ -111,9 +116,9 @@ public final class Models {
         c.ok("VIF가 경험적 기준 10을 넘음", vif > 10, "VIF " + Checker.num(vif));
     }
 
-    /** 부록 "마르코프 체인: 상태가 미래를 결정한다" */
+    /** 7장 "마르코프 체인" */
     public static void markovChain(Checker c) {
-        c.section("마르코프 체인: 상태가 미래를 결정한다");
+        c.section("마르코프 체인");
 
         // 상태 세 개의 전이 확률표를 만든다. n-gram 언어 모델이 말뭉치에서 센 표와
         // 같은 물건이다. 각 행의 합은 1이어야 한다.
@@ -134,7 +139,7 @@ public final class Models {
         }
         c.ok("전이 확률표의 각 행 합이 1", rowsSumToOne, "확률 분포의 조건");
 
-        // 부록: 확률표만 있으면 과정 전체를 전개할 수 있다.
+        // 7장: 확률표만 있으면 과정 전체를 전개할 수 있다.
         RealVector stationary = converge(p, new double[] {1, 0, 0});
         double sum = 0;
         for (double v : stationary.toArray()) {
@@ -149,7 +154,7 @@ public final class Models {
         c.note("정상 분포 [%.4f %.4f %.4f]",
                 stationary.getEntry(0), stationary.getEntry(1), stationary.getEntry(2));
 
-        // 부록: 다음에 일어날 일이 현재 상태에만 의존하고 거기까지 온 경로에는
+        // 7장: 다음에 일어날 일이 현재 상태에만 의존하고 거기까지 온 경로에는
         // 의존하지 않는다. 서로 다른 출발점에서 시작해도 같은 정상 분포로 간다.
         RealVector other = converge(p, new double[] {0, 0, 1});
         c.ok("출발점이 달라도 같은 곳으로 수렴",
@@ -160,11 +165,15 @@ public final class Models {
                 p.power(2).subtract(p.multiply(p)).getFrobeniusNorm(), 1e-12);
     }
 
-    /** 부록 "벨만 방정식: 강화학습의 뼈대" */
+    /** 7장 "강화학습과 벨만 방정식" */
     public static void bellman(Checker c) {
-        c.section("벨만 방정식: 강화학습의 뼈대");
+        c.section("강화학습과 벨만 방정식");
 
-        // 부록: 매 걸음 보상 1을 받고 할인율이 γ면, 가치는 등비급수의 합 1/(1-γ)다.
+        // 7장: γ = 0.9이고 세 걸음 뒤에 보상 1이 오면 가치는 0.9, 0.81, 0.73으로 할인된다.
+        c.near("두 걸음 전의 가치 γ²", 0.81, 0.9 * 0.9, 1e-12);
+        c.near("세 걸음 전의 가치 γ³", 0.73, 0.9 * 0.9 * 0.9, 5e-3);
+
+        // 7장: 매 걸음 보상 1을 받고 할인율이 γ면, 가치는 등비급수의 합 1/(1-γ)다.
         final double gamma = 0.9;
         c.near("등비급수의 합 1/(1-γ)", 10, 1 / (1 - gamma), 1e-12);
 
@@ -174,14 +183,14 @@ public final class Models {
         }
         c.near("보상 1이 계속될 때의 가치", 1 / (1 - gamma), partial, 1e-9);
 
-        // 부록: 할인율은 무한히 이어지는 보상의 합이 발산하지 않게 만드는 장치다.
+        // 7장: 할인율은 무한히 이어지는 보상의 합이 발산하지 않게 만드는 장치다.
         double noDiscount = 0;
         for (int k = 0; k < 300; k++) {
             noDiscount += 1.0;
         }
         c.ok("γ=1이면 합이 커지기만 함", noDiscount == 300, "300걸음에서 이미 300");
 
-        // 부록: V(s) = E[r + γ * V(s')]. 상태 세 개짜리 마르코프 보상 과정에서
+        // 7장: V(s) = E[r + γ * V(s')]. 상태 세 개짜리 마르코프 보상 과정에서
         // 가치 반복으로 구한 해가 선형 방정식의 해와 같은지 확인한다.
         RealMatrix trans = MatrixUtils.createRealMatrix(new double[][] {
                 {0.5, 0.5, 0.0},
@@ -210,15 +219,15 @@ public final class Models {
         double rhs = rewards.getEntry(0) + gamma * trans.operate(v).getEntry(0);
         c.near("V(s) = r + γ·E[V(s')]", v.getEntry(0), rhs, 1e-9);
 
-        // 부록: 먼 미래의 보상은 γ, γ², γ³처럼 할인된다.
+        // 7장: 먼 미래의 보상은 γ, γ², γ³처럼 할인된다.
         c.near("10걸음 뒤 보상의 할인율", Math.pow(gamma, 10), 0.34867844, 1e-6);
     }
 
-    /** 부록 "스케일링 법칙: 손실을 예측하는 멱법칙" */
+    /** 7장 "스케일링 법칙: 손실을 예측하는 멱법칙" */
     public static void scalingLaw(Checker c) {
         c.section("스케일링 법칙: 손실을 예측하는 멱법칙");
 
-        // 부록: 멱법칙 y = a * x^(-b)는 양변에 로그를 취하면
+        // 7장: 멱법칙 y = a * x^(-b)는 양변에 로그를 취하면
         // log y = log a - b * log x가 되어 로그-로그 그래프에서 직선이 된다.
         final double a = 12.0;
         final double b = 0.35;
@@ -232,7 +241,7 @@ public final class Models {
         c.near("로그-로그 회귀가 되찾은 지수 b", b, -reg.getSlope(), 0.01);
         c.near("로그-로그 회귀가 되찾은 계수 a", a, Math.exp(reg.getIntercept()), 0.5);
 
-        // 부록: 작은 모델 여러 개로 계수를 추정하면 훨씬 큰 모델의 손실을 외삽할 수 있다.
+        // 7장: 작은 모델 여러 개로 계수를 추정하면 훨씬 큰 모델의 손실을 외삽할 수 있다.
         double bigN = 1e11;
         double predicted = Math.exp(reg.predict(Math.log(bigN)));
         double actual = a * Math.pow(bigN, -b);
@@ -241,14 +250,14 @@ public final class Models {
                 "상대 오차 " + Checker.num(relative * 100) + "%");
         c.note("예측 %.5f, 참값 %.5f", predicted, actual);
 
-        // 부록: 손실(N, D) = E + A/N^α + B/D^β. E는 아무리 키워도 남는 손실의 바닥이다.
+        // 7장: 손실(N, D) = E + A/N^α + B/D^β. E는 아무리 키워도 남는 손실의 바닥이다.
         c.ok("N과 D를 키우면 손실이 줄어듦",
                 chinchillaLoss(1e10, 1e11) < chinchillaLoss(1e9, 1e10), "두 항이 모두 감소");
         c.near("N, D를 무한히 키운 극한이 바닥 E", 1.69, chinchillaLoss(1e30, 1e30), 1e-3);
         c.ok("바닥 아래로는 내려가지 않음", chinchillaLoss(1e12, 1e13) > 1.69,
                 "손실 " + Checker.num(chinchillaLoss(1e12, 1e13)));
 
-        // 부록: Chinchilla의 결론은 파라미터 1개당 약 20토큰이라는 균형점이었다.
+        // 7장: Chinchilla의 결론은 파라미터 1개당 약 20토큰이라는 균형점이었다.
         c.near("20B 파라미터에 맞는 토큰 수", 400e9, 20e9 * 20, 1);
         c.note("파라미터 20B면 학습 토큰 400B가 균형점이라는 계산이다");
     }
