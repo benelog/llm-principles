@@ -53,12 +53,12 @@ public class Main {
         }
 
         // tag::kvcache[]
-        // KVCache는 처리를 마친 위치들의 키와 밸류를 층별로 보관한다.
-        static class KVCache {
+        // KvCache는 처리를 마친 위치들의 키와 밸류를 층별로 보관한다.
+        static class KvCache {
             final List<List<double[]>> keys = new ArrayList<>();   // [층][위치][차원]
             final List<List<double[]>> values = new ArrayList<>();
 
-            KVCache() {
+            KvCache() {
                 for (int l = 0; l < nLayer; l++) {
                     keys.add(new ArrayList<>());
                     values.add(new ArrayList<>());
@@ -66,14 +66,14 @@ public class Main {
             }
         }
 
-        KVCache newCache() {
-            return new KVCache();
+        KvCache newCache() {
+            return new KvCache();
         }
 
         // 토큰 하나를 처리해 캐시에 K, V를 쌓고 마지막 은닉 벡터를 돌려준다.
         // 2부 microGPT의 forward와 같은 구조이며, 학습이 필요 없으므로
         // 자동 미분 없이 double로만 계산한다.
-        double[] decodeStep(int tokenId, int pos, KVCache cache) {
+        double[] decodeStep(int tokenId, int pos, KvCache cache) {
             double[] x = embed(tokenId, pos);
             for (int l = 0; l < layers.size(); l++) {
                 Layer layer = layers.get(l);
@@ -98,7 +98,7 @@ public class Main {
         // 수 있으므로 이런 병렬화가 불가능하다.
         PrefillResult prefill(int[] tokens) {
             int n = tokens.length;
-            KVCache cache = newCache();
+            KvCache cache = newCache();
             double[][] xs = new double[n][];
             parallelFor(n, i -> xs[i] = embed(tokens[i], i));
             for (int l = 0; l < layers.size(); l++) {
@@ -148,7 +148,7 @@ public class Main {
         int[] generateNoCache(int[] prompt, int numTokens) {
             int[] seq = Arrays.copyOf(prompt, prompt.length + numTokens);
             for (int len = prompt.length; len < seq.length; len++) {
-                KVCache cache = newCache();
+                KvCache cache = newCache();
                 double[] h = null;
                 for (int pos = 0; pos < len; pos++) { // 앞 토큰 전체를 다시 계산한다
                     h = decodeStep(seq[pos], pos, cache);
@@ -160,7 +160,7 @@ public class Main {
 
         // 프리필이 채운 캐시를 이어받아, 새 토큰마다 decodeStep 한 번만
         // 실행한다. 앞 토큰들의 K, V는 캐시에서 그대로 재사용된다.
-        int[] generate(KVCache cache, double[] h, int startPos, int numTokens) {
+        int[] generate(KvCache cache, double[] h, int startPos, int numTokens) {
             int[] out = new int[numTokens];
             for (int i = 0; i < numTokens; i++) {
                 out[i] = nextToken(h);
@@ -172,7 +172,7 @@ public class Main {
     }
 
     // 프리필의 결과. 채워진 캐시와 마지막 위치의 은닉 벡터다.
-    record PrefillResult(Model.KVCache cache, double[] hidden) {}
+    record PrefillResult(Model.KvCache cache, double[] hidden) {}
 
     static double[][] newMatrix(int rows, int cols, Random rng) {
         double[][] w = new double[rows][cols];
@@ -315,7 +315,7 @@ public class Main {
         // 위해 측정 전에 같은 경로를 한 번 지나가 둔다.
         int[] warmup = Arrays.copyOf(prompt, 64);
         for (int round = 0; round < 20; round++) {
-            Model.KVCache c = model.newCache();
+            Model.KvCache c = model.newCache();
             for (int pos = 0; pos < warmup.length; pos++) {
                 model.decodeStep(warmup[pos], pos, c);
             }
@@ -324,7 +324,7 @@ public class Main {
 
         // 1) 프리필: 순차 처리와 병렬 처리
         long t0 = System.nanoTime();
-        Model.KVCache seqCache = model.newCache();
+        Model.KvCache seqCache = model.newCache();
         double[] hSeq = null;
         for (int pos = 0; pos < promptLen; pos++) {
             hSeq = model.decodeStep(prompt[pos], pos, seqCache);
@@ -334,7 +334,7 @@ public class Main {
         t0 = System.nanoTime();
         PrefillResult result = model.prefill(prompt);
         long parPrefill = System.nanoTime() - t0;
-        Model.KVCache cache = result.cache();
+        Model.KvCache cache = result.cache();
         double[] h = result.hidden();
 
         System.out.println("== 프리필: 프롬프트 처리 ==");

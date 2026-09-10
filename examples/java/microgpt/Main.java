@@ -19,13 +19,13 @@ public class Main {
                 .map(String::strip).filter(s -> !s.isEmpty()).toList();
 
         Tokenizer tok = new Tokenizer(docs);
-        GPT model = new GPT(tok.vocabSize(), rng);
+        Gpt model = new Gpt(tok.vocabSize(), rng);
         System.out.printf("데이터 %d건, 어휘 크기 %d, 파라미터 %d개%n",
                 docs.size(), tok.vocabSize(), model.params.size());
 
         // tag::training[]
         final int numSteps = 1500;   // 학습 스텝 수
-        final double baseLR = 0.01;  // 기본 학습률
+        final double baseLr = 0.01;  // 기본 학습률
         final double beta1 = 0.9;    // Adam 1차 모멘트 감쇠율
         final double beta2 = 0.95;   // Adam 2차 모멘트 감쇠율
         final double epsAdam = 1e-8;
@@ -45,14 +45,14 @@ public class Main {
             seq[0] = tok.bos;
             System.arraycopy(ids, 0, seq, 1, ids.length);
             seq[seq.length - 1] = tok.bos;
-            int n = Math.min(seq.length - 1, GPT.blockSize);
+            int n = Math.min(seq.length - 1, Gpt.blockSize);
 
             // 순전파: 위치마다 다음 토큰의 확률을 구하고 교차 엔트로피를 쌓는다
-            GPT.KVCache cache = model.newCache();
+            Gpt.KvCache cache = model.newCache();
             Value loss = new Value(0);
             for (int pos = 0; pos < n; pos++) {
                 Value[] logits = model.forward(seq[pos], pos, cache);
-                Value[] probs = GPT.softmax(logits);
+                Value[] probs = Gpt.softmax(logits);
                 // 정답 토큰 확률의 로그에 음수를 취한 값이 손실이다
                 loss = loss.add(probs[seq[pos + 1]].log().neg());
             }
@@ -65,7 +65,7 @@ public class Main {
             loss.backward();
 
             // Adam 갱신. 학습률은 마지막 스텝에서 0이 되도록 선형 감소시킨다.
-            double lr = baseLR * (1 - (double) (step - 1) / numSteps);
+            double lr = baseLr * (1 - (double) (step - 1) / numSteps);
             for (int i = 0; i < params.size(); i++) {
                 Value p = params.get(i);
                 mBuf[i] = beta1 * mBuf[i] + (1 - beta1) * p.grad;
@@ -91,10 +91,10 @@ public class Main {
         final double temperature = 0.8;
         System.out.println("\n생성된 이름 20개:");
         for (int i = 0; i < 20; i++) {
-            GPT.KVCache cache = model.newCache();
+            Gpt.KvCache cache = model.newCache();
             int tokenId = tok.bos;
             List<Integer> out = new ArrayList<>();
-            for (int pos = 0; pos < GPT.blockSize; pos++) {
+            for (int pos = 0; pos < Gpt.blockSize; pos++) {
                 Value[] logits = model.forward(tokenId, pos, cache);
                 double[] probs = softmaxData(logits, temperature);
                 int next = sampleFrom(probs, rng);

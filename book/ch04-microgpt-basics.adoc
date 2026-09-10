@@ -11,8 +11,8 @@ microGPT는 Andrej Karpathy가 만든, 의존성 없는 순수 파이썬 200줄�
 
 코드를 읽기 전에 예제 전체의 흐름을 먼저 본다. ``main``에서 학습 루프와 생성 루프가 갈라지고, 둘 다 모델의 ``forward``를 호출한다. 학습 루프는 ``forward``가 만든 계산 그래프를 ``backward``로 거슬러 올라가 파라미터를 고치고, 생성 루프는 ``forward``의 출력 분포에서 토큰을 뽑는다.
 
-.microGPT 예제의 전체 흐름. 이 장은 Tokenizer와 Value를, 다음 장은 GPT의 forward와 학습·생성 루프를 다룬다
-image::diagrams/ch04-microgpt-flow.drawio.png[Main의 학습·생성 루프와 Tokenizer, GPT의 forward, Value의 backward 사이의 호출 관계,width=100%]
+.microGPT 예제의 전체 흐름. 이 장은 Tokenizer와 Value를, 다음 장은 Gpt의 forward와 학습·생성 루프를 다룬다
+image::diagrams/ch04-microgpt-flow.drawio.png[Main의 학습·생성 루프와 Tokenizer, Gpt의 forward, Value의 backward 사이의 호출 관계,width=100%]
 
 이 장은 학습의 기반이 되는 두 부품인 토크나이저와 자동 미분을 다루고, 다음 장에서 모델 아키텍처와 학습, 추론을 다룬다.
 

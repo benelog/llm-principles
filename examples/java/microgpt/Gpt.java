@@ -3,7 +3,7 @@ import java.util.List;
 import java.util.Random;
 
 // GPT는 토큰 임베딩, 위치 임베딩, 트랜스포머 블록, 최종 lm_head로 이루어진다.
-public class GPT {
+public class Gpt {
     // 모델 크기 설정. 파라미터 수천 개 수준의 아주 작은 GPT다.
     static final int nEmbd = 16;              // 임베딩 차원
     static final int nHead = 2;               // 어텐션 헤드 수
@@ -15,17 +15,17 @@ public class GPT {
     static class Block {
         Value[][] attnQ, attnK, attnV; // 어텐션 Q, K, V 투영 (nEmbd x nEmbd)
         Value[][] attnProj;            // 어텐션 출력 투영 (nEmbd x nEmbd)
-        Value[][] mlpFC;               // MLP 확장 (4*nEmbd x nEmbd)
+        Value[][] mlpFc;               // MLP 확장 (4*nEmbd x nEmbd)
         Value[][] mlpProj;             // MLP 축소 (nEmbd x 4*nEmbd)
     }
 
-    // KVCache는 이미 처리한 위치들의 키와 값을 층별로 보관한다.
+    // KvCache는 이미 처리한 위치들의 키와 값을 층별로 보관한다.
     // 학습과 샘플링 모두 이 캐시에 한 위치씩 쌓아 가며 진행한다.
-    static class KVCache {
+    static class KvCache {
         final List<List<Value[]>> keys = new ArrayList<>();   // [층][위치][차원]
         final List<List<Value[]>> values = new ArrayList<>();
 
-        KVCache() {
+        KvCache() {
             for (int l = 0; l < nLayer; l++) {
                 keys.add(new ArrayList<>());
                 values.add(new ArrayList<>());
@@ -41,7 +41,7 @@ public class GPT {
     final List<Value> params = new ArrayList<>(); // 옵티마이저가 갱신할 전체 파라미터 목록
 
     // 작은 GPT를 만들고 가중치를 정규분포(표준편차 0.02)로 초기화한다.
-    public GPT(int vocabSize, Random rng) {
+    public Gpt(int vocabSize, Random rng) {
         this.vocabSize = vocabSize;
         wte = newMatrix(vocabSize, nEmbd, rng);
         wpe = newMatrix(blockSize, nEmbd, rng);
@@ -51,7 +51,7 @@ public class GPT {
             blk.attnK = newMatrix(nEmbd, nEmbd, rng);
             blk.attnV = newMatrix(nEmbd, nEmbd, rng);
             blk.attnProj = newMatrix(nEmbd, nEmbd, rng);
-            blk.mlpFC = newMatrix(4 * nEmbd, nEmbd, rng);
+            blk.mlpFc = newMatrix(4 * nEmbd, nEmbd, rng);
             blk.mlpProj = newMatrix(nEmbd, 4 * nEmbd, rng);
             blocks.add(blk);
         }
@@ -70,8 +70,8 @@ public class GPT {
     }
 
     // 시퀀스 하나를 처리할 빈 캐시를 만든다.
-    public KVCache newCache() {
-        return new KVCache();
+    public KvCache newCache() {
+        return new KvCache();
     }
 
     // 행렬 w와 벡터 x의 곱을 계산한다.
@@ -131,7 +131,7 @@ public class GPT {
     // 토큰 하나를 받아 다음 토큰의 로짓을 계산한다.
     // 이전 위치의 K, V는 캐시에 쌓여 있으므로 현재 토큰은
     // 과거 위치만 참조하게 되고, causal 마스크가 따로 필요 없다.
-    public Value[] forward(int tokenId, int posId, KVCache cache) {
+    public Value[] forward(int tokenId, int posId, KvCache cache) {
         // 토큰 임베딩과 위치 임베딩을 더해 입력 벡터를 만든다
         Value[] x = new Value[nEmbd];
         for (int i = 0; i < nEmbd; i++) {
@@ -184,7 +184,7 @@ public class GPT {
 
             // 2) MLP 블록: 토큰별 특징을 4배 넓힌 뒤 비선형 변환하고 되돌린다
             xn = rmsnorm(x);
-            Value[] hidden = matvec(blk.mlpFC, xn);
+            Value[] hidden = matvec(blk.mlpFc, xn);
             for (int i = 0; i < hidden.length; i++) {
                 hidden[i] = hidden[i].tanh();
             }

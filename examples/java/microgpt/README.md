@@ -45,7 +45,7 @@ ara
 |------|------|
 | `Value.java` | 스칼라 자동미분 엔진. `Value` 클래스가 값, 기울기, 역전파 람다를 담는다. `backward()`는 연산 그래프를 위상 정렬한 뒤 체인 룰로 기울기를 전파한다. |
 | `Tokenizer.java` | 문자 단위 토크나이저. 소문자 알파벳 26자에 BOS 특수 토큰을 더해 어휘 크기 27을 만든다. |
-| `GPT.java` | GPT 모델. 토큰 임베딩 + 위치 임베딩, 멀티헤드(2 heads) causal self-attention, tanh MLP 블록, 잔차 연결, rmsnorm, 최종 lm_head. 크기는 n_embd 16, n_layer 1, block size 16. |
+| `Gpt.java` | GPT 모델. 토큰 임베딩 + 위치 임베딩, 멀티헤드(2 heads) causal self-attention, tanh MLP 블록, 잔차 연결, rmsnorm, 최종 lm_head. 크기는 n_embd 16, n_layer 1, block size 16. |
 | `Main.java` | 학습 루프(교차 엔트로피 손실, Adam 옵티마이저, 학습률 선형 감소)와 샘플링(BOS로 시작, temperature 0.8, BOS가 나오면 종료). |
 | `names.txt` | 학습 데이터. [makemore의 names.txt](https://github.com/karpathy/makemore) 앞 2000줄. |
 

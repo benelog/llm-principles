@@ -23,7 +23,7 @@ xvfb-run -a drawio --no-sandbox --export --format png --embed-diagram \
 | `ch02-context-window.drawio.png` | 2장 | 컨텍스트 윈도우의 구성 요소와 프롬프트 캐싱을 고려한 배치 규칙 |
 | `ch02-tool-loop.drawio.png` | 2장 | 도구 사용의 순환: 호출 생성 → 실행 → 결과를 토큰으로 추가 → 이어서 생성 |
 | `ch03-layer-map.drawio.png` | 1~3장 | 정보 레이어 지도: 컨텍스트 공급 → 프롬프트 → 모델 실행 → 디코딩, 회색지대 포함 |
-| `ch04-microgpt-flow.drawio.png` | 4장 | microGPT 예제의 전체 흐름: Main의 학습 루프와 생성 루프, Tokenizer의 encode·decode, GPT.forward 내부 단계, Value의 연산 기록과 backward()를 메서드 이름으로 연결 |
+| `ch04-microgpt-flow.drawio.png` | 4장 | microGPT 예제의 전체 흐름: Main의 학습 루프와 생성 루프, Tokenizer의 encode·decode, Gpt.forward 내부 단계, Value의 연산 기록과 backward()를 메서드 이름으로 연결 |
 | `ch05-gpt-forward.drawio.png` | 5장 | GPT forward 계산: 임베딩 → 어텐션(Q·K·V) → MLP → 잔차 → 로짓 → 샘플링 루프 |
 | `ch05-training-loop.drawio.png` | 5장 | 학습 루프 다섯 단계: 샘플 → forward → 손실 → 역전파 → 옵티마이저 |
 | `ch06-prefill-decode.drawio.png` | 6장 | 프리필(병렬)과 디코드(순차)의 비대칭, KV 캐시 · 프롬프트 캐싱 · 배칭 |

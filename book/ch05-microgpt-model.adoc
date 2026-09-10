@@ -20,7 +20,7 @@ image::diagrams/ch05-gpt-forward.drawio.png[입력 토큰부터 샘플링까지�
 
 [source,java]
 ----
-include::../examples/java/microgpt/GPT.java[tag=attention,indent=0]
+include::../examples/java/microgpt/Gpt.java[tag=attention,indent=0]
 ----
 
 각 토큰은 자신의 벡터에서 세 가지 벡터를 만든다. 쿼리(query)는 "내가 찾는 것", 키(key)는 "내가 제공하는 것의 색인", 밸류(value)는 "내가 제공하는 내용"이다. 현재 토큰의 쿼리를 앞선 토큰들의 키와 내적해서 "어느 토큰을 얼마나 참고할지" 점수를 매기고, softmax로 정규화한 가중치로 밸류들을 섞어 온다.
@@ -39,7 +39,7 @@ include::../examples/java/microgpt/GPT.java[tag=attention,indent=0]
 
 [source,java]
 ----
-include::../examples/java/microgpt/GPT.java[tags=forward;!attention,indent=0]
+include::../examples/java/microgpt/Gpt.java[tags=forward;!attention,indent=0]
 ----
 
 마지막의 `lmHead` 투영이 임베딩 차원의 벡터를 어휘 크기(27)의 로짓으로 바꾼다. 이 로짓이 4장에서 말한 "다음 토큰의 확률 분포"의 재료다.
