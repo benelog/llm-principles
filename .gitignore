@@ -1,6 +1,5 @@
 # 빌드 산출물
 examples/spring-ai/target/
-examples/math-lab/go/mathlab
 examples/math-lab/java/build/
 examples/math-lab/java/.gradle/
 book/*.html
