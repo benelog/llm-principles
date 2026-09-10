@@ -25,11 +25,12 @@ book/                  AsciiDoc 원고 (4개 부, 13개 장)
   ch12-rag-tuning.adoc             4부 12장. 성능 진단과 개선 우선순위
   ch13-rag-frontier.adoc           4부 13장. RAG의 경계: 긴 컨텍스트와 에이전틱 검색
 examples/
-  go/microgpt/         microGPT의 Go 포팅 (자동 미분, GPT 학습과 추론)
-  go/serving/          프리필·디코드와 KV 캐시의 추론 비용 구조 측정
-  go/safetensors/      safetensors 파일을 만들고 읽는 파서
-  go/bpe/              BPE 토크나이저의 병합 학습과 인코딩
-  go/minirag/          청킹, BM25, 벡터 검색, RRF 하이브리드 검색
+  java/microgpt/       microGPT의 자바 포팅 (자동 미분, GPT 학습과 추론)
+  java/serving/        프리필·디코드와 KV 캐시의 추론 비용 구조 측정
+  java/safetensors/    safetensors 파일을 만들고 읽는 파서
+  java/quantize/       선형 양자화, 블록 배율, 정규 분포 격자의 오차 측정
+  java/bpe/            BPE 토크나이저의 병합 학습과 인코딩
+  java/minirag/        청킹, BM25, 벡터 검색, RRF 하이브리드 검색
   spring-ai/           Spring AI RAG 파이프라인과 디코딩 파라미터 제어
 ```
 
@@ -46,15 +47,18 @@ asciidoctor book.adoc          # book.html 생성
 
 ## 예제 실행
 
-Go 예제는 표준 라이브러리만 사용하므로 Go만 있으면 됩니다.
+`examples/java/` 아래 예제는 JDK 표준 라이브러리만 사용하므로 JDK 22 이상만 있으면 빌드 도구 없이 실행됩니다.
 
 ```bash
-cd examples/go/microgpt && go run .      # 이름 생성 GPT 학습 (약 20초)
-cd examples/go/serving && go run .       # KV 캐시·프리필 비용 측정 (약 10초)
-cd examples/go/safetensors && go run .   # safetensors 쓰기/읽기
-cd examples/go/bpe && go run .           # BPE 병합 학습과 인코딩
-cd examples/go/minirag && go run .       # 하이브리드 검색 파이프라인
+cd examples/java/microgpt && java Main.java      # 이름 생성 GPT 학습 (약 10초)
+cd examples/java/serving && java Main.java       # KV 캐시·프리필 비용 측정 (약 3초)
+cd examples/java/safetensors && java Main.java   # safetensors 쓰기/읽기
+cd examples/java/quantize && java Main.java      # 양자화 오차 측정
+cd examples/java/bpe && java Main.java           # BPE 병합 학습과 인코딩
+cd examples/java/minirag && java Main.java       # 하이브리드 검색 파이프라인
 ```
+
+JDK 21에서는 `javac -d out *.java && java -cp out Main`으로 실행합니다.
 
 Spring AI 예제는 JDK 21 이상과 Maven이 필요하며, 임베딩 모델이 라이브러리에 내장되어 있어 API 키 없이 실행됩니다.
 

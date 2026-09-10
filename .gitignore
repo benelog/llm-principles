@@ -6,7 +6,7 @@ examples/math-lab/java/.gradle/
 book/*.html
 
 # 예제 실행 시 생성되는 파일
-examples/go/safetensors/model.safetensors
+examples/java/safetensors/model.safetensors
 
 # IDE 설정
 .idea/

@@ -62,7 +62,7 @@ include::../examples/spring-ai/src/main/java/com/example/springai/RagExample.jav
 include::../examples/spring-ai/src/main/java/com/example/springai/RagExample.java[tag=retrieval,indent=0]
 ----
 
-검색 결과로 프롬프트를 조립하는 구조는 Go 예제와 같다.
+검색 결과로 프롬프트를 조립하는 구조는 10장의 예제와 같다.
 
 [source,java]
 ----

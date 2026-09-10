@@ -25,6 +25,9 @@
 * "Scaling Laws for Neural Language Models" (Kaplan 외, 2020, https://arxiv.org/abs/2001.08361)와 "Training Compute-Optimal Large Language Models" (Hoffmann 외, 2022, https://arxiv.org/abs/2203.15556): 부록 수학·통계 기초에서 소개한 스케일링 법칙의 원 논문들이다. 후자(Chinchilla)가 파라미터당 토큰 수의 균형점을 제시했고, 1장 규모의 감각의 배경이 된다.
 * "LoRA: Low-Rank Adaptation of Large Language Models" (Hu 외, 2021, https://arxiv.org/abs/2106.09685)와 "QLoRA: Efficient Finetuning of Quantized LLMs" (Dettmers 외, 2023, https://arxiv.org/abs/2305.14314): 3장에서 회색지대로 분류한 PEFT의 근거 논문들이다.
 * "Chain-of-Thought Prompting Elicits Reasoning in Large Language Models" (Wei 외, 2022, https://arxiv.org/abs/2201.11903): 2장의 추론 패턴 유도가 처음 정리된 논문이다.
+* "Lost in the Middle: How Language Models Use Long Contexts" (Liu 외, 2023, https://arxiv.org/abs/2307.03172): 긴 컨텍스트의 중간에 놓인 정보의 활용도가 떨어지는 U자형 곡선을 측정한 논문. 2장과 12장 논의의 근거다.
+* https://www.trychroma.com/research/context-rot[Context Rot: How Increasing Input Tokens Impacts LLM Performance] (Hong 외, Chroma, 2025): 입력 길이가 늘어날수록 성능이 불안정해지는 현상을 18개 모델에서 측정한 기술 보고서. 2장에서 소개한 컨텍스트 부패라는 이름의 출처다.
+* "NoLiMa: Long-Context Evaluation Beyond Literal Matching" (Modarressi 외, 2025, https://arxiv.org/abs/2502.05167): 질문과 정답의 표면 문자열 일치를 제거한 긴 컨텍스트 벤치마크. 2장에서 인용한 32K 토큰에서의 성능 하락을 측정했다.
 * "Locating and Editing Factual Associations in GPT" (Meng 외, 2022, https://arxiv.org/abs/2202.05262): 1장에서 소개한 모델 편집(ROME)의 원 논문이다.
 * "Distilling the Knowledge in a Neural Network" (Hinton 외, 2015, https://arxiv.org/abs/1503.02531): 1장 지식 증류의 출발점이 된 논문이다.
 * https://modelcontextprotocol.io[Model Context Protocol]: 2장에서 다룬 MCP의 공식 명세와 문서.
@@ -62,9 +65,8 @@
 * "Efficient and robust approximate nearest neighbor search using Hierarchical Navigable Small World graphs" (Malkov, Yashunin, 2016, https://arxiv.org/abs/1603.09320): 10장에서 언급한 Vector DB 대부분이 쓰는 HNSW 인덱스의 원 논문이다.
 * "Reciprocal Rank Fusion outperforms Condorcet and individual Rank Learning Methods" (Cormack 외, SIGIR 2009, https://plg.uwaterloo.ca/~gvcormac/cormacksigir09-rrf.pdf): 10장 하이브리드 융합에 사용한 RRF의 원 논문이다.
 * "Precise Zero-Shot Dense Retrieval without Relevance Labels" (Gao 외, 2022, https://arxiv.org/abs/2212.10496): 11장 쿼리 처리에서 소개한 HyDE의 원 논문이다.
-* "Lost in the Middle: How Language Models Use Long Contexts" (Liu 외, 2023, https://arxiv.org/abs/2307.03172): 긴 컨텍스트 중간에 놓인 정보의 활용도가 떨어진다는 사실을 측정한 논문. 13장 논의의 근거다.
 * https://www.anthropic.com/news/contextual-retrieval[Introducing Contextual Retrieval] (Anthropic, 2024): 청킹으로 잘린 조각이 문맥을 잃는 문제(11장, 12장)에 대한 실무 해법을 측정 결과와 함께 제시한다.
 * https://huggingface.co/spaces/mteb/leaderboard[MTEB 리더보드]: 임베딩 모델의 다국어 벤치마크 순위. 11장에서 다룬 임베딩 모델 선택의 출발점으로, 한국어 태스크 필터를 걸어 비교할 수 있다.
 * https://docs.ragas.io[Ragas]: 12장의 평가셋 절에서 언급한 RAG 평가 프레임워크의 공식 문서.
 * https://github.com/bab2min/Kiwi[Kiwi]: 오픈소스 한국어 형태소 분석기. 11장에서 다룬 형태소 분석과 사용자 사전을 Elasticsearch(Nori) 밖의 환경에서 실험해 볼 수 있다.
-* https://docs.spring.io/spring-ai/reference/[Spring AI 레퍼런스 문서]: 이 책의 자바 예제(1부, 4부)가 사용한 프레임워크의 공식 문서.
+* https://docs.spring.io/spring-ai/reference/[Spring AI 레퍼런스 문서]: 이 책의 Spring AI 예제(1부, 4부)가 사용한 프레임워크의 공식 문서.

@@ -11,18 +11,18 @@
 
 BPE(Byte Pair Encoding)는 두 극단 사이의 답이다. 문자 단위에서 출발하되, 코퍼스에서 자주 함께 나타나는 인접 토큰 쌍을 병합해서 새 토큰으로 등록하는 일을 원하는 어휘 크기가 될 때까지 반복한다. 자주 나오는 단어는 토큰 하나로 압축되고, 처음 보는 단어도 문자 조합으로 표현할 수 있다.
 
-알고리즘이 얼마나 단순한지는 구현이 보여 준다. 이 절의 코드는 ``examples/go/bpe``에 있으며 표준 라이브러리만으로 동작한다.
+알고리즘이 얼마나 단순한지는 구현이 보여 준다. 이 절의 코드는 ``examples/java/bpe``에 있으며 표준 라이브러리만으로 동작한다.
 
-[source,go]
+[source,java]
 ----
-include::../examples/go/bpe/main.go[tag=train,indent=0]
+include::../examples/java/bpe/Main.java[tag=train,indent=0]
 ----
 
 인코딩은 학습의 재생이다. 새 텍스트를 문자 단위로 쪼갠 뒤, 학습 때 기록한 병합 규칙을 같은 순서로 적용한다.
 
-[source,go]
+[source,java]
 ----
-include::../examples/go/bpe/main.go[tag=encode,indent=0]
+include::../examples/java/bpe/Main.java[tag=encode,indent=0]
 ----
 
 작은 한국어 코퍼스로 12번 병합을 학습시키면 다음과 같은 결과가 나온다. 공백은 SentencePiece 방식대로 `▁` 문자로 바꿔서 병합에 참여시켰다.
