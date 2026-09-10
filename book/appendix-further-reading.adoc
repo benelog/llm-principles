@@ -34,7 +34,7 @@
 
 == 2부: 동작 원리와 추론 서빙
 
-* https://karpathy.github.io/2026/02/12/microgpt/[microgpt] (Andrej Karpathy, 2026): 이 책 2부의 바탕이 된 원문 포스트. 원본 파이썬 코드는 https://gist.github.com/karpathy/8627fe009c40f57531cb18360106ce95[gist]에 있다. Go 포팅과 원본을 나란히 읽으면 두 언어의 표현 차이까지 보인다.
+* https://karpathy.github.io/2026/02/12/microgpt/[microgpt] (Andrej Karpathy, 2026): 이 책 2부의 바탕이 된 원문 포스트. 원본 파이썬 코드는 https://gist.github.com/karpathy/8627fe009c40f57531cb18360106ce95[gist]에 있다. 자바 포팅과 원본을 나란히 읽으면 두 언어의 표현 차이까지 보인다.
 * https://github.com/karpathy/nanoGPT[nanoGPT] (Andrej Karpathy): microGPT 다음 단계로 알맞은 프로젝트. PyTorch와 GPU로 GPT-2를 재현하는 최소 구현이다.
 * "Attention Is All You Need" (Vaswani 외, 2017, https://arxiv.org/abs/1706.03762): 트랜스포머를 제안한 원 논문. 5장에서 구현한 어텐션의 출처다.
 * "Language Models are Unsupervised Multitask Learners" (Radford 외, 2019, https://cdn.openai.com/better-language-models/language_models_are_unsupervised_multitask_learners.pdf): GPT-2 논문. 5장 마지막에서 microGPT와 프로덕션 LLM을 비교할 때의 기준 아키텍처다.
