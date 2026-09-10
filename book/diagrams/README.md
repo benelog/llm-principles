@@ -37,6 +37,18 @@ xvfb-run -a drawio --no-sandbox --export --format png --embed-diagram \
 | `ch07-data-directions.drawio.png` | 7장 | 주성분 분석, 판별 분석, k-평균 군집화를 2차원 산점도로 비교 |
 | `ch07-token-mdp.drawio.png` | 7장 | 토큰 생성을 마르코프 결정 과정으로: 상태·행동·보상·정책의 대응과 벨만 방정식 |
 | `ch07-saturation-error.drawio.png` | 7장 | BM25의 빈도 포화 곡선과 평가셋 문항 수에 따른 표준 오차 곡선 |
+| `ch07-nonlinearity.drawio.png` | 7장 | 비선형 함수의 역할: 행렬 곱 두 번은 직선 하나, 사이에 tanh를 끼우면 곡선 |
+| `ch07-prefill-decode-matmul.drawio.png` | 7장 | 프리필의 행렬×행렬(Q Kᵀ)과 디코드의 벡터×행렬(q Kᵀ) 비교, 6장 병목 비대칭과의 연결 |
+| `ch07-conditioning-levels.drawio.png` | 7장 | 조건 유지의 정도: LLM(모든 앞 토큰), n-gram(직전 두 토큰), 나이브 베이즈(순서 없는 단어 집합) |
+| `ch07-sampling-cutoff.drawio.png` | 7장 | 샘플링과 후보 제한: 누적 확률 막대 위의 난수, top-k와 top-p의 꼬리 자르기와 재정규화 |
+| `ch07-entropy-perplexity.drawio.png` | 7장 | 엔트로피와 perplexity: 확신하는 분포, 예제 분포, 균등 분포의 비교 |
+| `ch07-kl-penalty.drawio.png` | 7장 | KL 발산의 항별 기여와 비대칭, RLHF의 보상 − β·KL 목적 함수 |
+| `ch07-gradient-contour.drawio.png` | 7장 | 그래디언트와 등고선: x² + 4y²의 타원 등고선 위의 그래디언트 화살표와 경사 하강 경로의 지그재그 |
+| `ch07-variance-norm.drawio.png` | 7장 | 값의 규모 관리: 블록을 지날수록 폭주·소멸하는 표준편차와 RMSNorm, sqrt(d) 스케일링 전후의 점수 분포 |
+| `ch07-eigenvector.drawio.png` | 7장 | 고유벡터: [[2, 1], [1, 2]]가 단위 벡터 8개를 변환할 때 방향을 유지하는 두 방향 |
+| `ch07-markov-bigram.drawio.png` | 7장 | 마르코프 체인: 이름 데이터에서 센 글자 a의 전이 확률 그래프와 LLM의 상태(토큰 열 전체) |
+| `ch07-scaling-law.drawio.png` | 7장 | 스케일링 법칙: 보통 축과 로그-로그 축의 초과 손실 곡선, 작은 모델에서 큰 모델로의 외삽 |
+| `ch07-ttest-overlap.drawio.png` | 7장 | 독립표본과 대응표본: 79%와 83% 분포의 겹침, 질문별 점수 차이가 일정한 대응표본 |
 | `ch08-model-repo.drawio.png` | 8~9장 | 모델 저장소 파일과 레이어 대응, safetensors 내부 구조 |
 | `ch10-chat-template.drawio.png` | 10장 | 채팅 템플릿: 메시지 배열이 단일 토큰 열로 직렬화되는 과정과 불일치 장애 |
 | `ch11-rag-pipeline.drawio.png` | 11장 | RAG 파이프라인: 인덱싱 시점과 질의 시점, 하이브리드 검색과 RRF · rerank |

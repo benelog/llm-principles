@@ -68,6 +68,29 @@ public final class LinearAlgebra {
         c.ok("lmHead 투영의 출력 길이", logits.getDimension() == 3, "임베딩 4차원 → 로짓 3개");
         // 세 번째 행은 모든 성분의 절반을 더한 것이므로 (0.5-1+0.25+2)/2 = 0.875다.
         c.near("행렬 곱이 섞은 결과", 0.875, logits.getEntry(2), 1e-12);
+
+        // 7장: 행렬 곱 두 개를 이어 붙인 W2(W1 x)는 하나의 행렬 (W2 W1)을 곱한 것과 같다.
+        // 비선형 함수 없이는 층을 쌓아도 표현력이 늘지 않는 이유다.
+        RealMatrix w1 = MatrixUtils.createRealMatrix(new double[][] {{2, 0}, {1, 1}});
+        RealMatrix w2 = MatrixUtils.createRealMatrix(new double[][] {{1, 1}, {0, 2}});
+        RealVector in = new ArrayRealVector(new double[] {1, 2});
+        RealMatrix combined = w2.multiply(w1);
+        c.near("W2 W1의 (0,0) 성분", 3, combined.getEntry(0, 0), 1e-12);
+        c.near("W2 W1의 (1,1) 성분", 2, combined.getEntry(1, 1), 1e-12);
+        c.near("W2(W1 x)의 첫 성분", 5, w2.operate(w1.operate(in)).getEntry(0), 1e-12);
+        c.near("(W2 W1) x = W2(W1 x)", 0,
+                combined.operate(in).subtract(w2.operate(w1.operate(in))).getNorm(), 1e-12);
+
+        // 7장: 쿼리 T개를 쌓은 T×d 행렬 Q와 키 행렬 K의 곱 Q Kᵀ는 T×T 점수 행렬이고(프리필),
+        // 쿼리 하나짜리 디코드는 그 행렬의 한 행과 같다.
+        RealMatrix q = randomMatrix(rnd, 3, 4);
+        RealMatrix k = randomMatrix(rnd, 3, 4);
+        RealMatrix scores = q.multiply(k.transpose());
+        c.ok("Q Kᵀ의 크기는 T×T", scores.getRowDimension() == 3 && scores.getColumnDimension() == 3,
+                "3×4 곱하기 4×3 = 3×3");
+        RealVector decodeRow = k.operate(q.getRowVector(0)); // q Kᵀ = K q
+        c.near("디코드의 점수 벡터 = 프리필 점수 행렬의 한 행", 0,
+                decodeRow.subtract(scores.getRowVector(0)).getNorm(), 1e-12);
     }
 
     /** 7장 "랭크와 저랭크 근사"와 "주성분 분석" */
@@ -77,6 +100,14 @@ public final class LinearAlgebra {
         Random rnd = new Random(34);
         final int d = 6;
         final int r = 2;
+
+        // 7장: [[1, 2], [2, 4]]는 둘째 행이 첫째 행의 2배이므로 랭크 1이고,
+        // 2×1 행렬 [1, 2]ᵀ와 1×2 행렬 [1, 2]의 곱으로 정확히 복원된다.
+        RealMatrix rank1 = MatrixUtils.createRealMatrix(new double[][] {{1, 2}, {2, 4}});
+        c.ok("[[1,2],[2,4]]의 랭크", new SingularValueDecomposition(rank1).getRank() == 1, "랭크 1");
+        RealMatrix outer = MatrixUtils.createRealMatrix(new double[][] {{1}, {2}})
+                .multiply(MatrixUtils.createRealMatrix(new double[][] {{1, 2}}));
+        c.near("[1,2]ᵀ × [1,2]로 복원", 0, rank1.subtract(outer).getFrobeniusNorm(), 1e-12);
 
         // 7장: 랭크가 r이면 d×r 행렬과 r×d 행렬의 곱으로 정확히 표현할 수 있다.
         // LoRA의 ΔW = B×A가 정확히 이 형태다.
@@ -102,6 +133,21 @@ public final class LinearAlgebra {
         double relative = noisy.subtract(approx).getFrobeniusNorm() / noisy.getFrobeniusNorm();
         c.ok("상위 2개 특이값만 남긴 근사", relative < 0.05,
                 Checker.num(relative * 100) + "% 상대 오차");
+
+        // 7장: 공분산 행렬 [[2, 1], [1, 2]]의 고유값은 3과 1이고,
+        // 고유벡터는 [1, 1]과 [1, -1] 방향이다. 제1주성분이 전체 분산의 75%를 설명한다.
+        RealMatrix c22 = MatrixUtils.createRealMatrix(new double[][] {{2, 1}, {1, 2}});
+        EigenDecomposition eig22 = new EigenDecomposition(c22);
+        c.near("고유값 (큰 쪽)", 3, eig22.getRealEigenvalue(0), 1e-12);
+        c.near("고유값 (작은 쪽)", 1, eig22.getRealEigenvalue(1), 1e-12);
+        RealVector diag = new ArrayRealVector(new double[] {1, 1});
+        c.near("C × [1,1] = 3 × [1,1]", 0,
+                c22.operate(diag).subtract(diag.mapMultiply(3)).getNorm(), 1e-12);
+        RealVector anti = new ArrayRealVector(new double[] {1, -1});
+        c.near("C × [1,-1] = 1 × [1,-1]", 0, c22.operate(anti).subtract(anti).getNorm(), 1e-12);
+        c.near("제1주성분 방향이 [1,1]과 나란함", 1,
+                Math.abs(eig22.getEigenvector(0).cosine(diag)), 1e-9);
+        c.near("제1주성분의 설명 비율 75%", 0.75, 3.0 / (3 + 1), 1e-12);
 
         // 7장: 주성분 분석은 분산이 가장 큰 방향을 차례로 찾는다.
         // Commons Math에는 PCA가 없으므로 공분산 행렬의 고유분해로 직접 구한다.

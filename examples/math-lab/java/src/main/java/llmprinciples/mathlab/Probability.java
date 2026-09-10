@@ -1,6 +1,7 @@
 package llmprinciples.mathlab;
 
 import java.util.Arrays;
+import java.util.Random;
 
 /** 7장의 확률, softmax, 정보량 관련 절을 검산한다. */
 public final class Probability {
@@ -126,6 +127,40 @@ public final class Probability {
         c.ok("exp를 그대로 쓰면 값이 넘침", Double.isNaN(naive),
                 "exp(1002)가 무한대가 되어 NaN");
         c.near("최댓값을 빼면 원래 분포와 같음", 0.66, softmax(big, 1.0)[0], 5e-3);
+
+        // 7장: 로짓 [2.0, 1.0, 0.1]에서 최댓값을 뺀 [0, -1.0, -1.9]도 같은 softmax를 낸다.
+        double[] shifted = {0, -1.0, -1.9};
+        boolean same = true;
+        for (int i = 0; i < 3; i++) {
+            if (Math.abs(softmax(shifted, 1.0)[i] - p[i]) > 1e-12) {
+                same = false;
+            }
+        }
+        c.ok("softmax(z - c) = softmax(z)", same, "[0, -1.0, -1.9]와 [2.0, 1.0, 0.1]의 softmax가 같음");
+        c.ok("exp(710)은 배정밀도 상한을 넘음", Double.isInfinite(Math.exp(710)),
+                "Double.MAX_VALUE = " + Double.MAX_VALUE);
+
+        // 7장: 샘플링은 난수 하나를 뽑고 누적합이 난수를 넘어서는 첫 토큰을 고른다.
+        // 누적합은 [0.66, 0.90, 1.00]이고, 난수 0.75는 둘째 토큰, 0.30은 첫째 토큰을 고른다.
+        double[] cumulative = new double[3];
+        cumulative[0] = p[0];
+        for (int i = 1; i < 3; i++) {
+            cumulative[i] = cumulative[i - 1] + p[i];
+        }
+        c.near("누적합 둘째 값", 0.90, cumulative[1], 5e-3);
+        c.near("누적합 마지막 값", 1.0, cumulative[2], 1e-12);
+        c.ok("난수 0.75 → 둘째 토큰", sampleFrom(p, 0.75) == 1, "0.66 < 0.75 ≤ 0.90");
+        c.ok("난수 0.30 → 첫째 토큰", sampleFrom(p, 0.30) == 0, "0.30 ≤ 0.66");
+
+        // 7장: 확률 0.66인 토큰은 100번 중 66번쯤 뽑히고, 0.10인 토큰도 10번쯤은 뽑힌다.
+        Random rnd = new Random(2122);
+        int[] counts = new int[3];
+        final int draws = 100000;
+        for (int i = 0; i < draws; i++) {
+            counts[sampleFrom(p, rnd.nextDouble())]++;
+        }
+        c.near("10만 번 뽑았을 때 1위 토큰의 비율", p[0], counts[0] / (double) draws, 5e-3);
+        c.near("10만 번 뽑았을 때 3위 토큰의 비율", p[2], counts[2] / (double) draws, 5e-3);
     }
 
     /** 7장 "로그: 곱을 합으로"와 "최대 우도와 교차 엔트로피" */
@@ -188,6 +223,35 @@ public final class Probability {
         // 정답이 한 토큰에 확률 1을 주는 경우 교차 엔트로피는 -log(그 토큰의 확률)이다.
         c.near("정답이 확실할 때의 교차 엔트로피", -Math.log(0.5),
                 crossEntropy(new double[] {0, 1, 0}, new double[] {0.2, 0.5, 0.3}), 1e-12);
+
+        // 7장: softmax와 교차 엔트로피를 함께 쓰면 손실을 로짓으로 미분한 결과가
+        // "예측 확률 - 정답"이다. 로짓 [2.0, 1.0, 0.1], 정답이 첫째 토큰이면
+        // 손실은 -ln(0.66) ≈ 0.42이고 기울기는 [-0.34, 0.24, 0.10]이다.
+        double[] logits = {2.0, 1.0, 0.1};
+        double[] probs = softmax(logits, 1.0);
+        double[] target = {1, 0, 0};
+        c.near("정답이 첫째 토큰일 때의 손실", 0.42, -Math.log(probs[0]), 5e-3);
+        double[] analytic = new double[3];
+        double gradSum = 0;
+        boolean matches = true;
+        for (int i = 0; i < 3; i++) {
+            analytic[i] = probs[i] - target[i];
+            gradSum += analytic[i];
+            // 수치 미분: 로짓 하나를 아주 조금 움직여 손실의 변화율을 잰다.
+            double[] plus = logits.clone();
+            double[] minus = logits.clone();
+            plus[i] += 1e-6;
+            minus[i] -= 1e-6;
+            double numeric = (-Math.log(softmax(plus, 1.0)[0]) + Math.log(softmax(minus, 1.0)[0])) / 2e-6;
+            if (Math.abs(numeric - analytic[i]) > 1e-6) {
+                matches = false;
+            }
+        }
+        c.near("정답 로짓의 기울기 (0.66 - 1)", -0.34, analytic[0], 5e-3);
+        c.near("둘째 로짓의 기울기 (0.24 - 0)", 0.24, analytic[1], 5e-3);
+        c.near("셋째 로짓의 기울기 (0.10 - 0)", 0.10, analytic[2], 5e-3);
+        c.ok("기울기 = 예측 확률 - 정답 (수치 미분과 일치)", matches, "세 성분 모두 1e-6 안에서 일치");
+        c.near("기울기 성분의 합은 0", 0, gradSum, 1e-12);
     }
 
     /** 7장 "엔트로피와 perplexity" */
@@ -288,6 +352,18 @@ public final class Probability {
         double[] out = Arrays.stream(scaled).map(v -> Math.exp(v - max)).toArray();
         double sum = Arrays.stream(out).sum();
         return Arrays.stream(out).map(v -> v / sum).toArray();
+    }
+
+    /** 누적합이 난수 r을 넘어서는 첫 토큰의 번호를 돌려준다. 5장 Main.sampleFrom과 같은 절차다. */
+    static int sampleFrom(double[] probs, double r) {
+        double acc = 0;
+        for (int i = 0; i < probs.length; i++) {
+            acc += probs[i];
+            if (r < acc) {
+                return i;
+            }
+        }
+        return probs.length - 1;
     }
 
     /** 확률 분포의 엔트로피. Commons Math에는 없으므로 정의 그대로 구현한다. */

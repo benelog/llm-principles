@@ -51,6 +51,35 @@ public final class Calculus {
         }
         c.ok("학습률 1.1의 발산 경로", badMatches, "3 → -3.6 → 4.32 → -5.18");
 
+        // 7장: 한 스텝의 갱신식은 x - 학습률 * 2x = (1 - 2 * 학습률) * x다.
+        // 학습률 0.1이면 매 스텝 0.8배, 1.1이면 -1.2배가 된다.
+        c.near("학습률 0.1의 스텝 배율", 0.8, 1 - 2 * 0.1, 1e-12);
+        c.near("학습률 1.1의 스텝 배율", -1.2, 1 - 2 * 1.1, 1e-12);
+        c.near("10스텝 뒤의 x = 3 × 배율^10", 3 * Math.pow(0.8, 10), 3 * Math.pow(1 - 2 * 0.1, 10), 1e-12);
+        c.ok("배율의 절댓값이 1보다 작아야 수렴", Math.abs(1 - 2 * 0.1) < 1 && Math.abs(1 - 2 * 1.1) > 1,
+                "|0.8| < 1, |-1.2| > 1");
+
+        // 7장: Adam의 첫 스텝. β1 = 0.9, β2 = 0.95이면 m = 0.1g, v = 0.05g²이고,
+        // 보정하면 m̂ = g, v̂ = g²라서 갱신량이 기울기 크기와 무관하게 학습률 × (g의 부호)가 된다.
+        // 보정이 없으면 0.1g / sqrt(0.05g²) ≈ 0.45배로 작다.
+        final double beta1 = 0.9;
+        final double beta2 = 0.95;
+        final double lr = 0.01;
+        boolean signOnly = true;
+        for (double grad : new double[] {0.001, -0.5, 3.0, -200.0}) {
+            double m = (1 - beta1) * grad;
+            double v = (1 - beta2) * grad * grad;
+            double mHat = m / (1 - beta1);
+            double vHat = v / (1 - beta2);
+            double update = lr * mHat / (Math.sqrt(vHat) + 1e-8);
+            if (Math.abs(update - lr * Math.signum(grad)) > 1e-4 * lr) { // ε 때문에 아주 작은 기울기에서 미세하게 어긋난다
+                signOnly = false;
+            }
+        }
+        c.ok("Adam 첫 스텝의 갱신량 = 학습률 × 부호", signOnly,
+                "기울기 0.001, -0.5, 3, -200 모두 ±학습률만큼 이동");
+        c.near("보정 없는 첫 스텝의 배율", 0.45, (1 - beta1) / Math.sqrt(1 - beta2), 5e-3);
+
         // Commons Math의 DerivativeStructure는 4장의 autograd와 같은 자동 미분이다.
         // 값과 함께 도함수를 들고 다니면서 연산할 때마다 체인 룰을 적용한다.
         // 첫 번째 인자는 변수 개수, 두 번째는 미분 차수, 세 번째는 변수 번호, 네 번째는 값이다.

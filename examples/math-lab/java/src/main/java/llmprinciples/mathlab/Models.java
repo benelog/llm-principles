@@ -1,5 +1,12 @@
 package llmprinciples.mathlab;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import org.apache.commons.math3.linear.ArrayRealVector;
@@ -7,6 +14,8 @@ import org.apache.commons.math3.linear.LUDecomposition;
 import org.apache.commons.math3.linear.MatrixUtils;
 import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.linear.RealVector;
+import org.apache.commons.math3.stat.StatUtils;
+import org.apache.commons.math3.stat.correlation.Covariance;
 import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
 import org.apache.commons.math3.stat.regression.OLSMultipleLinearRegression;
 import org.apache.commons.math3.stat.regression.SimpleRegression;
@@ -41,6 +50,24 @@ public final class Models {
         c.near("회귀가 되찾은 기울기 a", 2.5, reg.getSlope(), 0.05);
         c.near("회귀가 되찾은 절편 b", -1, reg.getIntercept(), 0.1);
 
+        // 7장: 입력이 하나면 a = cov(x, y) / var(x), b = ȳ - a·x̄다.
+        // x = [1, 2, 3, 4], y = [2, 4, 5, 8]이면 cov = 2.375, var(x) = 1.25, a = 1.9, b = 0이다.
+        double[] sx = {1, 2, 3, 4};
+        double[] sy = {2, 4, 5, 8};
+        double covXy = new Covariance().covariance(sx, sy, false); // 개수로 나눈 공분산
+        double varX = StatUtils.populationVariance(sx);
+        double slope = covXy / varX;
+        double intercept = StatUtils.mean(sy) - slope * StatUtils.mean(sx);
+        c.near("cov(x, y)", 2.375, covXy, 1e-12);
+        c.near("var(x)", 1.25, varX, 1e-12);
+        c.near("닫힌 해의 기울기 a", 1.9, slope, 1e-12);
+        c.near("닫힌 해의 절편 b", 0, intercept, 1e-12);
+        SimpleRegression small = new SimpleRegression();
+        for (int i = 0; i < sx.length; i++) {
+            small.addData(sx[i], sy[i]);
+        }
+        c.near("닫힌 해 = 라이브러리의 최소제곱 해", small.getSlope(), slope, 1e-12);
+
         // 7장: "가장 잘 맞는"의 기준은 오차 제곱합을 최소로 만드는 것이다(최소제곱법).
         double base = sse(xs, ys, reg.getSlope(), reg.getIntercept());
         boolean worse = true;
@@ -51,6 +78,14 @@ public final class Models {
         }
         c.ok("계수를 흔들면 오차 제곱합이 늘어남", worse, "최소제곱 해가 맞음");
         c.near("잔차 제곱합이 라이브러리 값과 일치", reg.getSumSquaredErrors(), base, 1e-6);
+
+        // 7장: 시그모이드의 도함수는 sigmoid(z) * (1 - sigmoid(z))로, z = 0에서 0.25로 가장 크고
+        // 출력이 0이나 1에 가까워지면 0에 가까워진다.
+        c.near("z = 0에서의 도함수", 0.25, sigmoid(0) * (1 - sigmoid(0)), 1e-12);
+        double numericSlope = (sigmoid(1.3 + 1e-6) - sigmoid(1.3 - 1e-6)) / 2e-6;
+        c.near("도함수 공식 = 수치 미분 (z = 1.3)", numericSlope, sigmoid(1.3) * (1 - sigmoid(1.3)), 1e-6);
+        c.ok("출력이 극단에 가까우면 기울기가 사라짐", sigmoid(8) * (1 - sigmoid(8)) < 1e-3,
+                "z = 8에서 " + Checker.num(sigmoid(8) * (1 - sigmoid(8))));
 
         // 7장: 시그모이드는 선택지가 두 개일 때의 softmax와 같은 함수다.
         double z = 1.3;
@@ -163,6 +198,51 @@ public final class Models {
         // n단계 전이 확률은 전이 행렬의 n제곱이며, 중간 경로를 기억할 필요가 없다.
         c.near("2단계 전이 = 전이 행렬의 제곱", 0,
                 p.power(2).subtract(p.multiply(p)).getFrobeniusNorm(), 1e-12);
+
+        // 7장: 4장의 이름 2,000개에서 직전 글자가 a일 때의 전이 확률을 세면
+        // a는 2,289번 등장하고, 다음은 이름의 끝 0.32, n 0.14, r 0.10, l 0.09이다.
+        Path names = Paths.get("../../java/microgpt/names.txt");
+        if (Files.exists(names)) {
+            bigramAfterA(c, names);
+        } else {
+            c.note("names.txt를 찾지 못해 바이그램 검산을 건너뛴다: %s", names.toAbsolutePath());
+        }
+    }
+
+    /** 이름 목록에서 글자 a 다음에 오는 글자의 빈도를 세어 7장의 전이 확률표와 맞춰 본다. */
+    private static void bigramAfterA(Checker c, Path names) {
+        List<String> docs;
+        try {
+            docs = Files.readAllLines(names);
+        } catch (IOException e) {
+            c.note("names.txt를 읽지 못했다: %s", e.getMessage());
+            return;
+        }
+        Map<Character, Integer> next = new HashMap<>();
+        int total = 0;
+        for (String raw : docs) {
+            String name = raw.trim();
+            if (name.isEmpty()) {
+                continue;
+            }
+            String padded = name + "."; // 이름의 끝을 '.'으로 표시한다(microGPT의 BOS 역할)
+            for (int i = 0; i + 1 < padded.length(); i++) {
+                if (padded.charAt(i) == 'a') {
+                    next.merge(padded.charAt(i + 1), 1, Integer::sum);
+                    total++;
+                }
+            }
+        }
+        c.near("a의 등장 횟수", 2289, total, 0);
+        c.near("a 다음이 이름의 끝일 확률", 0.32, next.getOrDefault('.', 0) / (double) total, 5e-3);
+        c.near("a 다음이 n일 확률", 0.14, next.getOrDefault('n', 0) / (double) total, 5e-3);
+        c.near("a 다음이 r일 확률", 0.10, next.getOrDefault('r', 0) / (double) total, 5e-3);
+        c.near("a 다음이 l일 확률", 0.09, next.getOrDefault('l', 0) / (double) total, 5e-3);
+        double rowSum = 0;
+        for (int v : next.values()) {
+            rowSum += v / (double) total;
+        }
+        c.near("전이 확률표 한 줄의 합", 1, rowSum, 1e-12);
     }
 
     /** 7장 "강화학습과 벨만 방정식" */
@@ -256,6 +336,17 @@ public final class Models {
         c.near("N, D를 무한히 키운 극한이 바닥 E", 1.69, chinchillaLoss(1e30, 1e30), 1e-3);
         c.ok("바닥 아래로는 내려가지 않음", chinchillaLoss(1e12, 1e13) > 1.69,
                 "손실 " + Checker.num(chinchillaLoss(1e12, 1e13)));
+
+        // 7장: Chinchilla의 계수(E 1.69, A 406.4, B 410.7, α 0.34, β 0.28)를 넣으면
+        // 700억 파라미터를 1.4조 토큰으로 학습한 손실은 약 1.94, 70억이면 약 2.04다.
+        c.near("N = 700억, D = 1.4조의 손실", 1.94, chinchillaLoss(7e10, 1.4e12), 5e-3);
+        c.near("N = 70억, D = 1.4조의 손실", 2.04, chinchillaLoss(7e9, 1.4e12), 5e-3);
+
+        // 7장: α가 0.34이면 N을 10배 키울 때 A/N^α 항이 10^0.34 ≈ 2.2분의 1로 줄어든다.
+        c.near("N 10배당 둘째 항의 감소 배율", 2.2, Math.pow(10, 0.34), 5e-2);
+        double term1 = 406.4 / Math.pow(7e9, 0.34);
+        double term10 = 406.4 / Math.pow(7e10, 0.34);
+        c.near("70억→700억에서 A/N^α의 비율", Math.pow(10, 0.34), term1 / term10, 1e-9);
 
         // 7장: Chinchilla의 결론은 파라미터 1개당 약 20토큰이라는 균형점이었다.
         c.near("20B 파라미터에 맞는 토큰 수", 400e9, 20e9 * 20, 1);

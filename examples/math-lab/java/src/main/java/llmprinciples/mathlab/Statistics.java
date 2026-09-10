@@ -133,6 +133,18 @@ public final class Statistics {
         c.ok("항을 늘리면 정규 분포에 더 가까워짐", Math.abs(k48) < Math.abs(k12),
                 "12개 " + Checker.num(k12) + " → 48개 " + Checker.num(k48));
 
+        // 7장: 표준 정규 분포를 확률이 같은 16개 구간으로 나누면 0 근처 구간의 폭은
+        // 약 0.16이고 가장 바깥 경계는 ±1.53이라서 그 너머의 꼬리(각 6.25%)가 구간 하나에 담긴다.
+        double[] cuts = new double[15];
+        for (int i = 0; i < 15; i++) {
+            cuts[i] = n.inverseCumulativeProbability((i + 1) / 16.0);
+        }
+        c.near("0 근처 구간의 폭", 0.16, cuts[7] - cuts[6], 5e-3);
+        c.near("가장 바깥 경계", 1.53, cuts[14], 5e-3);
+        c.near("바깥 경계 너머의 꼬리 비율", 0.0625, 1 - n.cumulativeProbability(cuts[14]), 1e-9);
+        c.ok("경계 간격은 0에서 멀어질수록 넓어짐", cuts[14] - cuts[13] > cuts[7] - cuts[6],
+                "바깥 " + Checker.num(cuts[14] - cuts[13]) + " > 중앙 " + Checker.num(cuts[7] - cuts[6]));
+
         // 7장: 8장 NF4는 균등 간격 대신 정규 분포의 분위수에 격자를 배치해서
         // 같은 비트 수로 오차를 줄인다. 2비트(격자 4개)로 직접 비교한다.
         double[] sample = new double[20000];

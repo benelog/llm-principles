@@ -87,7 +87,13 @@ public final class SearchStats {
         double z = diff / seDiff;
         double pValue = 2 * (1 - new NormalDistribution(0, 1).cumulativeProbability(Math.abs(z)));
         c.ok("79% vs 83%는 유의하지 않음", pValue > 0.05, "p값 " + Checker.num(pValue));
-        c.note("z = %.3f로, 유의 판정선인 1.96에 못 미친다", z);
+        // 7장: 각 정확도의 표준 오차는 약 0.041과 0.038, 차이의 표준 오차는 약 0.055,
+        // t는 약 0.7로 2에 한참 못 미친다.
+        c.near("79%의 표준 오차", 0.041, Math.sqrt(0.79 * 0.21 / 100), 5e-4);
+        c.near("83%의 표준 오차", 0.038, Math.sqrt(0.83 * 0.17 / 100), 5e-4);
+        c.near("차이의 표준 오차", 0.055, seDiff, 5e-4);
+        c.near("t 통계량", 0.7, z, 5e-2);
+        c.note("t = %.3f로, 유의 판정선인 약 2에 못 미친다", z);
 
         // 7장: 대응표본 t-검정은 질문별 점수 차이를 먼저 구하고 그 평균이
         // 0에서 벗어났는지 본다. 질문 난이도가 만드는 흔들림이 상쇄되므로 더 민감하다.
