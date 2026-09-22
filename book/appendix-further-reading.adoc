@@ -13,8 +13,8 @@
 == 강의와 시각 자료
 
 * https://karpathy.ai/zero-to-hero.html[Neural Networks: Zero to Hero] (Andrej Karpathy): 자동 미분 엔진 micrograd에서 시작해 GPT-2 재현까지 코드를 직접 짜며 진행하는 영상 강의. 4장의 자동 미분과 5장의 아키텍처를 복습하는 데 가장 좋은 자료다.
-* https://www.3blue1brown.com/topics/neural-networks[3Blue1Brown: Neural networks]: 역전파와 트랜스포머 내부 동작을 애니메이션으로 시각화한 시리즈. 수식이 그림으로 어떻게 움직이는지 감각을 잡을 수 있다.
-* https://jalammar.github.io/illustrated-transformer/[The Illustrated Transformer] (Jay Alammar): 어텐션의 행렬 연산을 단계별 그림으로 풀어낸 글. 5장의 어텐션 코드와 나란히 놓고 보면 좋다.
+* https://www.3blue1brown.com/topics/neural-networks[3Blue1Brown: Neural networks]: 역전파와 트랜스포머 내부 동작을 애니메이션으로 시각화한 시리즈. 수식이 나타내는 계산을 그림으로 따라가며 이해할 수 있다.
+* https://jalammar.github.io/illustrated-transformer/[The Illustrated Transformer] (Jay Alammar): 어텐션의 행렬 연산을 단계별 그림으로 설명한 글. 5장의 어텐션 코드와 나란히 놓고 보면 좋다.
 
 == 1부: 정보 레이어
 
@@ -22,7 +22,7 @@
 * "Training language models to follow instructions with human feedback" (Ouyang 외, 2022, https://arxiv.org/abs/2203.02155): InstructGPT 논문. 1장의 감독형 미세조정과 선호 학습(RLHF)으로 이어지는 파이프라인의 원형이다.
 * "Direct Preference Optimization" (Rafailov 외, 2023, https://arxiv.org/abs/2305.18290): 별도의 보상 모델 없이 선호 데이터로 바로 학습하는 DPO를 제안한다. 1장 선호 학습의 후속 흐름이다.
 * "Proximal Policy Optimization Algorithms" (Schulman 외, 2017, https://arxiv.org/abs/1707.06347): RLHF에 주로 쓰이는 강화학습 알고리즘 PPO의 원 논문. 7장의 벨만 방정식 절과 이어진다.
-* "Scaling Laws for Neural Language Models" (Kaplan 외, 2020, https://arxiv.org/abs/2001.08361)와 "Training Compute-Optimal Large Language Models" (Hoffmann 외, 2022, https://arxiv.org/abs/2203.15556): 7장에서 소개한 스케일링 법칙의 원 논문들이다. 후자(Chinchilla)가 파라미터당 토큰 수의 균형점을 제시했고, 1장 규모의 감각의 배경이 된다.
+* "Scaling Laws for Neural Language Models" (Kaplan 외, 2020, https://arxiv.org/abs/2001.08361)와 "Training Compute-Optimal Large Language Models" (Hoffmann 외, 2022, https://arxiv.org/abs/2203.15556): 7장에서 소개한 스케일링 법칙의 원 논문들이다. 후자(Chinchilla)가 파라미터당 토큰 수의 균형점을 제시했고, 1장 "규모의 감각" 절의 배경이 된다.
 * "LoRA: Low-Rank Adaptation of Large Language Models" (Hu 외, 2021, https://arxiv.org/abs/2106.09685)와 "QLoRA: Efficient Finetuning of Quantized LLMs" (Dettmers 외, 2023, https://arxiv.org/abs/2305.14314): 3장에서 회색지대로 분류한 PEFT의 근거 논문들이다.
 * "Chain-of-Thought Prompting Elicits Reasoning in Large Language Models" (Wei 외, 2022, https://arxiv.org/abs/2201.11903): 2장의 추론 패턴 유도가 처음 정리된 논문이다.
 * "Lost in the Middle: How Language Models Use Long Contexts" (Liu 외, 2023, https://arxiv.org/abs/2307.03172): 긴 컨텍스트의 중간에 놓인 정보의 활용도가 떨어지는 U자형 곡선을 측정한 논문. 2장과 13장 논의의 근거다.
