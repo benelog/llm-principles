@@ -76,6 +76,9 @@ include::../examples/java/minirag/VectorIndex.java[tag=vector,indent=0]
 
 문제는 BM25 점수와 코사인 유사도의 단위가 다르다는 점이다. BM25 점수는 정해진 상한이 없고 코사인 유사도는 1을 넘지 않으므로, 그대로 더하면 값의 범위가 큰 쪽이 순위를 좌우한다. Reciprocal Rank Fusion(RRF)은 점수 대신 순위를 사용해서 이 문제를 피한다. 각 검색 결과에서 순위 r인 문서에 `1/(k+r)` 점을 주고 합산하면, 두 방식 모두에서 상위에 오른 문서가 최종 상위가 된다. 예제처럼 k=60이면 한쪽 목록에서만 1위인 문서는 1/61≈0.0164점을 받고, 두 목록에서 모두 2위인 문서는 2/62≈0.0323점을 받아 더 높은 순위에 오른다.
 
+.RRF로 두 검색 결과의 순위를 합치는 계산
+image::diagrams/ch11-rrf.drawio.png[BM25와 벡터 검색의 순위 목록에서 청크마다 1/(60+순위)를 합산해 최종 순위를 정하는 표,width=100%]
+
 [source,java]
 ----
 include::../examples/java/minirag/Rrf.java[tag=rrf,indent=0]
