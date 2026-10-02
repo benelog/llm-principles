@@ -64,4 +64,7 @@ xvfb-run -a drawio --no-sandbox --export --format png --embed-diagram \
 | `ch12-hierarchical-chunking.drawio.png` | 12장 | 계층적 청킹: 작은 청크로 검색하고 그 청크가 속한 절을 LLM에 넘기는 구조(휴가 규정 예제) |
 | `ch12-reranker.drawio.png` | 12장 | 바이 인코더와 크로스 인코더의 비교, 1차 검색 후 재순위로 후보를 좁히는 두 단계 검색 |
 | `ch13-diagnosis-flow.drawio.png` | 13장 | RAG 성능 진단 흐름: 평가셋 → 검색 실패 → 순위 실패 → 생성 실패, 개선 우선순위 |
+| `ch13-metrics.drawio.png` | 13장 | 단계별 지표의 계산: 정답 청크 순위로 구한 recall@3 · recall@20 · MRR과 주장 단위 faithfulness, 순위 실패와 검색 실패의 구분 |
 | `ch14-agentic-rag.drawio.png` | 14장 | 고정 파이프라인과 에이전틱 검색의 대비 |
+| `ch14-prompt-cache.drawio.png` | 14장 | RAG 구성(검색 결과, 문서 전체, 권한별 문서)에 따른 프롬프트 캐시 적중 범위 |
+| `ch14-rag-variants.drawio.png` | 14장 | GraphRAG, 계층 요약 인덱스, 구조화 데이터 라우팅의 구조와 겨냥하는 질문 |
