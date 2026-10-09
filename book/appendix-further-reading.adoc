@@ -1,19 +1,19 @@
 [appendix]
 = 더 읽을거리
 
-본문에서 다룬 주제를 더 깊이 파고들 때 출발점이 될 자료를 골라 정리했다. 각 항목에는 이 책의 어느 장과 이어지는지를 함께 적었다. 논문은 arXiv 링크를 기준으로 했으므로, 링크가 바뀌더라도 제목과 저자로 검색하면 찾을 수 있다.
+본문에서 다룬 주제를 더 깊이 공부할 때 출발점이 될 자료를 골라, 이 책의 어느 장과 이어지는지 함께 적었다. 논문은 arXiv 링크를 기준으로 했고, 링크가 바뀌어도 제목과 저자로 검색하면 찾을 수 있다.
 
 == 책
 
-* https://www.manning.com/books/build-a-large-language-model-from-scratch[_Build a Large Language Model (From Scratch)_] (Sebastian Raschka, Manning, 2024): PyTorch로 GPT를 바닥부터 구현하면서 사전학습과 파인튜닝까지 진행한다. 이 책의 2부에서 한 일을 파이썬 생태계에서 더 큰 규모로 반복해 보기에 가장 좋은 책이다. 한국어 번역서도 출간되어 있다.
+* https://www.manning.com/books/build-a-large-language-model-from-scratch[_Build a Large Language Model (From Scratch)_] (Sebastian Raschka, Manning, 2024): PyTorch로 GPT를 바닥부터 구현하고 사전학습과 파인튜닝까지 진행한다. 이 책 2부에서 한 일을 파이썬 생태계에서 더 큰 규모로 반복해 보기에 가장 좋다. 한국어 번역서도 나와 있다.
 * https://github.com/HandsOnLLM/Hands-On-Large-Language-Models[_Hands-On Large Language Models_] (Jay Alammar, Maarten Grootendorst, O'Reilly, 2024): 토큰화, 임베딩, 시맨틱 검색, 프롬프트 엔지니어링을 그림 중심으로 설명한다. 1부와 4부의 내용을 시각 자료로 보강하기에 알맞다.
-* https://huyenchip.com/books/[_AI Engineering_] (Chip Huyen, O'Reilly, 2025): 모델 선택, 평가, RAG와 파인튜닝 사이의 결정 같은 응용 관점의 주제를 폭넓게 다룬다. 1부의 레이어 분류와 13장의 평가 논의를 실무 의사결정으로 확장한다.
-* http://incompleteideas.net/book/the-book.html[_Reinforcement Learning: An Introduction_] (Richard S. Sutton, Andrew G. Barto, MIT Press, 2판 2018): 강화학습의 표준 교과서로, 저자 사이트에서 무료로 읽을 수 있다. 7장에서 소개한 벨만 방정식과 가치 함수, 그리고 1장의 RLHF·RLVR이 서 있는 이론적 바탕을 다룬다.
+* https://huyenchip.com/books/[_AI Engineering_] (Chip Huyen, O'Reilly, 2025): 모델 선택, 평가, RAG와 파인튜닝 사이의 결정 같은 응용 주제를 폭넓게 다룬다. 1부의 레이어 분류와 13장의 평가 논의를 실무 의사결정으로 확장한다.
+* http://incompleteideas.net/book/the-book.html[_Reinforcement Learning: An Introduction_] (Richard S. Sutton, Andrew G. Barto, MIT Press, 2판 2018): 강화학습의 표준 교과서로, 저자 사이트에서 무료로 읽을 수 있다. 7장에서 소개한 벨만 방정식과 가치 함수, 1장의 RLHF·RLVR의 이론적 바탕을 다룬다.
 
 == 강의와 시각 자료
 
 * https://karpathy.ai/zero-to-hero.html[Neural Networks: Zero to Hero] (Andrej Karpathy): 자동 미분 엔진 micrograd에서 시작해 GPT-2 재현까지 코드를 직접 짜며 진행하는 영상 강의. 4장의 자동 미분과 5장의 아키텍처를 복습하는 데 가장 좋은 자료다.
-* https://www.3blue1brown.com/topics/neural-networks[3Blue1Brown: Neural networks]: 역전파와 트랜스포머 내부 동작을 애니메이션으로 시각화한 시리즈. 수식이 나타내는 계산을 그림으로 따라가며 이해할 수 있다.
+* https://www.3blue1brown.com/topics/neural-networks[3Blue1Brown: Neural networks]: 역전파와 트랜스포머 내부 동작을 애니메이션으로 시각화한 시리즈. 수식이 나타내는 계산을 그림으로 따라갈 수 있다.
 * https://jalammar.github.io/illustrated-transformer/[The Illustrated Transformer] (Jay Alammar): 어텐션의 행렬 연산을 단계별 그림으로 설명한 글. 5장의 어텐션 코드와 나란히 놓고 보면 좋다.
 
 == 1부: 정보 레이어
@@ -25,7 +25,7 @@
 * "Scaling Laws for Neural Language Models" (Kaplan 외, 2020, https://arxiv.org/abs/2001.08361)와 "Training Compute-Optimal Large Language Models" (Hoffmann 외, 2022, https://arxiv.org/abs/2203.15556): 7장에서 소개한 스케일링 법칙의 원 논문들이다. 후자(Chinchilla)가 파라미터당 토큰 수의 균형점을 제시했고, 1장 "규모의 감각" 절의 배경이 된다.
 * "LoRA: Low-Rank Adaptation of Large Language Models" (Hu 외, 2021, https://arxiv.org/abs/2106.09685)와 "QLoRA: Efficient Finetuning of Quantized LLMs" (Dettmers 외, 2023, https://arxiv.org/abs/2305.14314): 3장에서 회색지대로 분류한 PEFT의 근거 논문들이다.
 * "Chain-of-Thought Prompting Elicits Reasoning in Large Language Models" (Wei 외, 2022, https://arxiv.org/abs/2201.11903): 2장의 추론 패턴 유도가 처음 정리된 논문이다.
-* "Lost in the Middle: How Language Models Use Long Contexts" (Liu 외, 2023, https://arxiv.org/abs/2307.03172): 긴 컨텍스트의 중간에 놓인 정보의 활용도가 떨어지는 U자형 곡선을 측정한 논문. 2장과 13장 논의의 근거다.
+* "Lost in the Middle: How Language Models Use Long Contexts" (Liu 외, 2023, https://arxiv.org/abs/2307.03172): 긴 컨텍스트 중간에 놓인 정보의 활용도가 떨어지는 U자형 곡선을 측정한 논문. 2장과 13장 논의의 근거다.
 * https://www.trychroma.com/research/context-rot[Context Rot: How Increasing Input Tokens Impacts LLM Performance] (Hong 외, Chroma, 2025): 입력 길이가 늘어날수록 성능이 불안정해지는 현상을 18개 모델에서 측정한 기술 보고서. 2장에서 소개한 컨텍스트 부패라는 이름의 출처다.
 * "NoLiMa: Long-Context Evaluation Beyond Literal Matching" (Modarressi 외, 2025, https://arxiv.org/abs/2502.05167): 질문과 정답의 표면 문자열 일치를 제거한 긴 컨텍스트 벤치마크. 2장에서 인용한 32K 토큰에서의 성능 하락을 측정했다.
 * "Locating and Editing Factual Associations in GPT" (Meng 외, 2022, https://arxiv.org/abs/2202.05262): 1장에서 소개한 모델 편집(ROME)의 원 논문이다.
@@ -51,7 +51,7 @@
 * "GPTQ: Accurate Post-Training Quantization for Generative Pre-trained Transformers" (Frantar 외, 2022, https://arxiv.org/abs/2210.17323)와 "AWQ: Activation-aware Weight Quantization" (Lin 외, 2023, https://arxiv.org/abs/2306.00978): 8장에서 소개한 보정 데이터 기반 양자화의 원 논문들이다.
 * "LLM.int8(): 8-bit Matrix Multiplication for Transformers at Scale" (Dettmers 외, 2022, https://arxiv.org/abs/2208.07339): 트랜스포머에서 아웃라이어가 양자화를 어떻게 어렵게 만드는지 측정하고 우회한 논문. 8장의 블록 단위 배율 논의와 이어진다.
 * https://huggingface.co/docs/transformers[Hugging Face transformers 문서]: 9장에서 규약의 진원지로 다룬 라이브러리의 공식 문서.
-* "The Llama 3 Herd of Models" (Grattafiori 외, 2024, https://arxiv.org/abs/2407.21783): 공개 모델 기술 보고서 가운데 학습 과정과 아키텍처 결정을 가장 상세히 공개한 문서. 9장에서 확인한 아키텍처 수렴의 대표 사례다.
+* "The Llama 3 Herd of Models" (Grattafiori 외, 2024, https://arxiv.org/abs/2407.21783): 공개 모델 기술 보고서 가운데 학습 과정과 아키텍처 결정을 가장 상세히 밝힌 문서. 9장에서 확인한 아키텍처 수렴의 대표 사례다.
 * "RoFormer: Enhanced Transformer with Rotary Position Embedding" (Su 외, 2021, https://arxiv.org/abs/2104.09864)와 "GQA: Training Generalized Multi-Query Transformer Models" (Ainslie 외, 2023, https://arxiv.org/abs/2305.13245): 9장의 config.json에 등장하는 RoPE와 GQA의 원 논문들이다.
 * "Neural Machine Translation of Rare Words with Subword Units" (Sennrich 외, 2016, https://arxiv.org/abs/1508.07909): BPE를 신경망 언어 처리에 도입한 논문. 10장에서 구현한 병합 학습 알고리즘의 출처다.
 * https://github.com/openai/tiktoken[tiktoken]: OpenAI의 토크나이저 구현. 10장에서 다룬 토큰 효율을 실제 서비스 모델 기준으로 확인해 볼 수 있다.
@@ -65,7 +65,7 @@
 * "Efficient and robust approximate nearest neighbor search using Hierarchical Navigable Small World graphs" (Malkov, Yashunin, 2016, https://arxiv.org/abs/1603.09320): 11장에서 언급한 Vector DB 대부분이 쓰는 HNSW 인덱스의 원 논문이다.
 * "Reciprocal Rank Fusion outperforms Condorcet and individual Rank Learning Methods" (Cormack 외, SIGIR 2009, https://plg.uwaterloo.ca/~gvcormac/cormacksigir09-rrf.pdf): 11장 하이브리드 융합에 사용한 RRF의 원 논문이다.
 * "Precise Zero-Shot Dense Retrieval without Relevance Labels" (Gao 외, 2022, https://arxiv.org/abs/2212.10496): 12장 쿼리 처리에서 소개한 HyDE의 원 논문이다.
-* https://www.anthropic.com/news/contextual-retrieval[Introducing Contextual Retrieval] (Anthropic, 2024): 청킹으로 잘린 조각이 문맥을 잃는 문제(12장, 13장)에 대한 실무 해법을 측정 결과와 함께 제시한다.
+* https://www.anthropic.com/news/contextual-retrieval[Introducing Contextual Retrieval] (Anthropic, 2024): 청킹으로 잘린 조각이 문맥을 잃는 문제(12장, 13장)의 실무 해법을 측정 결과와 함께 제시한다.
 * https://huggingface.co/spaces/mteb/leaderboard[MTEB 리더보드]: 임베딩 모델의 다국어 벤치마크 순위. 12장에서 다룬 임베딩 모델 선택의 출발점으로, 한국어 태스크 필터를 걸어 비교할 수 있다.
 * https://docs.ragas.io[Ragas]: 13장의 평가셋 절에서 언급한 RAG 평가 프레임워크의 공식 문서.
 * https://github.com/bab2min/Kiwi[Kiwi]: 오픈소스 한국어 형태소 분석기. 12장에서 다룬 형태소 분석과 사용자 사전을 Elasticsearch(Nori) 밖의 환경에서 실험해 볼 수 있다.
