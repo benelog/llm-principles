@@ -52,7 +52,7 @@
 * "LLM.int8(): 8-bit Matrix Multiplication for Transformers at Scale" (Dettmers 외, 2022, https://arxiv.org/abs/2208.07339): 트랜스포머에서 아웃라이어가 양자화를 어떻게 어렵게 만드는지 측정하고 우회한 논문. 8장의 블록 단위 배율 논의와 이어진다.
 * https://huggingface.co/docs/transformers[Hugging Face transformers 문서]: 9장에서 규약의 진원지로 다룬 라이브러리의 공식 문서.
 * "The Llama 3 Herd of Models" (Grattafiori 외, 2024, https://arxiv.org/abs/2407.21783): 공개 모델 기술 보고서 가운데 학습 과정과 아키텍처 결정을 가장 상세히 밝힌 문서. 9장에서 확인한 아키텍처 수렴의 대표 사례다.
-* "RoFormer: Enhanced Transformer with Rotary Position Embedding" (Su 외, 2021, https://arxiv.org/abs/2104.09864)와 "GQA: Training Generalized Multi-Query Transformer Models" (Ainslie 외, 2023, https://arxiv.org/abs/2305.13245): 9장의 config.json에 등장하는 RoPE와 GQA의 원 논문들이다.
+* "RoFormer: Enhanced Transformer with Rotary Position Embedding" (Su 외, 2021, https://arxiv.org/abs/2104.09864)와 "GQA: Training Generalized Multi-Query Transformer Models" (Ainslie 외, 2023, https://arxiv.org/abs/2305.13245): RoPE와 GQA의 원 논문들이다. GQA는 6장에서 KV 캐시를 줄이는 방법으로 다뤘고, 두 기법의 설정은 9장에서 본 config.json에 `rope_theta`, `num_key_value_heads` 같은 필드로 들어간다.
 * "Neural Machine Translation of Rare Words with Subword Units" (Sennrich 외, 2016, https://arxiv.org/abs/1508.07909): BPE를 신경망 언어 처리에 도입한 논문. 10장에서 구현한 병합 학습 알고리즘의 출처다.
 * https://github.com/openai/tiktoken[tiktoken]: OpenAI의 토크나이저 구현. 10장에서 다룬 토큰 효율을 실제 서비스 모델 기준으로 확인해 볼 수 있다.
 * https://huggingface.co/docs/transformers/chat_templating[Chat Templates 문서]: 10장 채팅 템플릿의 공식 문서. Jinja2 템플릿 문법과 적용 규칙을 설명한다.
