@@ -27,7 +27,7 @@
 * "Chain-of-Thought Prompting Elicits Reasoning in Large Language Models" (Wei 외, 2022, https://arxiv.org/abs/2201.11903): 2장의 추론 패턴 유도가 처음 정리된 논문이다.
 * "Lost in the Middle: How Language Models Use Long Contexts" (Liu 외, 2023, https://arxiv.org/abs/2307.03172): 긴 컨텍스트 중간에 놓인 정보의 활용도가 떨어지는 U자형 곡선을 측정한 논문. 2장과 13장 논의의 근거다.
 * https://www.trychroma.com/research/context-rot[Context Rot: How Increasing Input Tokens Impacts LLM Performance] (Hong 외, Chroma, 2025): 입력 길이가 늘어날수록 성능이 불안정해지는 현상을 18개 모델에서 측정한 기술 보고서. 2장에서 소개한 컨텍스트 부패라는 이름의 출처다.
-* "NoLiMa: Long-Context Evaluation Beyond Literal Matching" (Modarressi 외, 2025, https://arxiv.org/abs/2502.05167): 질문과 정답의 표면 문자열 일치를 제거한 긴 컨텍스트 벤치마크. 2장에서 인용한 32K 토큰에서의 성능 하락을 측정했다.
+* "NoLiMa: Long-Context Evaluation Beyond Literal Matching" (Modarressi 외, 2025, https://arxiv.org/abs/2502.05167): 질문과 정답의 표면 문자열 일치를 제거한 긴 컨텍스트 벤치마크. 2장에서 인용한 32K 토큰 성능 하락의 출처다.
 * "Locating and Editing Factual Associations in GPT" (Meng 외, 2022, https://arxiv.org/abs/2202.05262): 1장에서 소개한 모델 편집(ROME)의 원 논문이다.
 * "Distilling the Knowledge in a Neural Network" (Hinton 외, 2015, https://arxiv.org/abs/1503.02531): 1장 지식 증류의 출발점이 된 논문이다.
 * https://modelcontextprotocol.io[Model Context Protocol]: 2장에서 다룬 MCP의 공식 명세와 문서.
