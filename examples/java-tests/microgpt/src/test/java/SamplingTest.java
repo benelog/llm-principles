@@ -25,7 +25,7 @@ class SamplingTest {
     }
 
     @Test
-    @DisplayName("temperature 1의 softmax는 7장의 계산 예시와 같다")
+    @DisplayName("temperature 1의 softmax는 4장의 계산 예시와 같다")
     void softmaxAtTemperatureOne() {
         double[] p = Main.softmaxData(logits(2.0, 1.0, 0.1), 1.0);
 

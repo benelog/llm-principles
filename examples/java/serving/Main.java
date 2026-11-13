@@ -71,7 +71,7 @@ public class Main {
         }
 
         // 토큰 하나를 처리해 캐시에 K, V를 쌓고 마지막 은닉 벡터를 돌려준다.
-        // 2부 microGPT의 forward와 같은 구조이며, 학습이 필요 없으므로
+        // 1부 microGPT의 forward와 같은 구조이며, 학습이 필요 없으므로
         // 자동 미분 없이 double로만 계산한다.
         double[] decodeStep(int tokenId, int pos, KvCache cache) {
             double[] x = embed(tokenId, pos);

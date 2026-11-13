@@ -5,44 +5,44 @@
 
 === 책
 
-* https://www.manning.com/books/build-a-large-language-model-from-scratch[_Build a Large Language Model (From Scratch)_] (Sebastian Raschka, Manning, 2024): PyTorch로 GPT를 바닥부터 구현하고 사전학습과 파인튜닝까지 진행한다. 이 책 2부에서 한 일을 파이썬 생태계에서 더 큰 규모로 반복해 보기에 가장 좋다. 한국어 번역서도 나와 있다.
-* https://github.com/HandsOnLLM/Hands-On-Large-Language-Models[_Hands-On Large Language Models_] (Jay Alammar, Maarten Grootendorst, O'Reilly, 2024): 토큰화, 임베딩, 시맨틱 검색, 프롬프트 엔지니어링을 그림 중심으로 설명한다. 1부와 4부의 내용을 시각 자료로 보강하기에 알맞다.
-* https://huyenchip.com/books/[_AI Engineering_] (Chip Huyen, O'Reilly, 2025): 모델 선택, 평가, RAG와 파인튜닝 사이의 결정 같은 응용 주제를 폭넓게 다룬다. 1부의 레이어 분류와 13장의 평가 논의를 실무 의사결정으로 확장한다.
-* http://incompleteideas.net/book/the-book.html[_Reinforcement Learning: An Introduction_] (Richard S. Sutton, Andrew G. Barto, MIT Press, 2판 2018): 강화학습의 표준 교과서로, 저자 사이트에서 무료로 읽을 수 있다. 부록 통계 참고에서 소개한 벨만 방정식과 가치 함수, 1장의 RLHF·RLVR의 이론적 바탕을 다룬다.
+* https://www.manning.com/books/build-a-large-language-model-from-scratch[_Build a Large Language Model (From Scratch)_] (Sebastian Raschka, Manning, 2024): PyTorch로 GPT를 바닥부터 구현하고 사전학습과 파인튜닝까지 진행한다. 이 책 1부에서 한 일을 파이썬 생태계에서 더 큰 규모로 반복해 보기에 가장 좋다. 한국어 번역서도 나와 있다.
+* https://github.com/HandsOnLLM/Hands-On-Large-Language-Models[_Hands-On Large Language Models_] (Jay Alammar, Maarten Grootendorst, O'Reilly, 2024): 토큰화, 임베딩, 시맨틱 검색, 프롬프트 엔지니어링을 그림 중심으로 설명한다. 2부와 4부의 내용을 시각 자료로 보강하기에 알맞다.
+* https://huyenchip.com/books/[_AI Engineering_] (Chip Huyen, O'Reilly, 2025): 모델 선택, 평가, RAG와 파인튜닝 사이의 결정 같은 응용 주제를 폭넓게 다룬다. 2부의 레이어 분류와 13장의 평가 논의를 실무 의사결정으로 확장한다.
+* http://incompleteideas.net/book/the-book.html[_Reinforcement Learning: An Introduction_] (Richard S. Sutton, Andrew G. Barto, MIT Press, 2판 2018): 강화학습의 표준 교과서로, 저자 사이트에서 무료로 읽을 수 있다. 부록 통계 참고에서 소개한 벨만 방정식과 가치 함수, 5장의 RLHF·RLVR의 이론적 바탕을 다룬다.
 
 === 강의와 시각 자료
 
-* https://karpathy.ai/zero-to-hero.html[Neural Networks: Zero to Hero] (Andrej Karpathy): 자동 미분 엔진 micrograd에서 시작해 GPT-2 재현까지 코드를 직접 짜며 진행하는 영상 강의. 4장의 자동 미분과 5장의 아키텍처를 복습하는 데 가장 좋은 자료다.
+* https://karpathy.ai/zero-to-hero.html[Neural Networks: Zero to Hero] (Andrej Karpathy): 자동 미분 엔진 micrograd에서 시작해 GPT-2 재현까지 코드를 직접 짜며 진행하는 영상 강의. 1장의 자동 미분과 2장의 아키텍처를 복습하는 데 가장 좋은 자료다.
 * https://www.3blue1brown.com/topics/neural-networks[3Blue1Brown: Neural networks]: 역전파와 트랜스포머 내부 동작을 애니메이션으로 시각화한 시리즈. 수식이 나타내는 계산을 그림으로 따라갈 수 있다.
-* https://jalammar.github.io/illustrated-transformer/[The Illustrated Transformer] (Jay Alammar): 어텐션의 행렬 연산을 단계별 그림으로 설명한 글. 5장의 어텐션 코드와 나란히 놓고 보면 좋다.
+* https://jalammar.github.io/illustrated-transformer/[The Illustrated Transformer] (Jay Alammar): 어텐션의 행렬 연산을 단계별 그림으로 설명한 글. 2장의 어텐션 코드와 나란히 놓고 보면 좋다.
 
-=== 1부: 정보 레이어
+=== 1부: 동작 원리와 추론 서빙
 
-* "Language Models are Few-Shot Learners" (Brown 외, 2020, https://arxiv.org/abs/2005.14165): GPT-3 논문. 2장에서 다룬 인컨텍스트 학습이 대규모 모델에서 처음 확인된 기록이다.
-* "Training language models to follow instructions with human feedback" (Ouyang 외, 2022, https://arxiv.org/abs/2203.02155): InstructGPT 논문. 1장의 감독형 미세조정과 선호 학습(RLHF)으로 이어지는 파이프라인의 원형이다.
-* "Direct Preference Optimization" (Rafailov 외, 2023, https://arxiv.org/abs/2305.18290): 별도의 보상 모델 없이 선호 데이터로 바로 학습하는 DPO를 제안한다. 1장 선호 학습의 후속 흐름이다.
-* "Proximal Policy Optimization Algorithms" (Schulman 외, 2017, https://arxiv.org/abs/1707.06347): RLHF에 주로 쓰이는 강화학습 알고리즘 PPO의 원 논문. 부록 통계 참고의 벨만 방정식 절과 이어진다.
-* "Scaling Laws for Neural Language Models" (Kaplan 외, 2020, https://arxiv.org/abs/2001.08361)와 "Training Compute-Optimal Large Language Models" (Hoffmann 외, 2022, https://arxiv.org/abs/2203.15556): 부록 통계 참고에서 소개한 스케일링 법칙의 원 논문들이다. 후자(Chinchilla)가 파라미터당 토큰 수의 균형점을 제시했고, 1장 "기법별 데이터와 비용의 자릿수" 절의 배경이 된다.
-* "LoRA: Low-Rank Adaptation of Large Language Models" (Hu 외, 2021, https://arxiv.org/abs/2106.09685)와 "QLoRA: Efficient Finetuning of Quantized LLMs" (Dettmers 외, 2023, https://arxiv.org/abs/2305.14314): 3장에서 회색지대로 분류한 PEFT의 근거 논문들이다.
-* "Chain-of-Thought Prompting Elicits Reasoning in Large Language Models" (Wei 외, 2022, https://arxiv.org/abs/2201.11903): 2장의 추론 패턴 유도가 처음 정리된 논문이다.
-* "Lost in the Middle: How Language Models Use Long Contexts" (Liu 외, 2023, https://arxiv.org/abs/2307.03172): 긴 컨텍스트 중간에 놓인 정보의 활용도가 떨어지는 U자형 곡선을 측정한 논문. 2장과 13장 논의의 근거다.
-* https://www.trychroma.com/research/context-rot[Context Rot: How Increasing Input Tokens Impacts LLM Performance] (Hong 외, Chroma, 2025): 입력 길이가 늘어날수록 성능이 불안정해지는 현상을 18개 모델에서 측정한 기술 보고서. 2장에서 소개한 컨텍스트 부패라는 이름의 출처다.
-* "NoLiMa: Long-Context Evaluation Beyond Literal Matching" (Modarressi 외, 2025, https://arxiv.org/abs/2502.05167): 질문과 정답의 표면 문자열 일치를 제거한 긴 컨텍스트 벤치마크. 2장에서 인용한 32K 토큰 성능 하락의 출처다.
-* "Locating and Editing Factual Associations in GPT" (Meng 외, 2022, https://arxiv.org/abs/2202.05262): 1장에서 소개한 모델 편집(ROME)의 원 논문이다.
-* "Distilling the Knowledge in a Neural Network" (Hinton 외, 2015, https://arxiv.org/abs/1503.02531): 1장 지식 증류의 출발점이 된 논문이다.
-* https://modelcontextprotocol.io[Model Context Protocol]: 2장에서 다룬 MCP의 공식 명세와 문서.
-
-=== 2부: 동작 원리와 추론 서빙
-
-* https://karpathy.github.io/2026/02/12/microgpt/[microgpt] (Andrej Karpathy, 2026): 이 책 2부의 바탕이 된 원문 포스트. 원본 파이썬 코드는 https://gist.github.com/karpathy/8627fe009c40f57531cb18360106ce95[gist]에 있다. 자바 포팅과 원본을 나란히 읽으면 두 언어의 표현 차이까지 보인다.
+* https://karpathy.github.io/2026/02/12/microgpt/[microgpt] (Andrej Karpathy, 2026): 이 책 1부의 바탕이 된 원문 포스트. 원본 파이썬 코드는 https://gist.github.com/karpathy/8627fe009c40f57531cb18360106ce95[gist]에 있다. 자바 포팅과 원본을 나란히 읽으면 두 언어의 표현 차이까지 보인다.
 * https://github.com/karpathy/nanoGPT[nanoGPT] (Andrej Karpathy): microGPT 다음 단계로 알맞은 프로젝트. PyTorch와 GPU로 GPT-2를 재현하는 최소 구현이다.
-* "Attention Is All You Need" (Vaswani 외, 2017, https://arxiv.org/abs/1706.03762): 트랜스포머를 제안한 원 논문. 5장에서 구현한 어텐션의 출처다.
-* "Language Models are Unsupervised Multitask Learners" (Radford 외, 2019, https://cdn.openai.com/better-language-models/language_models_are_unsupervised_multitask_learners.pdf): GPT-2 논문. 5장 마지막에서 microGPT와 프로덕션 LLM을 비교할 때의 기준 아키텍처다.
-* "FlashAttention: Fast and Memory-Efficient Exact Attention with IO-Awareness" (Dao 외, 2022, https://arxiv.org/abs/2205.14135): 6장에서 언급한, 어텐션의 메모리 접근을 줄이는 커널 최적화다.
-* "Efficient Memory Management for Large Language Model Serving with PagedAttention" (Kwon 외, 2023, https://arxiv.org/abs/2309.06180): vLLM 논문. 6장의 KV 캐시 관리와 배칭이 프로덕션 서빙 엔진에서 어떻게 구현되는지 보여 준다.
-* "Orca: A Distributed Serving System for Transformer-Based Generative Models" (Yu 외, OSDI 2022, https://www.usenix.org/conference/osdi22/presentation/yu): 6장 배칭에서 다룬 continuous batching을 제안한 논문이다.
-* "Fast Inference from Transformers via Speculative Decoding" (Leviathan 외, 2022, https://arxiv.org/abs/2211.17192): 6장의 투기적 디코딩 원 논문이다.
-* https://kipp.ly/transformer-inference-arithmetic/[Transformer Inference Arithmetic] (kipply, 2022): 파라미터 수와 메모리 대역폭만으로 추론 지연과 비용을 계산하는 방법을 정리한 글. 6장의 측정 결과를 이론 쪽에서 뒷받침한다.
+* "Attention Is All You Need" (Vaswani 외, 2017, https://arxiv.org/abs/1706.03762): 트랜스포머를 제안한 원 논문. 2장에서 구현한 어텐션의 출처다.
+* "Language Models are Unsupervised Multitask Learners" (Radford 외, 2019, https://cdn.openai.com/better-language-models/language_models_are_unsupervised_multitask_learners.pdf): GPT-2 논문. 2장 마지막에서 microGPT와 프로덕션 LLM을 비교할 때의 기준 아키텍처다.
+* "FlashAttention: Fast and Memory-Efficient Exact Attention with IO-Awareness" (Dao 외, 2022, https://arxiv.org/abs/2205.14135): 3장에서 언급한, 어텐션의 메모리 접근을 줄이는 커널 최적화다.
+* "Efficient Memory Management for Large Language Model Serving with PagedAttention" (Kwon 외, 2023, https://arxiv.org/abs/2309.06180): vLLM 논문. 3장의 KV 캐시 관리와 배칭이 프로덕션 서빙 엔진에서 어떻게 구현되는지 보여 준다.
+* "Orca: A Distributed Serving System for Transformer-Based Generative Models" (Yu 외, OSDI 2022, https://www.usenix.org/conference/osdi22/presentation/yu): 3장 배칭에서 다룬 continuous batching을 제안한 논문이다.
+* "Fast Inference from Transformers via Speculative Decoding" (Leviathan 외, 2022, https://arxiv.org/abs/2211.17192): 3장의 투기적 디코딩 원 논문이다.
+* https://kipp.ly/transformer-inference-arithmetic/[Transformer Inference Arithmetic] (kipply, 2022): 파라미터 수와 메모리 대역폭만으로 추론 지연과 비용을 계산하는 방법을 정리한 글. 3장의 측정 결과를 이론 쪽에서 뒷받침한다.
+
+=== 2부: 정보 레이어
+
+* "Language Models are Few-Shot Learners" (Brown 외, 2020, https://arxiv.org/abs/2005.14165): GPT-3 논문. 6장에서 다룬 인컨텍스트 학습이 대규모 모델에서 처음 확인된 기록이다.
+* "Training language models to follow instructions with human feedback" (Ouyang 외, 2022, https://arxiv.org/abs/2203.02155): InstructGPT 논문. 5장의 감독형 미세조정과 선호 학습(RLHF)으로 이어지는 파이프라인의 원형이다.
+* "Direct Preference Optimization" (Rafailov 외, 2023, https://arxiv.org/abs/2305.18290): 별도의 보상 모델 없이 선호 데이터로 바로 학습하는 DPO를 제안한다. 5장 선호 학습의 후속 흐름이다.
+* "Proximal Policy Optimization Algorithms" (Schulman 외, 2017, https://arxiv.org/abs/1707.06347): RLHF에 주로 쓰이는 강화학습 알고리즘 PPO의 원 논문. 부록 통계 참고의 벨만 방정식 절과 이어진다.
+* "Scaling Laws for Neural Language Models" (Kaplan 외, 2020, https://arxiv.org/abs/2001.08361)와 "Training Compute-Optimal Large Language Models" (Hoffmann 외, 2022, https://arxiv.org/abs/2203.15556): 부록 통계 참고에서 소개한 스케일링 법칙의 원 논문들이다. 후자(Chinchilla)가 파라미터당 토큰 수의 균형점을 제시했고, 5장 "기법별 데이터와 비용의 자릿수" 절의 배경이 된다.
+* "LoRA: Low-Rank Adaptation of Large Language Models" (Hu 외, 2021, https://arxiv.org/abs/2106.09685)와 "QLoRA: Efficient Finetuning of Quantized LLMs" (Dettmers 외, 2023, https://arxiv.org/abs/2305.14314): 7장에서 회색지대로 분류한 PEFT의 근거 논문들이다.
+* "Chain-of-Thought Prompting Elicits Reasoning in Large Language Models" (Wei 외, 2022, https://arxiv.org/abs/2201.11903): 6장의 추론 패턴 유도가 처음 정리된 논문이다.
+* "Lost in the Middle: How Language Models Use Long Contexts" (Liu 외, 2023, https://arxiv.org/abs/2307.03172): 긴 컨텍스트 중간에 놓인 정보의 활용도가 떨어지는 U자형 곡선을 측정한 논문. 6장과 13장 논의의 근거다.
+* https://www.trychroma.com/research/context-rot[Context Rot: How Increasing Input Tokens Impacts LLM Performance] (Hong 외, Chroma, 2025): 입력 길이가 늘어날수록 성능이 불안정해지는 현상을 18개 모델에서 측정한 기술 보고서. 6장에서 소개한 컨텍스트 부패라는 이름의 출처다.
+* "NoLiMa: Long-Context Evaluation Beyond Literal Matching" (Modarressi 외, 2025, https://arxiv.org/abs/2502.05167): 질문과 정답의 표면 문자열 일치를 제거한 긴 컨텍스트 벤치마크. 6장에서 인용한 32K 토큰 성능 하락의 출처다.
+* "Locating and Editing Factual Associations in GPT" (Meng 외, 2022, https://arxiv.org/abs/2202.05262): 5장에서 소개한 모델 편집(ROME)의 원 논문이다.
+* "Distilling the Knowledge in a Neural Network" (Hinton 외, 2015, https://arxiv.org/abs/1503.02531): 5장 지식 증류의 출발점이 된 논문이다.
+* https://modelcontextprotocol.io[Model Context Protocol]: 6장에서 다룬 MCP의 공식 명세와 문서.
 
 === 3부: 오픈 모델 표준
 
@@ -52,7 +52,7 @@
 * "LLM.int8(): 8-bit Matrix Multiplication for Transformers at Scale" (Dettmers 외, 2022, https://arxiv.org/abs/2208.07339): 트랜스포머에서 아웃라이어가 양자화를 어떻게 어렵게 만드는지 측정하고 우회한 논문. 8장의 블록 단위 배율 논의와 이어진다.
 * https://huggingface.co/docs/transformers[Hugging Face transformers 문서]: 9장에서 파일 규약을 정착시킨 라이브러리로 다룬 ``transformers``의 공식 문서.
 * "The Llama 3 Herd of Models" (Grattafiori 외, 2024, https://arxiv.org/abs/2407.21783): 공개 모델 기술 보고서 가운데 학습 과정과 아키텍처 결정을 가장 상세히 밝힌 문서. 9장에서 확인한 아키텍처 수렴의 대표 사례다.
-* "RoFormer: Enhanced Transformer with Rotary Position Embedding" (Su 외, 2021, https://arxiv.org/abs/2104.09864)와 "GQA: Training Generalized Multi-Query Transformer Models" (Ainslie 외, 2023, https://arxiv.org/abs/2305.13245): RoPE와 GQA의 원 논문들이다. GQA는 6장에서 KV 캐시를 줄이는 방법으로 다뤘고, 두 기법의 설정은 9장에서 본 config.json에 `rope_theta`, `num_key_value_heads` 같은 필드로 들어간다.
+* "RoFormer: Enhanced Transformer with Rotary Position Embedding" (Su 외, 2021, https://arxiv.org/abs/2104.09864)와 "GQA: Training Generalized Multi-Query Transformer Models" (Ainslie 외, 2023, https://arxiv.org/abs/2305.13245): RoPE와 GQA의 원 논문들이다. GQA는 3장에서 KV 캐시를 줄이는 방법으로 다뤘고, 두 기법의 설정은 9장에서 본 config.json에 `rope_theta`, `num_key_value_heads` 같은 필드로 들어간다.
 * "Neural Machine Translation of Rare Words with Subword Units" (Sennrich 외, 2016, https://arxiv.org/abs/1508.07909): BPE를 신경망 언어 처리에 도입한 논문. 10장에서 구현한 병합 학습 알고리즘의 출처다.
 * https://github.com/openai/tiktoken[tiktoken]: OpenAI의 토크나이저 구현. 10장에서 다룬 토큰 효율을 실제 서비스 모델 기준으로 확인해 볼 수 있다.
 * https://huggingface.co/docs/transformers/chat_templating[Chat Templates 문서]: 10장 채팅 템플릿의 공식 문서. Jinja2 템플릿 문법과 적용 규칙을 설명한다.
@@ -69,4 +69,4 @@
 * https://huggingface.co/spaces/mteb/leaderboard[MTEB 리더보드]: 임베딩 모델의 다국어 벤치마크 순위. 12장에서 다룬 임베딩 모델 선택의 출발점으로, 한국어 태스크 필터를 걸어 비교할 수 있다.
 * https://docs.ragas.io[Ragas]: 13장의 평가셋 절에서 언급한 RAG 평가 프레임워크의 공식 문서.
 * https://github.com/bab2min/Kiwi[Kiwi]: 오픈소스 한국어 형태소 분석기. 12장에서 다룬 형태소 분석과 사용자 사전을 Elasticsearch(Nori) 밖의 환경에서 실험해 볼 수 있다.
-* https://docs.spring.io/spring-ai/reference/[Spring AI 레퍼런스 문서]: 이 책의 Spring AI 예제(1부, 4부)가 사용한 프레임워크의 공식 문서.
+* https://docs.spring.io/spring-ai/reference/[Spring AI 레퍼런스 문서]: 이 책의 Spring AI 예제(2부, 4부)가 사용한 프레임워크의 공식 문서.

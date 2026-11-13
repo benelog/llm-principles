@@ -3,21 +3,21 @@ package llmprinciples.mathlab;
 import java.util.Arrays;
 import java.util.Random;
 
-/** 7장의 확률, softmax, 정보량 관련 절을 검산한다. */
+/** 4장의 확률, softmax, 정보량 관련 절을 검산한다. */
 public final class Probability {
 
     private Probability() {
     }
 
-    /** 7장 "확률 분포와 조건부 확률"과 "베이즈 정리와 나이브 베이즈" */
+    /** 4장 "확률 분포와 조건부 확률"과 "베이즈 정리와 나이브 베이즈" */
     public static void probabilityAndBayes(Checker c) {
         c.section("확률 분포, 조건부 확률, 베이즈 정리");
 
-        // 7장: 확률 분포는 모든 경우에 확률을 배정한 것으로 전체 합이 1이다.
+        // 4장: 확률 분포는 모든 경우에 확률을 배정한 것으로 전체 합이 1이다.
         double[] p = softmax(new double[] {2.0, 1.0, 0.1}, 1.0);
         c.near("softmax 출력의 합", 1, Arrays.stream(p).sum(), 1e-12);
 
-        // 7장: 곱의 법칙에 따라 문장 전체의 확률은 조건부 확률들의 곱으로 분해된다.
+        // 4장: 곱의 법칙에 따라 문장 전체의 확률은 조건부 확률들의 곱으로 분해된다.
         // P(t1, t2) = P(t1) * P(t2 | t1)을 결합 분포에서 직접 확인한다.
         double[][] joint = {
                 {0.10, 0.30}, // P(t1=0, t2=0), P(t1=0, t2=1)
@@ -27,7 +27,7 @@ public final class Probability {
         double pT2GivenT1 = joint[1][1] / pT1;         // P(t2=1 | t1=1)
         c.near("곱의 법칙 P(t1,t2) = P(t1)·P(t2|t1)", joint[1][1], pT1 * pT2GivenT1, 1e-12);
 
-        // 7장: 이름 100개 가운데 e로 시작하는 이름이 10개, 그 가운데 둘째 글자가 m인 이름이 4개면
+        // 4장: 이름 100개 가운데 e로 시작하는 이름이 10개, 그 가운데 둘째 글자가 m인 이름이 4개면
         // P(e) = 0.1, P(m | e) = 0.4이고, "em"으로 시작하는 이름의 비율 0.04는 0.1 * 0.4와 같다.
         double pE = 10 / 100.0;
         double pMGivenE = 4 / 10.0;
@@ -35,8 +35,8 @@ public final class Probability {
         c.near("P(m | e)", 0.4, pMGivenE, 1e-12);
         c.near("P(e) * P(m | e) = 4 / 100", 4 / 100.0, pE * pMGivenE, 1e-12);
 
-        // 7장: 베이즈 정리는 P(A|B) = P(B|A) * P(A) / P(B)다.
-        // 7장의 예: 스팸 비율 20%, 스팸에 "무료"가 들어갈 확률 50%,
+        // 4장: 베이즈 정리는 P(A|B) = P(B|A) * P(A) / P(B)다.
+        // 4장의 예: 스팸 비율 20%, 스팸에 "무료"가 들어갈 확률 50%,
         // 정상 메일에 들어갈 확률 5%로 두고 "무료"를 본 뒤 스팸일 확률을 구한다.
         double pSpam = 0.20;
         double pWordGivenSpam = 0.50;
@@ -49,7 +49,7 @@ public final class Probability {
         c.ok("증거를 보고 확률이 갱신됨", pSpamGivenWord > pSpam,
                 "사전 " + Checker.num(pSpam) + " → 사후 " + Checker.num(pSpamGivenWord));
 
-        // 7장: 메일 1,000통의 개수로 세면 스팸 200통 가운데 100통, 정상 800통 가운데 40통에
+        // 4장: 메일 1,000통의 개수로 세면 스팸 200통 가운데 100통, 정상 800통 가운데 40통에
         // "무료"가 들어 있고, "무료"가 든 140통 가운데 스팸이 100통이라 100 / 140 ≈ 0.71이다.
         double spamWithWord = 1000 * pSpam * pWordGivenSpam;
         double hamWithWord = 1000 * (1 - pSpam) * pWordGivenHam;
@@ -59,7 +59,7 @@ public final class Probability {
         c.near("개수로 센 비율 100 / 140", 0.71, countRatio, 5e-3);
         c.near("개수로 센 비율 = 베이즈 정리의 값", pSpamGivenWord, countRatio, 1e-12);
 
-        // 7장: 나이브 베이즈는 클래스가 주어지면 단어들이 독립이라고 가정해서
+        // 4장: 나이브 베이즈는 클래스가 주어지면 단어들이 독립이라고 가정해서
         // P(단어들|클래스)를 단어별 확률의 곱, 실제 계산으로는 로그 확률의 합으로 바꾼다.
         double[] spamWordProbs = {0.60, 0.40, 0.30};
         double[] hamWordProbs = {0.05, 0.10, 0.20};
@@ -72,7 +72,7 @@ public final class Probability {
         }
         c.near("곱과 로그 합이 같은 값", Math.log(prodSpam), logSpam, 1e-12);
 
-        // 7장: 스팸에 "무료"가 나올 확률이 0.5, "당첨"이 나올 확률이 0.3이면
+        // 4장: 스팸에 "무료"가 나올 확률이 0.5, "당첨"이 나올 확률이 0.3이면
         // 두 단어가 함께 든 메일의 P(단어들|스팸)을 0.5 * 0.3 = 0.15로 계산한다.
         c.near("독립 가정으로 곱한 P(단어들|스팸)", 0.15, 0.5 * 0.3, 1e-12);
 
@@ -84,64 +84,64 @@ public final class Probability {
                 "스팸 점수 " + Checker.num(prodSpam) + " > 정상 점수 " + Checker.num(prodHam));
     }
 
-    /** 7장 "로짓, softmax, temperature" */
+    /** 4장 "로짓, softmax, temperature" */
     public static void softmaxAndTemperature(Checker c) {
         c.section("로짓, softmax, temperature");
 
         double[] logits = {2.0, 1.0, 0.1};
 
-        // 7장: exp는 [7.39, 2.72, 1.11]이고 합은 11.21이다.
+        // 4장: exp는 [7.39, 2.72, 1.11]이고 합은 11.21이다.
         double[] exps = Arrays.stream(logits).map(Math::exp).toArray();
         c.near("exp(2.0)", 7.39, exps[0], 5e-3);
         c.near("exp(1.0)", 2.72, exps[1], 5e-3);
         c.near("exp(0.1)", 1.11, exps[2], 5e-3);
         c.near("exp들의 합", 11.21, Arrays.stream(exps).sum(), 5e-3);
 
-        // 7장: exp(0) = 1, exp(1) ≈ 2.718이고, 로짓이 1 차이 나는 두 exp 값의 비 7.39 / 2.72는 약 2.7이다.
+        // 4장: exp(0) = 1, exp(1) ≈ 2.718이고, 로짓이 1 차이 나는 두 exp 값의 비 7.39 / 2.72는 약 2.7이다.
         c.near("exp(0)", 1, Math.exp(0), 1e-12);
         c.near("exp(1)", 2.718, Math.exp(1), 5e-4);
         c.near("exp 값의 비 7.39 / 2.72", 2.7, exps[0] / exps[1], 5e-2);
 
-        // 7장: softmax는 [0.66, 0.24, 0.10]이고 합은 1.0이다.
+        // 4장: softmax는 [0.66, 0.24, 0.10]이고 합은 1.0이다.
         double[] p = softmax(logits, 1.0);
         c.near("softmax 1위 확률", 0.66, p[0], 5e-3);
         c.near("softmax 2위 확률", 0.24, p[1], 5e-3);
         c.near("softmax 3위 확률", 0.10, p[2], 5e-3);
         c.near("softmax 합", 1.0, Arrays.stream(p).sum(), 1e-12);
 
-        // 7장: 점수가 1 크면 확률은 약 2.7배가 된다. T = 0.5이면 7.4배, T = 2이면 1.6배다.
+        // 4장: 점수가 1 크면 확률은 약 2.7배가 된다. T = 0.5이면 7.4배, T = 2이면 1.6배다.
         c.near("로짓 1 차이의 확률 배율", Math.E, p[0] / p[1], 1e-9);
         c.near("T=0.5에서 로짓 1 차이의 배율", 7.4, Math.exp(1 / 0.5), 5e-2);
         c.near("T=2에서 로짓 1 차이의 배율", 1.6, Math.exp(1 / 2.0), 5e-2);
 
-        // 7장: T = 1 분포에 top-k = 2를 적용하면 남은 두 토큰이 [0.73, 0.27]로 재정규화된다.
+        // 4장: T = 1 분포에 top-k = 2를 적용하면 남은 두 토큰이 [0.73, 0.27]로 재정규화된다.
         double kept = p[0] + p[1];
         c.near("top-k=2 재정규화 1위", 0.73, p[0] / kept, 5e-3);
         c.near("top-k=2 재정규화 2위", 0.27, p[1] / kept, 5e-3);
 
-        // 7장: T = 0.5면 [0.86, 0.12, 0.02]로 뾰족해진다.
+        // 4장: T = 0.5면 [0.86, 0.12, 0.02]로 뾰족해진다.
         double[] cold = softmax(logits, 0.5);
         c.near("T=0.5의 1위 확률", 0.86, cold[0], 5e-3);
         c.near("T=0.5의 2위 확률", 0.12, cold[1], 5e-3);
         c.near("T=0.5의 3위 확률", 0.02, cold[2], 5e-3);
 
-        // 7장: T = 2.0이면 [0.50, 0.30, 0.19]로 평평해진다.
+        // 4장: T = 2.0이면 [0.50, 0.30, 0.19]로 평평해진다.
         double[] hot = softmax(logits, 2.0);
         c.near("T=2.0의 1위 확률", 0.50, hot[0], 5e-3);
         c.near("T=2.0의 2위 확률", 0.30, hot[1], 5e-3);
         c.near("T=2.0의 3위 확률", 0.19, hot[2], 5e-3);
 
-        // 7장: T로 나눈 로짓은 T = 0.5에서 [4.0, 2.0, 0.2], T = 2.0에서 [1.0, 0.5, 0.05]다.
+        // 4장: T로 나눈 로짓은 T = 0.5에서 [4.0, 2.0, 0.2], T = 2.0에서 [1.0, 0.5, 0.05]다.
         c.ok("T=0.5로 나눈 로짓", allNear(divide(logits, 0.5), new double[] {4.0, 2.0, 0.2}, 1e-12),
                 "[4.0, 2.0, 0.2]");
         c.ok("T=2.0으로 나눈 로짓", allNear(divide(logits, 2.0), new double[] {1.0, 0.5, 0.05}, 1e-12),
                 "[1.0, 0.5, 0.05]");
 
-        // 7장: T가 0에 가까우면 그리디 선택과 같아지고, T가 크면 균등 분포에 가까워진다.
+        // 4장: T가 0에 가까우면 그리디 선택과 같아지고, T가 크면 균등 분포에 가까워진다.
         c.near("T→0이면 1위에 확률이 몰림", 1, softmax(logits, 0.01)[0], 1e-9);
         c.near("T→∞이면 균등 분포에 가까워짐", 1.0 / 3, softmax(logits, 1000)[0], 1e-3);
 
-        // 7장: temperature는 분포의 뾰족함을 조절한다. 엔트로피로 재면 단조 증가한다.
+        // 4장: temperature는 분포의 뾰족함을 조절한다. 엔트로피로 재면 단조 증가한다.
         boolean monotone = true;
         double prev = -1;
         for (double t : new double[] {0.25, 0.5, 1.0, 2.0, 4.0}) {
@@ -161,7 +161,7 @@ public final class Probability {
                 "exp(1002)가 무한대가 되어 NaN");
         c.near("최댓값을 빼면 원래 분포와 같음", 0.66, softmax(big, 1.0)[0], 5e-3);
 
-        // 7장: 로짓 [2.0, 1.0, 0.1]에서 최댓값을 뺀 [0, -1.0, -1.9]도 같은 softmax를 낸다.
+        // 4장: 로짓 [2.0, 1.0, 0.1]에서 최댓값을 뺀 [0, -1.0, -1.9]도 같은 softmax를 낸다.
         double[] shifted = {0, -1.0, -1.9};
         boolean same = true;
         for (int i = 0; i < 3; i++) {
@@ -171,12 +171,12 @@ public final class Probability {
         }
         c.ok("softmax(z - c) = softmax(z)", same, "[0, -1.0, -1.9]와 [2.0, 1.0, 0.1]의 softmax가 같음");
 
-        // 7장: 지수 법칙 exp(z - c) = exp(z) * exp(-c) 때문에 분자와 분모의 exp(-c)가 약분된다.
+        // 4장: 지수 법칙 exp(z - c) = exp(z) * exp(-c) 때문에 분자와 분모의 exp(-c)가 약분된다.
         c.near("exp(z - c) = exp(z) * exp(-c)", Math.exp(2.0 - 0.7), Math.exp(2.0) * Math.exp(-0.7), 1e-12);
         c.ok("exp(710)은 배정밀도 상한을 넘음", Double.isInfinite(Math.exp(710)),
                 "Double.MAX_VALUE = " + Double.MAX_VALUE);
 
-        // 7장: 샘플링은 난수 하나를 뽑고 누적합이 난수를 넘어서는 첫 토큰을 고른다.
+        // 4장: 샘플링은 난수 하나를 뽑고 누적합이 난수를 넘어서는 첫 토큰을 고른다.
         // 누적합은 [0.66, 0.90, 1.00]이고, 난수 0.75는 둘째 토큰, 0.30은 첫째 토큰을 고른다.
         double[] cumulative = new double[3];
         cumulative[0] = p[0];
@@ -188,7 +188,7 @@ public final class Probability {
         c.ok("난수 0.75 → 둘째 토큰", sampleFrom(p, 0.75) == 1, "0.66 < 0.75 ≤ 0.90");
         c.ok("난수 0.30 → 첫째 토큰", sampleFrom(p, 0.30) == 0, "0.30 ≤ 0.66");
 
-        // 7장: 확률 0.66인 토큰은 100번 중 66번쯤 뽑히고, 0.10인 토큰도 10번쯤은 뽑힌다.
+        // 4장: 확률 0.66인 토큰은 100번 중 66번쯤 뽑히고, 0.10인 토큰도 10번쯤은 뽑힌다.
         Random rnd = new Random(2122);
         int[] counts = new int[3];
         final int draws = 100000;
@@ -199,11 +199,11 @@ public final class Probability {
         c.near("10만 번 뽑았을 때 3위 토큰의 비율", p[2], counts[2] / (double) draws, 5e-3);
     }
 
-    /** 7장 "로그: 곱을 합으로"와 "최대 우도와 교차 엔트로피" */
+    /** 4장 "로그: 곱을 합으로"와 "최대 우도와 교차 엔트로피" */
     public static void crossEntropy(Checker c) {
         c.section("로그, 최대 우도, 교차 엔트로피");
 
-        // 7장: 로그는 지수의 역연산이다. ln(1) = 0, ln(2.718) ≈ 1, ln(7.39) ≈ 2이고,
+        // 4장: 로그는 지수의 역연산이다. ln(1) = 0, ln(2.718) ≈ 1, ln(7.39) ≈ 2이고,
         // 1보다 작은 수의 로그는 음수다. ln(0.5) ≈ -0.69, ln(0.1) ≈ -2.30, ln(0.01) ≈ -4.61
         c.near("ln(1)", 0, Math.log(1), 1e-12);
         c.near("ln(2.718)", 1, Math.log(2.718), 5e-3);
@@ -213,25 +213,25 @@ public final class Probability {
         c.near("ln(0.01)", -4.61, Math.log(0.01), 5e-3);
         c.near("exp(ln(x)) = x", 0.37, Math.exp(Math.log(0.37)), 1e-12);
 
-        // 7장: 확률 0.1인 토큰 300개의 곱은 10^-300이고, 로그 합은 300 × ln(0.1) ≈ -690.8이다.
+        // 4장: 확률 0.1인 토큰 300개의 곱은 10^-300이고, 로그 합은 300 × ln(0.1) ≈ -690.8이다.
         c.near("확률 0.1을 300번 곱한 값", 1e-300, Math.pow(0.1, 300), 1e-301);
         c.near("같은 값의 로그", -690.8, 300 * Math.log(0.1), 5e-2);
         c.ok("확률 0.1을 320번 곱하면 정상 표현 범위 아래", Math.pow(0.1, 320) < Double.MIN_NORMAL,
                 "Double.MIN_NORMAL = " + Double.MIN_NORMAL);
 
-        // 7장: log(a*b) = log(a) + log(b)
+        // 4장: log(a*b) = log(a) + log(b)
         double a = 0.3;
         double b = 0.017;
         c.near("log(a*b) = log a + log b", Math.log(a * b), Math.log(a) + Math.log(b), 1e-12);
 
-        // 7장: ln(0.5 * 0.1) = ln(0.05) ≈ -2.996은 ln(0.5) + ln(0.1) ≈ -0.693 - 2.303과 같다.
+        // 4장: ln(0.5 * 0.1) = ln(0.05) ≈ -2.996은 ln(0.5) + ln(0.1) ≈ -0.693 - 2.303과 같다.
         c.near("ln(0.05)", -2.996, Math.log(0.05), 5e-4);
         c.near("ln(0.5) + ln(0.1)", -0.693 - 2.303, Math.log(0.5) + Math.log(0.1), 1e-3);
 
-        // 7장: log(a^n) = n * log(a). 0.1을 300번 곱한 값의 로그는 ln(0.1)의 300배다.
+        // 4장: log(a^n) = n * log(a). 0.1을 300번 곱한 값의 로그는 ln(0.1)의 300배다.
         c.near("log(a^n) = n * log(a)", 300 * Math.log(0.1), Math.log(Math.pow(0.1, 300)), 1e-9);
 
-        // 7장: 세 위치의 정답 토큰에 확률 0.5, 0.2, 0.9를 주었다면 우도는 0.09,
+        // 4장: 세 위치의 정답 토큰에 확률 0.5, 0.2, 0.9를 주었다면 우도는 0.09,
         // 로그 우도는 -0.69 - 1.61 - 0.11 = -2.41이고 위치당 평균 손실은 약 0.80이다.
         double[] given = {0.5, 0.2, 0.9};
         double likelihood = 1;
@@ -247,20 +247,20 @@ public final class Probability {
         c.near("로그 우도 = ln(우도)", Math.log(likelihood), logLikelihood, 1e-12);
         c.near("위치당 평균 손실", 0.80, -logLikelihood / given.length, 5e-3);
 
-        // 7장: 손실 = -log(정답 토큰에 배정된 확률)
+        // 4장: 손실 = -log(정답 토큰에 배정된 확률)
         c.near("확률 0.9의 손실", 0.11, -Math.log(0.9), 5e-3);
         c.near("확률 0.5의 손실", 0.69, -Math.log(0.5), 5e-3);
         c.near("확률 0.01의 손실", 4.61, -Math.log(0.01), 5e-3);
 
-        // 7장: 정답에 확률 1을 주면 손실이 0이다.
+        // 4장: 정답에 확률 1을 주면 손실이 0이다.
         c.near("확률 1의 손실", 0, -Math.log(1), 1e-12);
 
-        // 7장: 파라미터가 무작위인 모델은 어휘 27개에 균등하게 1/27을 배정하므로
-        // 손실이 -log(1/27) = ln(27) ≈ 3.3에서 시작한다. 5장의 학습 전 손실이다.
+        // 4장: 파라미터가 무작위인 모델은 어휘 27개에 균등하게 1/27을 배정하므로
+        // 손실이 -log(1/27) = ln(27) ≈ 3.3에서 시작한다. 2장의 학습 전 손실이다.
         c.near("어휘 27개 균등 분포의 손실", 3.3, -Math.log(1.0 / 27), 5e-3);
         c.near("-log(1/27) = ln(27)", Math.log(27), -Math.log(1.0 / 27), 1e-12);
 
-        // 7장: 문장의 확률은 조건부 확률 수백 개의 곱이라 부동소수점으로는
+        // 4장: 문장의 확률은 조건부 확률 수백 개의 곱이라 부동소수점으로는
         // 금방 0으로 내려앉는다(언더플로). 그래서 로그 확률의 합으로 계산한다.
         double prob = 1.0;
         double logProb = 0.0;
@@ -274,7 +274,7 @@ public final class Probability {
         c.ok("언더플로 직전까지는 표현됨", Math.pow(0.3, 600) > 0,
                 String.format("600개까지는 %.3e", Math.pow(0.3, 600)));
 
-        // 7장: 최대 우도는 학습 데이터에 모델이 배정하는 확률을 최대로 만드는
+        // 4장: 최대 우도는 학습 데이터에 모델이 배정하는 확률을 최대로 만드는
         // 파라미터를 찾는 것이고, 부호를 뒤집으면 최소화 문제(교차 엔트로피)가 된다.
         int heads = 37;
         int total = 100;
@@ -293,7 +293,7 @@ public final class Probability {
         c.near("정답이 확실할 때의 교차 엔트로피", -Math.log(0.5),
                 crossEntropy(new double[] {0, 1, 0}, new double[] {0.2, 0.5, 0.3}), 1e-12);
 
-        // 7장: softmax와 교차 엔트로피를 함께 쓰면 손실을 로짓으로 미분한 결과가
+        // 4장: softmax와 교차 엔트로피를 함께 쓰면 손실을 로짓으로 미분한 결과가
         // "예측 확률 - 정답"이다. 로짓 [2.0, 1.0, 0.1], 정답이 첫째 토큰이면
         // 손실은 -ln(0.66) ≈ 0.42이고 기울기는 [-0.34, 0.24, 0.10]이다.
         double[] logits = {2.0, 1.0, 0.1};
@@ -323,14 +323,14 @@ public final class Probability {
         c.near("기울기 성분의 합은 0", 0, gradSum, 1e-12);
     }
 
-    /** 7장 "엔트로피와 perplexity" */
+    /** 4장 "엔트로피와 perplexity" */
     public static void entropyAndPerplexity(Checker c) {
         c.section("엔트로피와 perplexity");
 
-        // 7장: 한 토큰이 확률 1로 정해져 있으면 엔트로피는 0이다.
+        // 4장: 한 토큰이 확률 1로 정해져 있으면 엔트로피는 0이다.
         c.near("확률 1인 분포의 엔트로피", 0, entropy(new double[] {1, 0, 0}), 1e-12);
 
-        // 7장: V개 후보가 균등하면 ln(V)로 최대가 된다.
+        // 4장: V개 후보가 균등하면 ln(V)로 최대가 된다.
         double[] uniform = new double[27];
         Arrays.fill(uniform, 1.0 / 27);
         c.near("균등 분포 27개의 엔트로피", Math.log(27), entropy(uniform), 1e-12);
@@ -344,13 +344,13 @@ public final class Probability {
         }
         c.ok("균등 분포의 엔트로피가 최대", maxIsUniform, "ln(3)을 넘는 분포 없음");
 
-        // 7장: P = [0.66, 0.24, 0.10]의 엔트로피는 약 0.85이고 perplexity는 약 2.3이다.
+        // 4장: P = [0.66, 0.24, 0.10]의 엔트로피는 약 0.85이고 perplexity는 약 2.3이다.
         double[] example = {0.66, 0.24, 0.10};
         c.near("예제 분포의 엔트로피", 0.85, entropy(example), 5e-3);
         c.near("예제 분포의 perplexity", 2.3, Math.exp(entropy(example)), 5e-2);
         c.near("세 후보 균등 분포의 엔트로피 ln 3", 1.10, Math.log(3), 5e-3);
 
-        // 7장: -ln(확률)은 [0.416, 1.427, 2.303]이고, 확률을 가중치로 곱한 항은 0.274, 0.343, 0.230이다.
+        // 4장: -ln(확률)은 [0.416, 1.427, 2.303]이고, 확률을 가중치로 곱한 항은 0.274, 0.343, 0.230이다.
         double[] negLogs = {0.416, 1.427, 2.303};
         double[] weighted = {0.274, 0.343, 0.230};
         for (int i = 0; i < example.length; i++) {
@@ -359,12 +359,12 @@ public final class Probability {
                     -example[i] * Math.log(example[i]), 5e-4);
         }
 
-        // 7장: P = [1, 0, 0], Q = [0.66, 0.24, 0.10]이면 교차 엔트로피는 정답 항 하나만 남아
+        // 4장: P = [1, 0, 0], Q = [0.66, 0.24, 0.10]이면 교차 엔트로피는 정답 항 하나만 남아
         // -ln 0.66 ≈ 0.42이고, 앞 절에서 구한 손실과 같은 값이다.
         c.near("정답이 첫째 토큰일 때의 교차 엔트로피", 0.42,
                 crossEntropy(new double[] {1, 0, 0}, example), 5e-3);
 
-        // 7장: perplexity = exp(평균 손실). 평균 손실 2.27이면 약 9.7이다.
+        // 4장: perplexity = exp(평균 손실). 평균 손실 2.27이면 약 9.7이다.
         c.near("평균 손실 2.27의 perplexity", 9.7, Math.exp(2.27), 5e-2);
         c.near("평균 손실 3.3의 perplexity", 27, Math.exp(3.2958), 0.1);
         c.near("평균 손실 2.0의 perplexity", 7.4, Math.exp(2.0), 0.05);
@@ -372,40 +372,40 @@ public final class Probability {
         c.near("균등 분포의 perplexity = 후보 수", 27, Math.exp(entropy(uniform)), 1e-9);
     }
 
-    /** 7장 "KL 발산: 두 분포 사이의 차이 재기" */
+    /** 4장 "KL 발산: 두 분포 사이의 차이 재기" */
     public static void klDivergence(Checker c) {
         c.section("KL 발산");
 
         double[] p = {0.7, 0.2, 0.1};
         double[] q = {0.5, 0.3, 0.2};
 
-        // 7장: KL(P || Q) ≈ 0.085, KL(Q || P) ≈ 0.092
+        // 4장: KL(P || Q) ≈ 0.085, KL(Q || P) ≈ 0.092
         c.near("KL(P||Q)", 0.085, kl(p, q), 5e-4);
         c.near("KL(Q||P)", 0.092, kl(q, p), 5e-4);
 
-        // 7장: 항별 값은 0.2355, -0.0811, -0.0693이다. Q가 P보다 큰 자리의 항은 음수지만 합은 음수가 아니다.
+        // 4장: 항별 값은 0.2355, -0.0811, -0.0693이다. Q가 P보다 큰 자리의 항은 음수지만 합은 음수가 아니다.
         double[] terms = {0.2355, -0.0811, -0.0693};
         for (int i = 0; i < terms.length; i++) {
             c.near("KL(P||Q)의 " + (i + 1) + "번째 항", terms[i], p[i] * Math.log(p[i] / q[i]), 5e-5);
         }
 
-        // 7장: 엔트로피(P)가 약 0.802, 교차 엔트로피(P, Q)는 KL을 더한 약 0.887이다.
+        // 4장: 엔트로피(P)가 약 0.802, 교차 엔트로피(P, Q)는 KL을 더한 약 0.887이다.
         c.near("엔트로피(P)", 0.802, entropy(p), 5e-4);
         c.near("교차 엔트로피(P, Q)", 0.887, crossEntropy(p, q), 5e-4);
 
-        // 7장: P와 Q가 같으면 0이고, 다를수록 커지며, 음수가 되지 않는다.
+        // 4장: P와 Q가 같으면 0이고, 다를수록 커지며, 음수가 되지 않는다.
         c.near("같은 분포의 KL", 0, kl(p, p), 1e-12);
         c.ok("다른 분포의 KL은 양수", kl(p, q) > 0, Checker.num(kl(p, q)));
 
-        // 7장: 순서를 바꾸면 값이 달라진다(비대칭).
+        // 4장: 순서를 바꾸면 값이 달라진다(비대칭).
         c.ok("KL은 비대칭", Math.abs(kl(p, q) - kl(q, p)) > 1e-6,
                 "KL(P||Q) " + Checker.num(kl(p, q)) + " ≠ KL(Q||P) " + Checker.num(kl(q, p)));
 
-        // 7장의 관계식: 교차 엔트로피(P, Q) = 엔트로피(P) + KL(P || Q)
+        // 4장의 관계식: 교차 엔트로피(P, Q) = 엔트로피(P) + KL(P || Q)
         c.near("교차 엔트로피 = 엔트로피 + KL",
                 crossEntropy(p, q), entropy(p) + kl(p, q), 1e-12);
 
-        // 7장: 학습 데이터의 분포 P는 변하지 않으므로 교차 엔트로피를 줄이는 것은
+        // 4장: 학습 데이터의 분포 P는 변하지 않으므로 교차 엔트로피를 줄이는 것은
         // 곧 KL을 줄이는 것이다. 모델 분포를 P 쪽으로 옮기며 두 값이 함께 줄어드는지 본다.
         boolean bothDrop = true;
         double prevCe = Double.POSITIVE_INFINITY;
@@ -427,7 +427,7 @@ public final class Probability {
         c.ok("교차 엔트로피와 KL이 함께 줄어듦", bothDrop,
                 "모델 분포를 데이터 분포로 옮기는 동안 둘 다 단조 감소");
 
-        // 1장의 지식 증류에서 student가 teacher를 따라 배울 때의 손실이 이 값이다.
+        // 5장의 지식 증류에서 student가 teacher를 따라 배울 때의 손실이 이 값이다.
         double[] teacher = softmax(new double[] {3.0, 1.0, 0.5}, 1.0);
         double before = kl(teacher, softmax(new double[] {2.0, 1.5, 1.0}, 1.0));
         double after = kl(teacher, softmax(new double[] {2.8, 1.2, 0.6}, 1.0));
@@ -462,7 +462,7 @@ public final class Probability {
         return true;
     }
 
-    /** 누적합이 난수 r을 넘어서는 첫 토큰의 번호를 돌려준다. 5장 Main.sampleFrom과 같은 절차다. */
+    /** 누적합이 난수 r을 넘어서는 첫 토큰의 번호를 돌려준다. 2장 Main.sampleFrom과 같은 절차다. */
     static int sampleFrom(double[] probs, double r) {
         double acc = 0;
         for (int i = 0; i < probs.length; i++) {

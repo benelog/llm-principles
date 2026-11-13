@@ -23,7 +23,7 @@ class GptTest {
     }
 
     @Test
-    @DisplayName("파라미터 수는 5장에서 말한 4,192개다")
+    @DisplayName("파라미터 수는 2장에서 말한 4,192개다")
     void parameterCountMatchesTheBook() {
         assertThat(newModel().params).hasSize(4192);
     }
@@ -55,7 +55,7 @@ class GptTest {
         Value[] q = Gpt.softmax(shifted);
 
         assertThat(p[0].data).isGreaterThan(p[1].data).isGreaterThan(p[2].data);
-        assertThat(p[0].data).as("7장의 계산 예시").isCloseTo(0.66, within(5e-3));
+        assertThat(p[0].data).as("4장의 계산 예시").isCloseTo(0.66, within(5e-3));
         for (int i = 0; i < 3; i++) {
             assertThat(q[i].data).isCloseTo(p[i].data, within(1e-12));
         }
@@ -153,7 +153,7 @@ class GptTest {
         return sequenceLossNode(model, seq).data;
     }
 
-    // 5장 학습 루프의 손실 계산과 같다. 각 위치에서 정답 토큰 확률의 -log를 평균한다.
+    // 2장 학습 루프의 손실 계산과 같다. 각 위치에서 정답 토큰 확률의 -log를 평균한다.
     private static Value sequenceLossNode(Gpt model, int[] seq) {
         Gpt.KvCache cache = model.newCache();
         Value loss = new Value(0);

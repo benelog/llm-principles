@@ -24,7 +24,7 @@ Hugging Face는 "머신러닝계의 GitHub"라고 불리는 모델 공유 플랫
 
 로딩 코드는 먼저 `model_type` 필드를 보고 아키텍처의 구현 클래스를 자동으로 고른다. 값이 "llama"면 `LlamaForCausalLM` 클래스로 모델을 조립한다. 이어서 나머지 필드로 블록 수와 차원 같은 크기를 정하고, safetensors의 텐서들을 이름으로 찾아 모델의 해당 자리에 채워 넣는다.
 
-나머지 필드는 2부 microGPT에서 상수로 정했던 값들과 정확히 대응한다. 위 예의 ``hidden_size``(4096)는 microGPT의 임베딩 차원(16)에, ``num_attention_heads``(32)는 헤드 수(2)에, ``num_hidden_layers``(32)는 블록 수(1)에, ``vocab_size``(32000)는 어휘 크기(27)에 해당한다. 역할은 같고 값만 크므로, microGPT를 이해했다면 ``config.json``은 이미 아는 상수들의 목록이다.
+나머지 필드는 1부 microGPT에서 상수로 정했던 값들과 정확히 대응한다. 위 예의 ``hidden_size``(4096)는 microGPT의 임베딩 차원(16)에, ``num_attention_heads``(32)는 헤드 수(2)에, ``num_hidden_layers``(32)는 블록 수(1)에, ``vocab_size``(32000)는 어휘 크기(27)에 해당한다. 역할은 같고 값만 크므로, microGPT를 이해했다면 ``config.json``은 이미 아는 상수들의 목록이다.
 
 == 함께 유통되는 설정 파일들
 
@@ -55,7 +55,7 @@ image::diagrams/ch09-model-loading.drawio.png[model_type으로 구현 클래스�
 
 == 파일과 정보 레이어의 대응
 
-1부의 레이어 분류를 모델 저장소의 실제 파일에 대응시키면 다음과 같다.
+2부의 레이어 분류를 모델 저장소의 실제 파일에 대응시키면 다음과 같다.
 
 [cols="1,1,2"]
 |===

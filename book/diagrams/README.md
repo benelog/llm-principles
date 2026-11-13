@@ -19,33 +19,33 @@ xvfb-run -a drawio --no-sandbox --export --format png --embed-diagram \
 | 파일 | 대상 장 | 내용 |
 |------|--------|------|
 | `ch00-generation-loop.drawio.png` | 도입 장 | 다음 토큰 예측의 반복: 생성한 토큰을 입력 끝에 붙여 모델을 다시 실행하고 종료 토큰에서 멈춤, temperature가 개입하는 곳 |
-| `ch01-training-pipeline.drawio.png` | 1장 | 학습 파이프라인: 사전학습 → SFT → 선호 학습과 변형 경로(연속 사전학습, RLVR, 증류, 병합, 모델 편집) |
-| `ch02-context-accumulation.drawio.png` | 2장 | 대화형 애플리케이션에서 턴마다 앞 턴의 프롬프트와 응답이 누적되는 구조와 프롬프트 캐싱 적중 구간 |
-| `ch02-context-window.drawio.png` | 2장 | 컨텍스트 윈도우의 구성 요소와 프롬프트 캐싱을 고려한 배치 규칙 |
-| `ch02-tool-loop.drawio.png` | 2장 | 도구 사용의 순환: 호출 생성 → 실행 → 결과를 토큰으로 추가 → 이어서 생성 |
-| `ch03-layer-map.drawio.png` | 1~3장 | 정보 레이어 지도: 컨텍스트 공급 → 프롬프트 → 모델 실행 → 디코딩, 회색지대 포함 |
-| `ch04-microgpt-flow.drawio.png` | 4장 | microGPT 예제의 전체 흐름: Main의 학습 루프와 생성 루프, Tokenizer의 encode·decode, Gpt.forward 내부 단계, Value의 연산 기록과 backward()를 메서드 이름으로 연결 |
-| `ch05-attention.drawio.png` | 5장 | 한 위치의 어텐션: 쿼리와 캐시의 키로 점수(scores)를 매기고 softmax 가중치(weights)로 밸류를 섞는 과정, causal 구조 |
-| `ch05-gpt-forward.drawio.png` | 5장 | GPT forward 계산: 임베딩 → 어텐션(Q·K·V) → MLP → 잔차 → 로짓 → 샘플링 루프 |
-| `ch05-training-loop.drawio.png` | 5장 | 학습 루프 다섯 단계: 샘플 → forward → 손실 → 역전파 → 옵티마이저 |
-| `ch06-batching.drawio.png` | 6장 | 정적 배칭과 연속 배칭의 자리 사용 비교, 연속 예약과 PagedAttention 블록 할당의 메모리 비교 |
-| `ch06-gqa.drawio.png` | 6장 | MHA·GQA·MQA의 K·V 헤드 공유와 128K 컨텍스트의 KV 캐시 크기(64·16·2GiB) |
-| `ch06-prefill-decode.drawio.png` | 6장 | 프리필(병렬)과 디코드(순차)의 비대칭, KV 캐시 · 프롬프트 캐싱 · 배칭 |
-| `ch06-speculative-decoding.drawio.png` | 6장 | 투기적 디코딩: 초안 모델의 순차 생성, 큰 모델의 병렬 검증, 채택·기각과 고친 토큰 |
-| `ch07-chain-rule.drawio.png` | 7장 | 체인 룰과 역전파: y = (2x+1)²의 계산 그래프에서 forward 값과 backward 기울기 |
-| `ch07-conditioning-levels.drawio.png` | 7장 | 조건 유지의 정도: LLM(모든 앞 토큰), n-gram(직전 두 토큰), 나이브 베이즈(순서 없는 단어 집합) |
-| `ch07-entropy-perplexity.drawio.png` | 7장 | 엔트로피와 perplexity: 확신하는 분포, 예제 분포, 균등 분포의 비교 |
-| `ch07-gradient-contour.drawio.png` | 7장 | 그래디언트와 등고선: x² + 4y²의 타원 등고선 위의 그래디언트 화살표와 경사 하강 경로의 지그재그 |
-| `ch07-gradient-descent.drawio.png` | 7장 | 경사 하강법과 학습률: 학습률 0.1의 수렴과 1.1의 발산 |
-| `ch07-kl-penalty.drawio.png` | 7장 | KL 발산의 항별 기여와 비대칭, RLHF의 보상 − β·KL 목적 함수 |
-| `ch07-loss-curve.drawio.png` | 7장 | 교차 엔트로피 손실 -ln p 곡선과 균등 추측 손실 ln 27 |
-| `ch07-low-rank.drawio.png` | 7장 | 저랭크 근사: d×d 행렬을 d×r과 r×d의 곱으로 대신할 때의 저장 숫자 비교, LoRA와의 연결 |
-| `ch07-nonlinearity.drawio.png` | 7장 | 비선형 함수의 역할: 행렬 곱 두 번은 직선 하나, 사이에 tanh를 끼우면 곡선 |
-| `ch07-prefill-decode-matmul.drawio.png` | 7장 | 프리필의 행렬×행렬(Q Kᵀ)과 디코드의 벡터×행렬(q Kᵀ) 비교, 6장 병목 비대칭과의 연결 |
-| `ch07-sampling-cutoff.drawio.png` | 7장 | 샘플링과 후보 제한: 누적 확률 막대 위의 난수, top-k와 top-p의 꼬리 자르기와 재정규화 |
-| `ch07-softmax-temperature.drawio.png` | 7장 | softmax와 temperature: 같은 로짓을 T = 0.5, 1, 2로 바꿨을 때의 확률 막대 그래프 |
-| `ch07-variance-norm.drawio.png` | 7장 | 값의 규모 관리: 블록을 지날수록 폭주·소멸하는 표준편차와 RMSNorm, sqrt(d) 스케일링 전후의 점수 분포 |
-| `ch07-vector-dot.drawio.png` | 7장 | 벡터와 내적: 2차원 벡터의 내적·코사인 계산과 사잇각에 따른 내적의 부호 |
+| `ch01-microgpt-flow.drawio.png` | 1장 | microGPT 예제의 전체 흐름: Main의 학습 루프와 생성 루프, Tokenizer의 encode·decode, Gpt.forward 내부 단계, Value의 연산 기록과 backward()를 메서드 이름으로 연결 |
+| `ch02-attention.drawio.png` | 2장 | 한 위치의 어텐션: 쿼리와 캐시의 키로 점수(scores)를 매기고 softmax 가중치(weights)로 밸류를 섞는 과정, causal 구조 |
+| `ch02-gpt-forward.drawio.png` | 2장 | GPT forward 계산: 임베딩 → 어텐션(Q·K·V) → MLP → 잔차 → 로짓 → 샘플링 루프 |
+| `ch02-training-loop.drawio.png` | 2장 | 학습 루프 다섯 단계: 샘플 → forward → 손실 → 역전파 → 옵티마이저 |
+| `ch03-batching.drawio.png` | 3장 | 정적 배칭과 연속 배칭의 자리 사용 비교, 연속 예약과 PagedAttention 블록 할당의 메모리 비교 |
+| `ch03-gqa.drawio.png` | 3장 | MHA·GQA·MQA의 K·V 헤드 공유와 128K 컨텍스트의 KV 캐시 크기(64·16·2GiB) |
+| `ch03-prefill-decode.drawio.png` | 3장 | 프리필(병렬)과 디코드(순차)의 비대칭, KV 캐시 · 프롬프트 캐싱 · 배칭 |
+| `ch03-speculative-decoding.drawio.png` | 3장 | 투기적 디코딩: 초안 모델의 순차 생성, 큰 모델의 병렬 검증, 채택·기각과 고친 토큰 |
+| `ch04-chain-rule.drawio.png` | 4장 | 체인 룰과 역전파: y = (2x+1)²의 계산 그래프에서 forward 값과 backward 기울기 |
+| `ch04-conditioning-levels.drawio.png` | 4장 | 조건 유지의 정도: LLM(모든 앞 토큰), n-gram(직전 두 토큰), 나이브 베이즈(순서 없는 단어 집합) |
+| `ch04-entropy-perplexity.drawio.png` | 4장 | 엔트로피와 perplexity: 확신하는 분포, 예제 분포, 균등 분포의 비교 |
+| `ch04-gradient-contour.drawio.png` | 4장 | 그래디언트와 등고선: x² + 4y²의 타원 등고선 위의 그래디언트 화살표와 경사 하강 경로의 지그재그 |
+| `ch04-gradient-descent.drawio.png` | 4장 | 경사 하강법과 학습률: 학습률 0.1의 수렴과 1.1의 발산 |
+| `ch04-kl-penalty.drawio.png` | 4장 | KL 발산의 항별 기여와 비대칭, RLHF의 보상 − β·KL 목적 함수 |
+| `ch04-loss-curve.drawio.png` | 4장 | 교차 엔트로피 손실 -ln p 곡선과 균등 추측 손실 ln 27 |
+| `ch04-low-rank.drawio.png` | 4장 | 저랭크 근사: d×d 행렬을 d×r과 r×d의 곱으로 대신할 때의 저장 숫자 비교, LoRA와의 연결 |
+| `ch04-nonlinearity.drawio.png` | 4장 | 비선형 함수의 역할: 행렬 곱 두 번은 직선 하나, 사이에 tanh를 끼우면 곡선 |
+| `ch04-prefill-decode-matmul.drawio.png` | 4장 | 프리필의 행렬×행렬(Q Kᵀ)과 디코드의 벡터×행렬(q Kᵀ) 비교, 3장 병목 비대칭과의 연결 |
+| `ch04-sampling-cutoff.drawio.png` | 4장 | 샘플링과 후보 제한: 누적 확률 막대 위의 난수, top-k와 top-p의 꼬리 자르기와 재정규화 |
+| `ch04-softmax-temperature.drawio.png` | 4장 | softmax와 temperature: 같은 로짓을 T = 0.5, 1, 2로 바꿨을 때의 확률 막대 그래프 |
+| `ch04-variance-norm.drawio.png` | 4장 | 값의 규모 관리: 블록을 지날수록 폭주·소멸하는 표준편차와 RMSNorm, sqrt(d) 스케일링 전후의 점수 분포 |
+| `ch04-vector-dot.drawio.png` | 4장 | 벡터와 내적: 2차원 벡터의 내적·코사인 계산과 사잇각에 따른 내적의 부호 |
+| `ch05-training-pipeline.drawio.png` | 5장 | 학습 파이프라인: 사전학습 → SFT → 선호 학습과 변형 경로(연속 사전학습, RLVR, 증류, 병합, 모델 편집) |
+| `ch06-context-accumulation.drawio.png` | 6장 | 대화형 애플리케이션에서 턴마다 앞 턴의 프롬프트와 응답이 누적되는 구조와 프롬프트 캐싱 적중 구간 |
+| `ch06-context-window.drawio.png` | 6장 | 컨텍스트 윈도우의 구성 요소와 프롬프트 캐싱을 고려한 배치 규칙 |
+| `ch06-tool-loop.drawio.png` | 6장 | 도구 사용의 순환: 호출 생성 → 실행 → 결과를 토큰으로 추가 → 이어서 생성 |
+| `ch07-layer-map.drawio.png` | 5~7장 | 정보 레이어 지도: 컨텍스트 공급 → 프롬프트 → 모델 실행 → 디코딩, 회색지대 포함 |
 | `ch08-block-quantization.drawio.png` | 8장 | 아웃라이어 하나와 4비트 양자화: 텐서 전체 배율과 블록마다 배율의 정수·복원 값 비교 |
 | `ch08-model-repo.drawio.png` | 8~9장 | 모델 저장소 파일과 레이어 대응, safetensors 내부 구조 |
 | `ch09-model-loading.drawio.png` | 9장 | config.json으로 모델 조립: model_type → 구현 클래스 → 빈 구조 → 텐서 이름으로 채우기, 직접 읽는 엔진과 변환 경로 |

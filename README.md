@@ -11,13 +11,14 @@ main 브랜치에 push하면 GitHub Actions가 원고를 빌드해서 위 주소
 ```
 book/                  AsciiDoc 원고 (4개 부, 14개 장, 부록 3개)
   book.adoc            책 전체 (부 구성과 장별 파일 include)
-  ch01-model-layer.adoc            1부 1장. 모델 레이어: 학습으로 가중치에 넣는 정보
-  ch02-prompt-layer.adoc           1부 2장. 프롬프트 레이어: 추론 시점에 넣는 정보
-  ch03-gray-zone.adoc              1부 3장. 회색지대와 컨텍스트 공급 레이어
-  ch04-microgpt-basics.adoc        2부 4장. 다음 토큰 예측과 자동 미분
-  ch05-microgpt-model.adoc         2부 5장. GPT의 구조와 학습, 추론
-  ch06-inference-serving.adoc      2부 6장. 추론 서빙의 원리: 토큰은 왜 그 가격인가
-  ch07-math-stats.adoc             2부 7장. 코드 뒤의 수학
+  ch00-call-anatomy.adoc           도입 장. LLM 호출 한 번의 해부
+  ch01-microgpt-basics.adoc        1부 1장. 다음 토큰 예측과 자동 미분
+  ch02-microgpt-model.adoc         1부 2장. GPT의 구조와 학습, 추론
+  ch03-inference-serving.adoc      1부 3장. 추론 서빙의 원리: 토큰은 왜 그 가격인가
+  ch04-math.adoc                   1부 4장. 코드 뒤의 수학
+  ch05-model-layer.adoc            2부 5장. 모델 레이어: 학습으로 가중치에 넣는 정보
+  ch06-prompt-layer.adoc           2부 6장. 프롬프트 레이어: 추론 시점에 넣는 정보
+  ch07-gray-zone.adoc              2부 7장. 회색지대와 컨텍스트 공급 레이어
   ch08-weight-formats.adoc         3부 8장. 가중치 저장 포맷
   ch09-architecture-conventions.adoc  3부 9장. 아키텍처 규약과 추론 엔진
   ch10-tokenizer-chat-template.adoc   3부 10장. 토크나이저와 채팅 템플릿
@@ -37,7 +38,7 @@ examples/
   java/minirag/        청킹, BM25, 벡터 검색, RRF 하이브리드 검색
   spring-ai/           Spring AI RAG 파이프라인과 디코딩 파라미터 제어
   java-tests/          위 순수 자바 예제들의 JUnit 테스트 (Gradle, AssertJ)
-  math-lab/            7장과 부록 통계 참고의 수치를 Apache Commons Math로 검산하는 실습 (Gradle)
+  math-lab/            4장과 부록 통계 참고의 수치를 Apache Commons Math로 검산하는 실습 (Gradle)
 ```
 
 원고의 코드는 전부 `examples/` 아래 소스를 AsciiDoc의 `include` 태그 문법으로 인용합니다. 책의 코드와 예제 프로젝트의 코드는 항상 같습니다.

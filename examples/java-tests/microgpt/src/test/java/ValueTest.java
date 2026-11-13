@@ -57,7 +57,7 @@ class ValueTest {
     }
 
     @Test
-    @DisplayName("7장의 체인 룰 예제: y = (2x + 1)²의 x = 1에서 기울기는 12다")
+    @DisplayName("4장의 체인 룰 예제: y = (2x + 1)²의 x = 1에서 기울기는 12다")
     void chainRuleExampleFromChapter7() {
         Value x = new Value(1);
 

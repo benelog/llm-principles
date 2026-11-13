@@ -5,7 +5,7 @@ import org.apache.commons.math3.analysis.differentiation.DerivativeStructure;
 import org.apache.commons.math3.analysis.differentiation.FiniteDifferencesDifferentiator;
 import org.apache.commons.math3.analysis.differentiation.UnivariateDifferentiableFunction;
 
-/** 7장 "미분: 모델이 배우는 방향" */
+/** 4장 "미분: 모델이 배우는 방향" */
 public final class Calculus {
 
     private Calculus() {
@@ -14,20 +14,20 @@ public final class Calculus {
     public static void run(Checker c) {
         c.section("미분: 도함수, 체인 룰, 경사 하강법");
 
-        // 7장: f(x, y) = x² + 3y이고 (x, y) = (1, 2)이면 그래디언트는 [2, 3]이다.
+        // 4장: f(x, y) = x² + 3y이고 (x, y) = (1, 2)이면 그래디언트는 [2, 3]이다.
         DerivativeStructure gx = new DerivativeStructure(2, 1, 0, 1.0);
         DerivativeStructure gy = new DerivativeStructure(2, 1, 1, 2.0);
         DerivativeStructure g = gx.multiply(gx).add(gy.multiply(3));
         c.near("그래디언트 성분 ∂f/∂x (x=1, y=2)", 2, g.getPartialDerivative(1, 0), 1e-12);
         c.near("그래디언트 성분 ∂f/∂y (x=1, y=2)", 3, g.getPartialDerivative(0, 1), 1e-12);
 
-        // 7장: y = (2x + 1)²을 x = 1에서 미분하면 6 × 2 = 12이고, x = 1.001이면 y = 9.012다.
+        // 4장: y = (2x + 1)²을 x = 1에서 미분하면 6 × 2 = 12이고, x = 1.001이면 y = 9.012다.
         DerivativeStructure cx = new DerivativeStructure(1, 1, 0, 1.0);
         DerivativeStructure cy = cx.multiply(2).add(1).pow(2);
         c.near("체인 룰 예제 dy/dx (x=1)", 12, cy.getPartialDerivative(1), 1e-12);
         c.near("x = 1.001에서의 y", 9.012, Math.pow(2 * 1.001 + 1, 2), 1e-3);
 
-        // 7장: 로컬 기울기는 dy/dg = 2g = 6, dg/dx = 2다.
+        // 4장: 로컬 기울기는 dy/dg = 2g = 6, dg/dx = 2다.
         // x가 0.001 커지면 g는 그 2배인 0.002, y는 다시 그 6배인 0.012 커진다.
         DerivativeStructure inner = new DerivativeStructure(1, 1, 0, 3.0);
         c.near("바깥 함수의 로컬 기울기 dy/dg (g=3)", 6, inner.pow(2).getPartialDerivative(1), 1e-12);
@@ -36,7 +36,7 @@ public final class Calculus {
         c.near("g의 변화량", 0.002, (2 * 1.001 + 1) - 3, 1e-12);
         c.near("y의 변화량", 0.012, Math.pow(2 * 1.001 + 1, 2) - 9, 5e-5);
 
-        // 7장: f(x) = x²에서 x = 3, 학습률 0.1로 출발하면 3, 2.4, 1.92, 1.54, 1.23이고
+        // 4장: f(x) = x²에서 x = 3, 학습률 0.1로 출발하면 3, 2.4, 1.92, 1.54, 1.23이고
         // 10스텝 뒤에는 3 × 0.8^10 ≈ 0.32이다. 학습률 1.1이면 3, -3.6, 4.32, -5.18로 발산한다.
         double[] expected = {3, 2.4, 1.92, 1.54, 1.23};
         double walk = 3.0;
@@ -60,12 +60,12 @@ public final class Calculus {
         }
         c.ok("학습률 1.1의 발산 경로", badMatches, "3 → -3.6 → 4.32 → -5.18");
 
-        // 7장: 첫 스텝에서 기울기는 2 * 3 = 6이므로 학습률 0.1이면 x는 3 - 0.1 * 6 = 2.4,
+        // 4장: 첫 스텝에서 기울기는 2 * 3 = 6이므로 학습률 0.1이면 x는 3 - 0.1 * 6 = 2.4,
         // 학습률 1.1이면 3 - 1.1 * 6 = -3.6이 된다.
         c.near("학습률 0.1의 첫 스텝", 2.4, 3 - 0.1 * (2 * 3), 1e-12);
         c.near("학습률 1.1의 첫 스텝", -3.6, 3 - 1.1 * (2 * 3), 1e-12);
 
-        // 7장: 한 스텝의 갱신식은 x - 학습률 * 2x = (1 - 2 * 학습률) * x다.
+        // 4장: 한 스텝의 갱신식은 x - 학습률 * 2x = (1 - 2 * 학습률) * x다.
         // 학습률 0.1이면 매 스텝 0.8배, 1.1이면 -1.2배가 된다.
         c.near("학습률 0.1의 스텝 배율", 0.8, 1 - 2 * 0.1, 1e-12);
         c.near("학습률 1.1의 스텝 배율", -1.2, 1 - 2 * 1.1, 1e-12);
@@ -73,7 +73,7 @@ public final class Calculus {
         c.ok("배율의 절댓값이 1보다 작아야 수렴", Math.abs(1 - 2 * 0.1) < 1 && Math.abs(1 - 2 * 1.1) > 1,
                 "|0.8| < 1, |-1.2| > 1");
 
-        // 7장: Adam의 첫 스텝. β1 = 0.9, β2 = 0.95이면 m = 0.1g, v = 0.05g²이고,
+        // 4장: Adam의 첫 스텝. β1 = 0.9, β2 = 0.95이면 m = 0.1g, v = 0.05g²이고,
         // 보정하면 m̂ = g, v̂ = g²라서 갱신량이 기울기 크기와 무관하게 학습률 × (g의 부호)가 된다.
         // 보정이 없으면 0.1g / sqrt(0.05g²) ≈ 0.45배로 작다.
         final double beta1 = 0.9;
@@ -94,11 +94,11 @@ public final class Calculus {
                 "기울기 0.001, -0.5, 3, -200 모두 ±학습률만큼 이동");
         c.near("보정 없는 첫 스텝의 배율", 0.45, (1 - beta1) / Math.sqrt(1 - beta2), 5e-3);
 
-        // 7장: 첫 스텝의 이동 평균은 m = 0.9 * 0 + 0.1 * g, v = 0.95 * 0 + 0.05 * g²다. g = 3으로 확인한다.
+        // 4장: 첫 스텝의 이동 평균은 m = 0.9 * 0 + 0.1 * g, v = 0.95 * 0 + 0.05 * g²다. g = 3으로 확인한다.
         c.near("첫 스텝의 m (g = 3)", 0.1 * 3, beta1 * 0 + (1 - beta1) * 3, 1e-12);
         c.near("첫 스텝의 v (g = 3)", 0.05 * 9, beta2 * 0 + (1 - beta2) * 9, 1e-12);
 
-        // 7장: β1 = 0.9이고 m이 0에서 시작할 때, 기울기가 계속 1이면 m은 0.1, 0.19, 0.271, 0.344로
+        // 4장: β1 = 0.9이고 m이 0에서 시작할 때, 기울기가 계속 1이면 m은 0.1, 0.19, 0.271, 0.344로
         // 1을 향해 커지고, 1과 -1을 오가면 0.1, -0.01, 0.091, -0.018로 0 근처에 머문다.
         c.ok("기울기가 일정할 때의 이동 평균",
                 movingAverageMatches(beta1, new double[] {1, 1, 1, 1}, new double[] {0.1, 0.19, 0.271, 0.344}),
@@ -107,30 +107,30 @@ public final class Calculus {
                 movingAverageMatches(beta1, new double[] {1, -1, 1, -1}, new double[] {0.1, -0.01, 0.091, -0.018}),
                 "0.1 → -0.01 → 0.091 → -0.018");
 
-        // Commons Math의 DerivativeStructure는 4장의 autograd와 같은 자동 미분이다.
+        // Commons Math의 DerivativeStructure는 1장의 autograd와 같은 자동 미분이다.
         // 값과 함께 도함수를 들고 다니면서 연산할 때마다 체인 룰을 적용한다.
         // 첫 번째 인자는 변수 개수, 두 번째는 미분 차수, 세 번째는 변수 번호, 네 번째는 값이다.
         DerivativeStructure x = new DerivativeStructure(1, 1, 0, 3.0);
 
-        // 7장: f(x) = x²이면 x = 3에서의 기울기는 6이다.
+        // 4장: f(x) = x²이면 x = 3에서의 기울기는 6이다.
         DerivativeStructure square = x.multiply(x);
         c.near("f(x)=x²의 x=3에서 기울기", 6, square.getPartialDerivative(1), 1e-12);
         c.note("자동 미분이라 수치 미분과 달리 오차 없이 정확히 6이 나온다");
 
-        // 7장: x를 0.001만큼 키우면 f는 약 0.006만큼 커진다.
+        // 4장: x를 0.001만큼 키우면 f는 약 0.006만큼 커진다.
         c.near("x를 0.001 키웠을 때 변화량", 0.006, 3.001 * 3.001 - 3 * 3, 1e-5);
 
-        // 7장: 3.001² = 9.006001이고, f의 변화량 0.006을 x의 변화량 0.001로 나눈 6이 기울기다.
+        // 4장: 3.001² = 9.006001이고, f의 변화량 0.006을 x의 변화량 0.001로 나눈 6이 기울기다.
         c.near("3.001²", 9.006001, 3.001 * 3.001, 1e-9);
         c.near("f의 변화량 / x의 변화량", 6, (3.001 * 3.001 - 3 * 3) / 0.001, 5e-3);
 
-        // 7장: x = -3에서는 기울기가 -6이라서 x를 키우면 f가 줄어든다.
+        // 4장: x = -3에서는 기울기가 -6이라서 x를 키우면 f가 줄어든다.
         DerivativeStructure negative = new DerivativeStructure(1, 1, 0, -3.0);
         c.near("f(x)=x²의 x=-3에서 기울기", -6, negative.multiply(negative).getPartialDerivative(1), 1e-12);
         c.ok("기울기가 음수면 x를 키울 때 f가 줄어듦", (-2.999) * (-2.999) < (-3.0) * (-3.0),
                 "f(-2.999) < f(-3)");
 
-        // 7장: 편미분은 다른 입력을 고정하고 하나만 움직여 구한 기울기이고,
+        // 4장: 편미분은 다른 입력을 고정하고 하나만 움직여 구한 기울기이고,
         // 그것을 모두 모은 벡터가 그래디언트다.
         // f(x, y) = x²y + 3y이면 ∂f/∂x = 2xy, ∂f/∂y = x² + 3이다.
         DerivativeStructure vx = new DerivativeStructure(2, 1, 0, 2.0);
@@ -139,7 +139,7 @@ public final class Calculus {
         c.near("편미분 ∂f/∂x (x=2, y=5)", 20, f.getPartialDerivative(1, 0), 1e-12);
         c.near("편미분 ∂f/∂y (x=2, y=5)", 7, f.getPartialDerivative(0, 1), 1e-12);
 
-        // 7장: 체인 룰은 dy/dx = dy/dg * dg/dx다.
+        // 4장: 체인 룰은 dy/dx = dy/dg * dg/dx다.
         // g(x) = x², f(u) = sin(u)로 두고 x = 1.3에서 확인한다.
         final double x0 = 1.3;
         DerivativeStructure xc = new DerivativeStructure(1, 1, 0, x0);
@@ -158,7 +158,7 @@ public final class Calculus {
                 .getPartialDerivative(1);
         c.near("수치 미분도 같은 값", whole, approx, 1e-6);
 
-        // 7장: 경사 하강법은 "파라미터 = 파라미터 - 학습률 * 기울기"다.
+        // 4장: 경사 하강법은 "파라미터 = 파라미터 - 학습률 * 기울기"다.
         // 손실 (x-3)²을 직접 이 규칙으로 줄여 본다.
         double p = 0.0;
         final double learningRate = 0.1;
@@ -176,7 +176,7 @@ public final class Calculus {
         }
         c.near("자동 미분으로 돌린 경사 하강법", 3, auto, 1e-6);
 
-        // 7장: 학습률이 너무 크면 최저 부근을 지나쳐 발산한다.
+        // 4장: 학습률이 너무 크면 최저 부근을 지나쳐 발산한다.
         // (x-3)²의 기울기는 2(x-3)이므로 학습률이 1보다 크면 발산한다.
         double diverged = 0.0;
         for (int i = 0; i < 200; i++) {
@@ -185,7 +185,7 @@ public final class Calculus {
         c.ok("학습률이 너무 크면 발산", Math.abs(diverged - 3) > 1e6,
                 "학습률 1.05에서 |x-3| = " + Checker.num(Math.abs(diverged - 3)));
 
-        // 7장: 너무 작으면 학습이 느리다. 같은 반복 횟수에서 얼마나 갔는지 비교한다.
+        // 4장: 너무 작으면 학습이 느리다. 같은 반복 횟수에서 얼마나 갔는지 비교한다.
         double slow = 0.0;
         for (int i = 0; i < 200; i++) {
             slow -= 0.001 * 2 * (slow - 3);

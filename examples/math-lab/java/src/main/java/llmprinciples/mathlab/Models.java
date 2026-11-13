@@ -238,7 +238,7 @@ public final class Models {
         c.near("2단계 전이 = 전이 행렬의 제곱", 0,
                 p.power(2).subtract(p.multiply(p)).getFrobeniusNorm(), 1e-12);
 
-        // 부록: 4장의 이름 2,000개에서 직전 글자가 a일 때의 전이 확률을 세면
+        // 부록: 1장의 이름 2,000개에서 직전 글자가 a일 때의 전이 확률을 세면
         // a는 2,289번 등장하고, 다음은 이름의 끝 0.32, n 0.14, r 0.10, l 0.09이다.
         Path names = Paths.get("../../java/microgpt/names.txt");
         if (Files.exists(names)) {

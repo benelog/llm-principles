@@ -20,17 +20,17 @@ import org.apache.commons.math3.stat.correlation.Covariance;
 import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
-/** 7장의 평균과 분산 절, 부록 통계 참고의 정규 분포·공분산·k-평균 절을 검산한다. */
+/** 4장의 평균과 분산 절, 부록 통계 참고의 정규 분포·공분산·k-평균 절을 검산한다. */
 public final class Statistics {
 
     private Statistics() {
     }
 
-    /** 7장 "평균, 분산, 표준편차"와 "정규화와 sqrt(d) 스케일링" */
+    /** 4장 "평균, 분산, 표준편차"와 "정규화와 sqrt(d) 스케일링" */
     public static void moments(Checker c) {
         c.section("평균, 분산, 정규화와 sqrt(d) 스케일링");
 
-        // 7장: [2, 4, 4, 4, 5, 5, 7, 9]는 평균 5, 분산 4, 표준편차 2다.
+        // 4장: [2, 4, 4, 4, 5, 5, 7, 9]는 평균 5, 분산 4, 표준편차 2다.
         double[] sample = {2, 4, 4, 4, 5, 5, 7, 9};
         double mean = 0;
         for (double v : sample) {
@@ -46,7 +46,7 @@ public final class Statistics {
         c.near("예제 값들의 분산 (편차 제곱의 평균)", 4, var, 1e-12);
         c.near("예제 값들의 표준편차", 2, Math.sqrt(var), 1e-12);
 
-        // 7장: 편차를 그대로 평균 내면 양수와 음수가 상쇄되어 항상 0이 된다.
+        // 4장: 편차를 그대로 평균 내면 양수와 음수가 상쇄되어 항상 0이 된다.
         double deviationSum = 0;
         for (double v : sample) {
             deviationSum += v - mean;
@@ -66,7 +66,7 @@ public final class Statistics {
         c.near("분산 = 자기 자신과의 공분산",
                 StatUtils.variance(x), new Covariance().covariance(x, x), 1e-12);
 
-        // 7장: 평균 0, 분산 1인 값으로 이루어진 d차원 벡터 두 개를 내적하면
+        // 4장: 평균 0, 분산 1인 값으로 이루어진 d차원 벡터 두 개를 내적하면
         // 결과의 분산이 d가 되고 표준편차는 sqrt(d)가 된다.
         Random rnd = new Random(78);
         final int d = 64;
@@ -79,7 +79,7 @@ public final class Statistics {
         c.near("d차원 내적의 분산 (d=64)", 64, StatUtils.variance(dots), 3);
         c.near("d차원 내적의 표준편차", 8, Math.sqrt(StatUtils.variance(dots)), 0.3);
 
-        // 7장: 내적을 sqrt(d)로 나누면 차원이 몇이든 점수의 분산이 1 근처로 유지된다.
+        // 4장: 내적을 sqrt(d)로 나누면 차원이 몇이든 점수의 분산이 1 근처로 유지된다.
         double[] scaled = Arrays.stream(dots).map(v -> v / Math.sqrt(d)).toArray();
         c.near("sqrt(d)로 나눈 뒤의 분산", 1, StatUtils.variance(scaled), 0.05);
 
@@ -92,19 +92,19 @@ public final class Statistics {
         }
         c.near("차원을 256으로 바꿔도 분산 1", 1, StatUtils.variance(dots2), 0.05);
 
-        // 7장: 값을 c로 나누면 표준편차는 c로, 분산은 c²으로 나뉜다.
+        // 4장: 값을 c로 나누면 표준편차는 c로, 분산은 c²으로 나뉜다.
         double[] quartered = Arrays.stream(x).map(value -> value / 4).toArray();
         c.near("값을 4로 나눈 뒤의 분산 = 분산 / 16",
                 StatUtils.variance(x) / 16, StatUtils.variance(quartered), 1e-12);
         c.near("값을 4로 나눈 뒤의 표준편차 = 표준편차 / 4",
                 Math.sqrt(StatUtils.variance(x)) / 4, Math.sqrt(StatUtils.variance(quartered)), 1e-12);
 
-        // 7장: d가 256이면 나누기 전 점수의 표준편차가 sqrt(256) = 16이고,
+        // 4장: d가 256이면 나누기 전 점수의 표준편차가 sqrt(256) = 16이고,
         // 점수 차이 16은 softmax에서 e^16, 약 890만 배의 확률 비율이 된다.
         c.near("sqrt(256)", 16, Math.sqrt(256), 1e-12);
         c.near("e^16", 890e4, Math.exp(16), 5e4);
 
-        // 7장: x = [3, 4]이면 제곱 평균은 12.5, RMS는 약 3.54이고 나눈 결과는 약 [0.85, 1.13]이다.
+        // 4장: x = [3, 4]이면 제곱 평균은 12.5, RMS는 약 3.54이고 나눈 결과는 약 [0.85, 1.13]이다.
         // 결과의 제곱 평균은 (0.72 + 1.28) / 2 = 1이고, 성분 사이의 비율 3 대 4는 그대로다.
         RealVector pair = new ArrayRealVector(new double[] {3, 4});
         double meanSquare = pair.dotProduct(pair) / pair.getDimension();
@@ -118,7 +118,7 @@ public final class Statistics {
         c.near("성분 사이의 비율 3 대 4 유지", 3.0 / 4,
                 pairNormed.getEntry(0) / pairNormed.getEntry(1), 1e-12);
 
-        // 7장: 5장의 RMSNorm은 벡터를 자기 크기로 나눠 규모를 되돌린다.
+        // 4장: 2장의 RMSNorm은 벡터를 자기 크기로 나눠 규모를 되돌린다.
         RealVector v = new ArrayRealVector(new double[] {3, -4, 12, 0.5});
         double rms = v.getNorm() / Math.sqrt(v.getDimension());
         RealVector normed = v.mapDivide(rms);
