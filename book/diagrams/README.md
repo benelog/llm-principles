@@ -19,6 +19,7 @@ xvfb-run -a drawio --no-sandbox --export --format png --embed-diagram \
 | 파일 | 대상 장 | 내용 |
 |------|--------|------|
 | `ch00-generation-loop.drawio.png` | 도입 장 | 다음 토큰 예측의 반복: 생성한 토큰을 입력 끝에 붙여 모델을 다시 실행하고 종료 토큰에서 멈춤, temperature가 개입하는 곳 |
+| `ch00-token-vector.drawio.png` | 도입 장 | 토큰이 번호를 거쳐 벡터가 되는 과정과 2차원 임베딩 표 예시, 좌표평면에서 쓰임이 비슷한 토큰이 가까이 모인 모습 |
 | `ch01-microgpt-flow.drawio.png` | 1장 | microGPT 예제의 전체 흐름: Main의 학습 루프와 생성 루프, Tokenizer의 encode·decode, Gpt.forward 내부 단계, Value의 연산 기록과 backward()를 메서드 이름으로 연결 |
 | `ch02-attention.drawio.png` | 2장 | 한 위치의 어텐션: 쿼리와 캐시의 키로 점수(scores)를 매기고 softmax 가중치(weights)로 밸류를 섞는 과정, causal 구조 |
 | `ch02-gpt-forward.drawio.png` | 2장 | GPT forward 계산: 임베딩 → 어텐션(Q·K·V) → MLP → 잔차 → 로짓 → 샘플링 루프 |
