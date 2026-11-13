@@ -9,7 +9,7 @@ main 브랜치에 push하면 GitHub Actions가 원고를 빌드해서 위 주소
 ## 구성
 
 ```
-book/                  AsciiDoc 원고 (4개 부, 14개 장)
+book/                  AsciiDoc 원고 (4개 부, 14개 장, 부록 3개)
   book.adoc            책 전체 (부 구성과 장별 파일 include)
   ch01-model-layer.adoc            1부 1장. 모델 레이어: 학습으로 가중치에 넣는 정보
   ch02-prompt-layer.adoc           1부 2장. 프롬프트 레이어: 추론 시점에 넣는 정보
@@ -17,7 +17,7 @@ book/                  AsciiDoc 원고 (4개 부, 14개 장)
   ch04-microgpt-basics.adoc        2부 4장. 다음 토큰 예측과 자동 미분
   ch05-microgpt-model.adoc         2부 5장. GPT의 구조와 학습, 추론
   ch06-inference-serving.adoc      2부 6장. 추론 서빙의 원리: 토큰은 왜 그 가격인가
-  ch07-math-stats.adoc             2부 7장. 코드 뒤의 수학과 통계
+  ch07-math-stats.adoc             2부 7장. 코드 뒤의 수학
   ch08-weight-formats.adoc         3부 8장. 가중치 저장 포맷
   ch09-architecture-conventions.adoc  3부 9장. 아키텍처 규약과 추론 엔진
   ch10-tokenizer-chat-template.adoc   3부 10장. 토크나이저와 채팅 템플릿
@@ -25,6 +25,9 @@ book/                  AsciiDoc 원고 (4개 부, 14개 장)
   ch12-korean-rag.adoc             4부 12장. 한국어 처리와 실무 구성
   ch13-rag-tuning.adoc             4부 13장. 성능 진단과 개선 우선순위
   ch14-rag-frontier.adoc           4부 14장. RAG의 경계: 긴 컨텍스트와 에이전틱 검색
+  appendix-statistics.adoc         부록. 통계 참고: 다른 장이 참조하는 통계 개념
+  appendix-further-reading.adoc    부록. 더 읽을거리
+  appendix-glossary.adoc           부록. 용어집
 examples/
   java/microgpt/       microGPT의 자바 포팅 (자동 미분, GPT 학습과 추론)
   java/serving/        프리필·디코드와 KV 캐시의 추론 비용 구조 측정
@@ -34,7 +37,7 @@ examples/
   java/minirag/        청킹, BM25, 벡터 검색, RRF 하이브리드 검색
   spring-ai/           Spring AI RAG 파이프라인과 디코딩 파라미터 제어
   java-tests/          위 순수 자바 예제들의 JUnit 테스트 (Gradle, AssertJ)
-  math-lab/            7장의 수치를 Apache Commons Math로 검산하는 실습 (Gradle)
+  math-lab/            7장과 부록 통계 참고의 수치를 Apache Commons Math로 검산하는 실습 (Gradle)
 ```
 
 원고의 코드는 전부 `examples/` 아래 소스를 AsciiDoc의 `include` 태그 문법으로 인용합니다. 책의 코드와 예제 프로젝트의 코드는 항상 같습니다.

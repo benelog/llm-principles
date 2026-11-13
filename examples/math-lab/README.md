@@ -1,6 +1,6 @@
-# math-lab: 7장 수학·통계 검산 실습
+# math-lab: 7장 수학과 부록 통계 참고의 검산 실습
 
-7장 "코드 뒤의 수학과 통계"(`book/ch07-math-stats.adoc`)가 본문에 적어 둔 값들을 수치 계산 라이브러리로 다시 계산해서 맞는지 확인하는 실습 코드다. [Apache Commons Math 3](https://commons.apache.org/proper/commons-math/) 하나로 선형대수, 분포, 회귀, 검정을 모두 다루며, Gradle로 빌드한다. 검산 항목은 398건이다.
+7장 "코드 뒤의 수학"(`book/ch07-math-stats.adoc`)과 부록 "통계 참고"(`book/appendix-statistics.adoc`)가 본문에 적어 둔 값들을 수치 계산 라이브러리로 다시 계산해서 맞는지 확인하는 실습 코드다. [Apache Commons Math 3](https://commons.apache.org/proper/commons-math/) 하나로 선형대수, 분포, 회귀, 검정을 모두 다루며, Gradle로 빌드한다. 검산 항목은 398건이다.
 
 ```bash
 cd java && ./gradlew run
@@ -10,7 +10,7 @@ cd java && ./gradlew run
 
 ## 읽는 방법
 
-7장의 절 순서를 그대로 따른다. 7장을 읽다가 확인하고 싶은 절이 나오면 같은 이름의 함수를 열어 보면 된다. 주성분 분석은 7장에서 데이터의 구조 절에 있지만, 검산 코드는 저랭크 근사와 같은 행렬 연산을 쓰므로 랭크 검산과 한 함수에 두었다.
+7장과 부록 통계 참고의 절 순서를 그대로 따른다. 원고를 읽다가 확인하고 싶은 절이 나오면 같은 이름의 함수를 열어 보면 된다. 주성분 분석은 부록의 데이터의 구조 절에 있지만, 검산 코드는 7장의 저랭크 근사와 같은 행렬 연산을 쓰므로 랭크 검산과 한 함수에 두었다.
 
 | 7장 절 | 검산 함수 | 파일 |
 |---|---|---|
@@ -18,13 +18,17 @@ cd java && ./gradlew run
 | 확률 (확률 분포와 조건부 확률, 베이즈 정리, softmax와 temperature, 샘플링) | `probabilityAndBayes`, `softmaxAndTemperature` | `Probability.java` |
 | 로그와 정보량 (로그, 최대 우도와 교차 엔트로피, 엔트로피와 perplexity, KL 발산) | `crossEntropy`, `entropyAndPerplexity`, `klDivergence` | `Probability.java` |
 | 미분 (도함수와 그래디언트, 체인 룰, 경사 하강법) | `run` | `Calculus.java` |
-| 평균과 분산 (평균·분산·표준편차, 정규화와 sqrt(d), 정규 분포) | `moments`, `normalDistribution` | `Statistics.java` |
+| 평균과 분산 (평균·분산·표준편차, 정규화와 sqrt(d)) | `moments` | `Statistics.java` |
+
+| 부록 통계 참고의 절 | 검산 함수 | 파일 |
+|---|---|---|
+| 정규 분포와 중심 극한 정리 | `normalDistribution` | `Statistics.java` |
 | 데이터의 구조 (공분산과 상관계수, 주성분 분석, 판별 분석, k-평균) | `covarianceAndCorrelation`, `rankAndPca`, `discriminant`, `kmeans` | `Statistics.java`, `LinearAlgebra.java` |
 | 회귀 (선형 회귀, 로지스틱 회귀) | `regression` | `Models.java` |
 | 확률 과정과 결정 (마르코프 체인, 벨만 방정식) | `markovChain`, `bellman` | `Models.java` |
 | 규모와 측정 (스케일링 법칙, TF-IDF와 BM25, t-검정과 분산 분석) | `scalingLaw`, `searchStatistics`, `significanceTests` | `Models.java`, `SearchStats.java` |
 
-출력은 검산 한 줄에 한 항목이다. `원고` 열이 7장에 적힌 값, `계산` 열이 라이브러리가 내놓은 값이다.
+출력은 검산 한 줄에 한 항목이다. `원고` 열이 7장이나 부록에 적힌 값, `계산` 열이 라이브러리가 내놓은 값이다.
 
 ```
 == 로짓, softmax, temperature
@@ -42,11 +46,11 @@ cd java && ./gradlew run
 - **주성분 분석**: Commons Math에는 없어서 공분산 행렬의 고유분해로 직접 계산했다.
 - **엔트로피와 KL 발산**: Commons Math에는 없어서 정의 그대로 구현했다.
 
-없는 기능을 직접 구현한 부분이 오히려 7장의 정의를 코드로 확인하는 자리가 된다.
+없는 기능을 직접 구현한 부분이 오히려 원고의 정의를 코드로 확인하는 자리가 된다.
 
-## 7장의 주장 가운데 검산으로 확인되는 것들
+## 원고의 주장 가운데 검산으로 확인되는 것들
 
-단순히 숫자를 맞춰 보는 데 그치지 않고, 7장이 문장으로 서술한 관계를 코드로 확인한다.
+단순히 숫자를 맞춰 보는 데 그치지 않고, 7장과 부록이 문장으로 서술한 관계를 코드로 확인한다.
 
 - 상관계수는 평균을 뺀 두 배열의 코사인 유사도와 정확히 같은 값이다.
 - 체인 룰 예제 y = (2x + 1)²의 x = 1에서의 기울기는 자동 미분으로 정확히 12가 나오고, 학습률 0.1과 1.1의 경사 하강법 경로는 7장에 적힌 수열 그대로다.

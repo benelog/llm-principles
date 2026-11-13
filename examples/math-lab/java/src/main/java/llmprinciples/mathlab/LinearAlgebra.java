@@ -11,7 +11,7 @@ import org.apache.commons.math3.linear.SingularValueDecomposition;
 import org.apache.commons.math3.stat.StatUtils;
 import org.apache.commons.math3.stat.correlation.Covariance;
 
-/** 7장의 선형대수 관련 절을 검산한다. */
+/** 7장의 벡터와 행렬 절, 부록 통계 참고의 주성분 분석·판별 분석 절을 검산한다. */
 public final class LinearAlgebra {
 
     private LinearAlgebra() {
@@ -142,7 +142,7 @@ public final class LinearAlgebra {
                 decodeRow.subtract(scores.getRowVector(0)).getNorm(), 1e-12);
     }
 
-    /** 7장 "랭크와 저랭크 근사"와 "주성분 분석" */
+    /** 7장 "랭크와 저랭크 근사"와 부록 "주성분 분석" */
     public static void rankAndPca(Checker c) {
         c.section("랭크와 저랭크 근사 (주성분 분석 포함)");
 
@@ -192,7 +192,7 @@ public final class LinearAlgebra {
         c.ok("상위 2개 특이값만 남긴 근사", relative < 0.05,
                 Checker.num(relative * 100) + "% 상대 오차");
 
-        // 7장: 공분산 행렬 [[2, 1], [1, 2]]의 고유값은 3과 1이고,
+        // 부록: 공분산 행렬 [[2, 1], [1, 2]]의 고유값은 3과 1이고,
         // 고유벡터는 [1, 1]과 [1, -1] 방향이다. 제1주성분이 전체 분산의 75%를 설명한다.
         RealMatrix c22 = MatrixUtils.createRealMatrix(new double[][] {{2, 1}, {1, 2}});
         EigenDecomposition eig22 = new EigenDecomposition(c22);
@@ -204,7 +204,7 @@ public final class LinearAlgebra {
         RealVector anti = new ArrayRealVector(new double[] {1, -1});
         c.near("C × [1,-1] = 1 × [1,-1]", 0, c22.operate(anti).subtract(anti).getNorm(), 1e-12);
 
-        // 7장: [1, 0]은 곱한 뒤 [2, 1]이 되어 방향이 바뀌므로 고유벡터가 아니다.
+        // 부록: [1, 0]은 곱한 뒤 [2, 1]이 되어 방향이 바뀌므로 고유벡터가 아니다.
         RealVector unitX = new ArrayRealVector(new double[] {1, 0});
         RealVector movedX = c22.operate(unitX);
         c.near("C × [1,0] = [2,1]", 0,
@@ -212,7 +212,7 @@ public final class LinearAlgebra {
         c.ok("[1,0]은 곱하면 방향이 바뀜", movedX.cosine(unitX) < 1 - 1e-6,
                 "곱하기 전후의 코사인 " + Checker.num(movedX.cosine(unitX)));
 
-        // 7장: 전체 분산 4는 x의 분산 2와 y의 분산 2를 더한 값이고, 두 고유값의 합 3 + 1과 같다.
+        // 부록: 전체 분산 4는 x의 분산 2와 y의 분산 2를 더한 값이고, 두 고유값의 합 3 + 1과 같다.
         c.near("전체 분산 = 대각선 성분의 합", 4, c22.getTrace(), 1e-12);
         c.near("전체 분산 = 고유값의 합", c22.getTrace(),
                 eig22.getRealEigenvalue(0) + eig22.getRealEigenvalue(1), 1e-12);
@@ -220,7 +220,7 @@ public final class LinearAlgebra {
                 Math.abs(eig22.getEigenvector(0).cosine(diag)), 1e-9);
         c.near("제1주성분의 설명 비율 75%", 0.75, 3.0 / (3 + 1), 1e-12);
 
-        // 7장: 주성분 분석은 분산이 가장 큰 방향을 차례로 찾는다.
+        // 부록: 주성분 분석은 분산이 가장 큰 방향을 차례로 찾는다.
         // Commons Math에는 PCA가 없으므로 공분산 행렬의 고유분해로 직접 구한다.
         // x축 방향으로 길게 퍼진 데이터를 만들면 제1주성분이 x축과 나란해야 한다.
         final int n = 400;
@@ -244,11 +244,11 @@ public final class LinearAlgebra {
                 Checker.num(ratio * 100) + "%를 방향 하나로 설명");
     }
 
-    /** 7장 "판별 분석" */
+    /** 부록 "판별 분석" */
     public static void discriminant(Checker c) {
         c.section("판별 분석");
 
-        // 7장: 한 집단의 평균이 [1, 2]이고 다른 집단의 평균이 [4, 3]이면 방향은 두 평균의 차이인 [3, 1]이다.
+        // 부록: 한 집단의 평균이 [1, 2]이고 다른 집단의 평균이 [4, 3]이면 방향은 두 평균의 차이인 [3, 1]이다.
         // 새 데이터가 어느 집단 쪽인지는 이 방향 벡터와의 내적이 큰지 작은지로 가늠한다.
         RealVector meanA = new ArrayRealVector(new double[] {1, 2});
         RealVector meanB = new ArrayRealVector(new double[] {4, 3});
@@ -272,12 +272,12 @@ public final class LinearAlgebra {
             other[i] = new double[] {-1 + 0.5 * rnd.nextGaussian(), 4 * rnd.nextGaussian()};
         }
 
-        // 7장: 가장 단순한 형태는 두 집단의 평균 벡터를 빼서 그 차이를 방향으로 삼는 것이다.
+        // 부록: 가장 단순한 형태는 두 집단의 평균 벡터를 빼서 그 차이를 방향으로 삼는 것이다.
         RealVector meanDiff = meanVector(honest).subtract(meanVector(other));
         meanDiff = meanDiff.unitVector();
         c.near("평균 차이 방향의 첫 성분", 1, Math.abs(meanDiff.getEntry(0)), 0.1);
 
-        // 7장: Fisher의 선형 판별 분석은 집단 안의 흩어짐까지 고려한다.
+        // 부록: Fisher의 선형 판별 분석은 집단 안의 흩어짐까지 고려한다.
         RealVector fisher = fisherDirection(honest, other);
 
         double sepMean = separation(honest, other, meanDiff);

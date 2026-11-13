@@ -9,26 +9,26 @@ import org.apache.commons.math3.stat.StatUtils;
 import org.apache.commons.math3.stat.inference.OneWayAnova;
 import org.apache.commons.math3.stat.inference.TTest;
 
-/** 7장의 검색 통계와 유의성 검정 절을 검산한다. */
+/** 부록 통계 참고의 검색 통계와 유의성 검정 절을 검산한다. */
 public final class SearchStats {
 
     private SearchStats() {
     }
 
-    /** 7장 "검색의 통계: TF-IDF와 BM25" */
+    /** 부록 "검색의 통계: TF-IDF와 BM25" */
     public static void searchStatistics(Checker c) {
         c.section("검색의 통계: TF-IDF와 BM25");
 
-        // 7장: 모든 문서에 나오는 단어는 IDF가 log(1) = 0이 되어 검색에 기여하지 못한다.
+        // 부록: 모든 문서에 나오는 단어는 IDF가 log(1) = 0이 되어 검색에 기여하지 못한다.
         c.near("모든 문서에 나오는 단어의 IDF", 0, idf(1000, 1000), 1e-12);
 
-        // 7장: 드문 단어일수록 값이 커진다.
+        // 부록: 드문 단어일수록 값이 커진다.
         double rare = idf(1000, 2);
         double common = idf(1000, 500);
         c.ok("드문 단어의 IDF가 더 큼", rare > common,
                 "df=2에서 " + Checker.num(rare) + ", df=500에서 " + Checker.num(common));
 
-        // 7장: 문서 1,000개 가운데 10개에만 나오는 단어는 IDF가 ln(1000 / 10) = ln(100) ≈ 4.61이고,
+        // 부록: 문서 1,000개 가운데 10개에만 나오는 단어는 IDF가 ln(1000 / 10) = ln(100) ≈ 4.61이고,
         // 절반인 500개에 나오는 단어는 ln(2) ≈ 0.69다.
         c.near("df=10의 IDF", 4.61, idf(1000, 10), 5e-3);
         c.near("df=500의 IDF", 0.69, common, 5e-3);
@@ -44,28 +44,28 @@ public final class SearchStats {
         }
         c.ok("df가 커질수록 IDF가 단조 감소", monotone, "흔할수록 벌점");
 
-        // 7장: TF-IDF는 두 빈도의 곱이다.
+        // 부록: TF-IDF는 두 빈도의 곱이다.
         c.near("TF-IDF = TF × IDF", 3 * idf(1000, 10), 3 * idf(1000, 10), 1e-12);
         c.ok("같은 단어라도 많이 나오면 점수가 큼",
                 5 * idf(1000, 10) > 2 * idf(1000, 10), "TF에 비례");
 
-        // 7장: 문서 길이가 평균과 같을 때 빈도 1, 10, 20의 기여는 1.0, 1.96, 2.08이다.
+        // 부록: 문서 길이가 평균과 같을 때 빈도 1, 10, 20의 기여는 1.0, 1.96, 2.08이다.
         c.near("BM25 빈도 1의 기여", 1.0, bm25TermFrequency(1, AVG_LEN), 5e-3);
         c.near("BM25 빈도 10의 기여", 1.96, bm25TermFrequency(10, AVG_LEN), 5e-3);
         c.near("BM25 빈도 20의 기여", 2.08, bm25TermFrequency(20, AVG_LEN), 5e-3);
 
-        // 7장: 문서 길이가 평균과 같으면 괄호 안이 1이 되어 식이 tf * 2.2 / (tf + 1.2)가 되고,
+        // 부록: 문서 길이가 평균과 같으면 괄호 안이 1이 되어 식이 tf * 2.2 / (tf + 1.2)가 되고,
         // 상한은 k1 + 1 = 2.2다.
         c.near("평균 길이일 때의 식 tf * 2.2 / (tf + 1.2)", 10 * 2.2 / (10 + 1.2),
                 bm25TermFrequency(10, AVG_LEN), 1e-12);
         c.near("상한 k1 + 1", 2.2, K1 + 1, 1e-12);
 
-        // 7장: 길이가 평균의 두 배인 문서는 괄호 안이 1 - 0.75 + 0.75 * 2 = 1.75가 되어,
+        // 부록: 길이가 평균의 두 배인 문서는 괄호 안이 1 - 0.75 + 0.75 * 2 = 1.75가 되어,
         // 빈도 1의 기여가 1.0에서 0.71로 내려간다.
         c.near("길이가 두 배일 때의 괄호 안", 1.75, 1 - B + B * 2, 1e-12);
         c.near("길이가 두 배일 때 빈도 1의 기여", 0.71, bm25TermFrequency(1, 2 * AVG_LEN), 5e-3);
 
-        // 7장: BM25는 단어 빈도의 기여에 상한을 두어 포화시키고 문서 길이로 보정한다.
+        // 부록: BM25는 단어 빈도의 기여에 상한을 두어 포화시키고 문서 길이로 보정한다.
         double tf10 = bm25TermFrequency(10, AVG_LEN);
         double tf20 = bm25TermFrequency(20, AVG_LEN);
         c.ok("BM25는 빈도가 두 배여도 점수가 두 배가 아님", tf20 < 2 * tf10,
@@ -76,7 +76,7 @@ public final class SearchStats {
         c.ok("BM25 빈도 항의 상한", bm25TermFrequency(1e9, AVG_LEN) < K1 + 1,
                 "상한 " + Checker.num(K1 + 1) + "에 수렴");
 
-        // 7장: 문서 길이로 점수를 보정한다. 같은 빈도라면 긴 문서가 손해를 본다.
+        // 부록: 문서 길이로 점수를 보정한다. 같은 빈도라면 긴 문서가 손해를 본다.
         double shortDoc = bm25TermFrequency(5, 50);
         double longDoc = bm25TermFrequency(5, 400);
         c.ok("같은 빈도면 긴 문서의 점수가 낮음", longDoc < shortDoc,
@@ -84,21 +84,21 @@ public final class SearchStats {
                         + ", 길이 400에서 " + Checker.num(longDoc));
     }
 
-    /** 7장 "t-검정과 분산 분석: 지표의 차이가 진짜인지 확인하기" */
+    /** 부록 "t-검정과 분산 분석: 지표의 차이가 진짜인지 확인하기" */
     public static void significanceTests(Checker c) {
         c.section("t-검정과 분산 분석");
 
-        // 7장: 정확도 80% 근처, 문항 100개면 표준 오차가 약 4%p다.
+        // 부록: 정확도 80% 근처, 문항 100개면 표준 오차가 약 4%p다.
         double p = 0.8;
         double n = 100;
         double se = Math.sqrt(p * (1 - p) / n);
         c.near("정확도 80%, 문항 100개의 표준 오차", 0.04, se, 1e-12);
 
-        // 7장: 표준 오차를 절반으로 줄이려면 문항이 400개 필요하다.
+        // 부록: 표준 오차를 절반으로 줄이려면 문항이 400개 필요하다.
         // 정밀도를 두 배로 만들려면 표본이 네 배 필요하다는 제곱근의 법칙이다.
         c.near("문항 400개의 표준 오차", se / 2, Math.sqrt(p * (1 - p) / 400), 1e-12);
 
-        // 7장: 문항 하나의 채점 결과(맞으면 1, 틀리면 0)의 분산이 p * (1 - p)이고,
+        // 부록: 문항 하나의 채점 결과(맞으면 1, 틀리면 0)의 분산이 p * (1 - p)이고,
         // n개의 평균을 내면 분산이 n분의 1로 준다. 분산은 E[x²] - E[x]²로 구한다.
         double scoreVariance = (p * 1 * 1 + (1 - p) * 0 * 0) - p * p;
         c.near("채점 결과의 분산 p * (1 - p)", 0.16, scoreVariance, 1e-12);
@@ -124,20 +124,20 @@ public final class SearchStats {
         c.near("되풀이한 정확도의 표준편차 = 표준 오차", se,
                 Math.sqrt(StatUtils.variance(accuracies)), 2e-3);
 
-        // 7장: 실제 정답률이 정확히 80%여도 문항 100개로 재면 평균 ±2 표준 오차인
+        // 부록: 실제 정답률이 정확히 80%여도 문항 100개로 재면 평균 ±2 표준 오차인
         // 72%에서 88% 사이의 값이 나올 수 있다.
         c.near("평균 - 2 표준 오차", 0.72, p - 2 * se, 1e-12);
         c.near("평균 + 2 표준 오차", 0.88, p + 2 * se, 1e-12);
         c.ok("되풀이한 정확도 대부분이 72%~88% 안", inside / (double) evalRuns > 0.93,
                 Checker.num(inside * 100.0 / evalRuns) + "%가 범위 안");
 
-        // 7장: 79%와 83%의 차이는 우연의 범위를 벗어나지 못한다.
+        // 부록: 79%와 83%의 차이는 우연의 범위를 벗어나지 못한다.
         double diff = 0.83 - 0.79;
         double seDiff = Math.sqrt(0.79 * 0.21 / 100 + 0.83 * 0.17 / 100);
         double z = diff / seDiff;
         double pValue = 2 * (1 - new NormalDistribution(0, 1).cumulativeProbability(Math.abs(z)));
         c.ok("79% vs 83%는 유의하지 않음", pValue > 0.05, "p값 " + Checker.num(pValue));
-        // 7장: 각 정확도의 표준 오차는 약 0.041과 0.038, 차이의 표준 오차는 약 0.055,
+        // 부록: 각 정확도의 표준 오차는 약 0.041과 0.038, 차이의 표준 오차는 약 0.055,
         // t는 약 0.7로 2에 한참 못 미친다.
         c.near("79%의 표준 오차", 0.041, Math.sqrt(0.79 * 0.21 / 100), 5e-4);
         c.near("83%의 표준 오차", 0.038, Math.sqrt(0.83 * 0.17 / 100), 5e-4);
@@ -145,7 +145,7 @@ public final class SearchStats {
         c.near("t 통계량", 0.7, z, 5e-2);
         c.note("t = %.3f로, 유의 판정선인 약 2에 못 미친다", z);
 
-        // 7장: 대응표본 t-검정은 질문별 점수 차이를 먼저 구하고 그 평균이
+        // 부록: 대응표본 t-검정은 질문별 점수 차이를 먼저 구하고 그 평균이
         // 0에서 벗어났는지 본다. 질문 난이도가 만드는 흔들림이 상쇄되므로 더 민감하다.
         Random rnd = new Random(1920);
         final int items = 100;
@@ -167,7 +167,7 @@ public final class SearchStats {
                 "p값 " + Checker.num(unpairedP));
         c.note("질문 난이도의 흔들림이 두 구성에 똑같이 들어 있어 대응표본에서는 상쇄된다");
 
-        // 7장: 분산 분석은 집단 사이의 분산과 집단 안의 분산의 비율(F비)로
+        // 부록: 분산 분석은 집단 사이의 분산과 집단 안의 분산의 비율(F비)로
         // "차이가 하나라도 있는가"를 한 번에 검정한다.
         OneWayAnova anova = new OneWayAnova();
         List<double[]> groups = new ArrayList<>();
@@ -195,7 +195,7 @@ public final class SearchStats {
         c.near("차이 없는 세 집단의 위양성률 = 유의수준", 0.05,
                 (double) falseAlarm / anovaRuns, 0.015);
 
-        // 7장: 쌍마다 t-검정을 반복하면 우연히 유의해 보이는 결과가 나올 확률이 누적된다.
+        // 부록: 쌍마다 t-검정을 반복하면 우연히 유의해 보이는 결과가 나올 확률이 누적된다.
         final int runs = 2000;
         int falsePositives = 0;
         for (int r = 0; r < runs; r++) {
@@ -221,7 +221,7 @@ public final class SearchStats {
         c.note("검정 6번을 반복하면 이론값은 1-0.95^6 = %.1f%%다",
                 (1 - Math.pow(0.95, 6)) * 100);
 
-        // 7장: 모델이 세 개면 쌍도 세 개다. 세 검정이 서로 독립이라고 어림하면
+        // 부록: 모델이 세 개면 쌍도 세 개다. 세 검정이 서로 독립이라고 어림하면
         // 한 번이라도 우연히 유의하다고 나올 확률은 1 - 0.95³ ≈ 14%다.
         c.near("모델 세 개의 쌍 수", 3, 3 * 2 / 2, 0);
         c.near("검정 세 번의 위양성 누적 1 - 0.95³", 0.14, 1 - Math.pow(0.95, 3), 5e-3);
@@ -231,7 +231,7 @@ public final class SearchStats {
     private static final double B = 0.75;
     private static final double AVG_LEN = 100.0;
 
-    /** 7장: IDF = log(전체 문서 수 / 그 단어가 나온 문서 수) */
+    /** 부록: IDF = log(전체 문서 수 / 그 단어가 나온 문서 수) */
     private static double idf(double total, double documentFrequency) {
         return Math.log(total / documentFrequency);
     }

@@ -20,26 +20,26 @@ import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
 import org.apache.commons.math3.stat.regression.OLSMultipleLinearRegression;
 import org.apache.commons.math3.stat.regression.SimpleRegression;
 
-/** 7장의 회귀, 마르코프 체인, 강화학습, 스케일링 법칙 절을 검산한다. */
+/** 부록 통계 참고의 회귀, 마르코프 체인, 강화학습, 스케일링 법칙 절을 검산한다. */
 public final class Models {
 
     private Models() {
     }
 
-    /** 7장 "회귀: 가장 작은 신경망" */
+    /** 부록 "회귀: 가장 작은 신경망" */
     public static void regression(Checker c) {
         c.section("회귀: 선형 회귀와 로지스틱 회귀");
 
-        // 7장: sigmoid(-2) ≈ 0.12, sigmoid(0) = 0.5, sigmoid(2) ≈ 0.88
+        // 부록: sigmoid(-2) ≈ 0.12, sigmoid(0) = 0.5, sigmoid(2) ≈ 0.88
         c.near("sigmoid(-2)", 0.12, 1 / (1 + Math.exp(2)), 5e-3);
         c.near("sigmoid(0)", 0.5, 1 / (1 + Math.exp(0)), 1e-12);
         c.near("sigmoid(2)", 0.88, 1 / (1 + Math.exp(-2)), 5e-3);
 
-        // 7장: sigmoid(2) = 1 / (1 + exp(-2)) = 1 / (1 + 0.135) ≈ 0.88
+        // 부록: sigmoid(2) = 1 / (1 + exp(-2)) = 1 / (1 + 0.135) ≈ 0.88
         c.near("exp(-2)", 0.135, Math.exp(-2), 5e-4);
         c.near("1 / (1 + 0.135)", 0.88, 1 / (1 + 0.135), 5e-3);
 
-        // 7장: 선형 회귀는 데이터에 가장 잘 맞는 직선 y = ax + b를 찾는다.
+        // 부록: 선형 회귀는 데이터에 가장 잘 맞는 직선 y = ax + b를 찾는다.
         // 기울기 2.5, 절편 -1인 직선에 잡음을 얹고 계수를 되찾아 본다.
         Random rnd = new Random(1516);
         final int n = 300;
@@ -54,7 +54,7 @@ public final class Models {
         c.near("회귀가 되찾은 기울기 a", 2.5, reg.getSlope(), 0.05);
         c.near("회귀가 되찾은 절편 b", -1, reg.getIntercept(), 0.1);
 
-        // 7장: 입력이 하나면 a = cov(x, y) / var(x), b = ȳ - a·x̄다.
+        // 부록: 입력이 하나면 a = cov(x, y) / var(x), b = ȳ - a·x̄다.
         // x = [1, 2, 3, 4], y = [2, 4, 5, 8]이면 cov = 2.375, var(x) = 1.25, a = 1.9, b = 0이다.
         double[] sx = {1, 2, 3, 4};
         double[] sy = {2, 4, 5, 8};
@@ -72,10 +72,10 @@ public final class Models {
         }
         c.near("닫힌 해 = 라이브러리의 최소제곱 해", small.getSlope(), slope, 1e-12);
 
-        // 7장: var(x)는 공분산 절에서 구한 표준편차 1.118의 제곱이다.
+        // 부록: var(x)는 공분산 절에서 구한 표준편차 1.118의 제곱이다.
         c.near("var(x) = σ_x²", 1.25, 1.118 * 1.118, 5e-4);
 
-        // 7장: 직선 y = 1.9x의 예측은 [1.9, 3.8, 5.7, 7.6]이고,
+        // 부록: 직선 y = 1.9x의 예측은 [1.9, 3.8, 5.7, 7.6]이고,
         // 실제 값 [2, 4, 5, 8]과 어긋난 양의 제곱합이 이보다 작은 직선은 없다.
         double[] expectedFit = {1.9, 3.8, 5.7, 7.6};
         boolean fitMatches = true;
@@ -97,7 +97,7 @@ public final class Models {
         c.ok("기울기나 절편을 바꾸면 제곱합이 늘어남", noBetterLine,
                 "y = 1.9x의 제곱합 " + Checker.num(smallestSse));
 
-        // 7장: "가장 잘 맞는"의 기준은 오차 제곱합을 최소로 만드는 것이다(최소제곱법).
+        // 부록: "가장 잘 맞는"의 기준은 오차 제곱합을 최소로 만드는 것이다(최소제곱법).
         double base = sse(xs, ys, reg.getSlope(), reg.getIntercept());
         boolean worse = true;
         for (double delta : new double[] {-0.05, -0.01, 0.01, 0.05}) {
@@ -108,7 +108,7 @@ public final class Models {
         c.ok("계수를 흔들면 오차 제곱합이 늘어남", worse, "최소제곱 해가 맞음");
         c.near("잔차 제곱합이 라이브러리 값과 일치", reg.getSumSquaredErrors(), base, 1e-6);
 
-        // 7장: 시그모이드의 도함수는 sigmoid(z) * (1 - sigmoid(z))로, z = 0에서 0.25로 가장 크고
+        // 부록: 시그모이드의 도함수는 sigmoid(z) * (1 - sigmoid(z))로, z = 0에서 0.25로 가장 크고
         // 출력이 0이나 1에 가까워지면 0에 가까워진다.
         c.near("z = 0에서의 도함수", 0.25, sigmoid(0) * (1 - sigmoid(0)), 1e-12);
         double numericSlope = (sigmoid(1.3 + 1e-6) - sigmoid(1.3 - 1e-6)) / 2e-6;
@@ -116,27 +116,27 @@ public final class Models {
         c.ok("출력이 극단에 가까우면 기울기가 사라짐", sigmoid(8) * (1 - sigmoid(8)) < 1e-3,
                 "z = 8에서 " + Checker.num(sigmoid(8) * (1 - sigmoid(8))));
 
-        // 7장: 시그모이드는 선택지가 두 개일 때의 softmax와 같은 함수다.
+        // 부록: 시그모이드는 선택지가 두 개일 때의 softmax와 같은 함수다.
         double z = 1.3;
         double sig = 1 / (1 + Math.exp(-z));
         c.near("시그모이드 = 2항 softmax", sig,
                 Probability.softmax(new double[] {z, 0}, 1.0)[0], 1e-12);
 
-        // 7장: 로지스틱 회귀의 손실(로그 손실)은 교차 엔트로피와 같은 식이다.
+        // 부록: 로지스틱 회귀의 손실(로그 손실)은 교차 엔트로피와 같은 식이다.
         double label = 1.0;
         double logLoss = -(label * Math.log(sig) + (1 - label) * Math.log(1 - sig));
         c.near("로그 손실 = 교차 엔트로피",
                 Probability.crossEntropy(new double[] {1, 0}, new double[] {sig, 1 - sig}),
                 logLoss, 1e-12);
 
-        // 7장: RLHF의 보상 모델은 "A가 B보다 선호될 확률 = sigmoid(A점수 - B점수)"라는
+        // 부록: RLHF의 보상 모델은 "A가 B보다 선호될 확률 = sigmoid(A점수 - B점수)"라는
         // Bradley-Terry 모형으로 학습된다.
         c.near("점수가 같으면 선호 확률 0.5", 0.5, sigmoid(0), 1e-12);
         c.ok("점수 차이가 커지면 확률이 1에 접근",
                 sigmoid(5) > 0.99 && sigmoid(1) > sigmoid(0.5),
                 "diff=5에서 " + Checker.num(sigmoid(5)));
 
-        // 7장: 1인치 = 2.54cm이므로 키를 센티미터와 인치로 두 번 입력에 넣으면
+        // 부록: 1인치 = 2.54cm이므로 키를 센티미터와 인치로 두 번 입력에 넣으면
         // 계수 (1.0, 0), (0, 2.54), (0.5, 1.27)이 모두 같은 예측을 낸다. 키 170cm로 확인한다.
         double heightCm = 170;
         double heightInch = heightCm / 2.54;
@@ -146,7 +146,7 @@ public final class Models {
         c.near("계수 (0, 2.54)의 예측 = 계수 (1.0, 0)의 예측", byCm, byInch, 1e-9);
         c.near("계수 (0.5, 1.27)의 예측 = 계수 (1.0, 0)의 예측", byCm, byBoth, 1e-9);
 
-        // 7장: 다중공선성은 입력 변수들끼리 강하게 상관되어 있을 때,
+        // 부록: 다중공선성은 입력 변수들끼리 강하게 상관되어 있을 때,
         // 예측은 멀쩡한데 개별 계수의 추정이 불안정해지는 현상이다.
         double[][] inputs = new double[n][2];
         double[] target = new double[n];
@@ -190,7 +190,7 @@ public final class Models {
         c.ok("VIF가 경험적 기준 10을 넘음", vif > 10, "VIF " + Checker.num(vif));
     }
 
-    /** 7장 "마르코프 체인" */
+    /** 부록 "마르코프 체인" */
     public static void markovChain(Checker c) {
         c.section("마르코프 체인");
 
@@ -213,7 +213,7 @@ public final class Models {
         }
         c.ok("전이 확률표의 각 행 합이 1", rowsSumToOne, "확률 분포의 조건");
 
-        // 7장: 확률표만 있으면 과정 전체를 전개할 수 있다.
+        // 부록: 확률표만 있으면 과정 전체를 전개할 수 있다.
         RealVector stationary = converge(p, new double[] {1, 0, 0});
         double sum = 0;
         for (double v : stationary.toArray()) {
@@ -228,7 +228,7 @@ public final class Models {
         c.note("정상 분포 [%.4f %.4f %.4f]",
                 stationary.getEntry(0), stationary.getEntry(1), stationary.getEntry(2));
 
-        // 7장: 다음에 일어날 일이 현재 상태에만 의존하고 거기까지 온 경로에는
+        // 부록: 다음에 일어날 일이 현재 상태에만 의존하고 거기까지 온 경로에는
         // 의존하지 않는다. 서로 다른 출발점에서 시작해도 같은 정상 분포로 간다.
         RealVector other = converge(p, new double[] {0, 0, 1});
         c.ok("출발점이 달라도 같은 곳으로 수렴",
@@ -238,7 +238,7 @@ public final class Models {
         c.near("2단계 전이 = 전이 행렬의 제곱", 0,
                 p.power(2).subtract(p.multiply(p)).getFrobeniusNorm(), 1e-12);
 
-        // 7장: 4장의 이름 2,000개에서 직전 글자가 a일 때의 전이 확률을 세면
+        // 부록: 4장의 이름 2,000개에서 직전 글자가 a일 때의 전이 확률을 세면
         // a는 2,289번 등장하고, 다음은 이름의 끝 0.32, n 0.14, r 0.10, l 0.09이다.
         Path names = Paths.get("../../java/microgpt/names.txt");
         if (Files.exists(names)) {
@@ -248,7 +248,7 @@ public final class Models {
         }
     }
 
-    /** 이름 목록에서 글자 a 다음에 오는 글자의 빈도를 세어 7장의 전이 확률표와 맞춰 본다. */
+    /** 이름 목록에서 글자 a 다음에 오는 글자의 빈도를 세어 부록의 전이 확률표와 맞춰 본다. */
     private static void bigramAfterA(Checker c, Path names) {
         List<String> docs;
         try {
@@ -284,19 +284,19 @@ public final class Models {
         c.near("전이 확률표 한 줄의 합", 1, rowSum, 1e-12);
     }
 
-    /** 7장 "강화학습과 벨만 방정식" */
+    /** 부록 "강화학습과 벨만 방정식" */
     public static void bellman(Checker c) {
         c.section("강화학습과 벨만 방정식");
 
-        // 7장: γ = 0.9이고 세 걸음 뒤에 보상 1이 오면 가치는 0.9, 0.81, 0.73으로 할인된다.
+        // 부록: γ = 0.9이고 세 걸음 뒤에 보상 1이 오면 가치는 0.9, 0.81, 0.73으로 할인된다.
         c.near("두 걸음 전의 가치 γ²", 0.81, 0.9 * 0.9, 1e-12);
         c.near("세 걸음 전의 가치 γ³", 0.73, 0.9 * 0.9 * 0.9, 5e-3);
 
-        // 7장: 기댓값은 가능한 결과들을 확률로 가중한 평균이다.
+        // 부록: 기댓값은 가능한 결과들을 확률로 가중한 평균이다.
         // 확률 0.3으로 보상 10을 받고 확률 0.7로 0을 받으면 기댓값은 3이다.
         c.near("기댓값 0.3 * 10 + 0.7 * 0", 3, 0.3 * 10 + 0.7 * 0, 1e-12);
 
-        // 7장: 벨만 방정식의 r + γ * V(s')에 r = 0을 넣어, 보상 1에 도착한 상태(가치 1)에서
+        // 부록: 벨만 방정식의 r + γ * V(s')에 r = 0을 넣어, 보상 1에 도착한 상태(가치 1)에서
         // 거슬러 계산하면 0.9, 0.81, 0.73이 차례로 나온다.
         double[] backedUp = new double[3];
         double next = 1;
@@ -308,7 +308,7 @@ public final class Models {
         c.near("거슬러 계산한 두 걸음 전의 가치", 0.81, backedUp[1], 1e-12);
         c.near("거슬러 계산한 세 걸음 전의 가치", 0.73, backedUp[2], 5e-3);
 
-        // 7장: 매 걸음 보상 1을 받고 할인율이 γ면, 가치는 등비급수의 합 1/(1-γ)다.
+        // 부록: 매 걸음 보상 1을 받고 할인율이 γ면, 가치는 등비급수의 합 1/(1-γ)다.
         final double gamma = 0.9;
         c.near("등비급수의 합 1/(1-γ)", 10, 1 / (1 - gamma), 1e-12);
 
@@ -318,14 +318,14 @@ public final class Models {
         }
         c.near("보상 1이 계속될 때의 가치", 1 / (1 - gamma), partial, 1e-9);
 
-        // 7장: 할인율은 무한히 이어지는 보상의 합이 발산하지 않게 만드는 장치다.
+        // 부록: 할인율은 무한히 이어지는 보상의 합이 발산하지 않게 만드는 장치다.
         double noDiscount = 0;
         for (int k = 0; k < 300; k++) {
             noDiscount += 1.0;
         }
         c.ok("γ=1이면 합이 커지기만 함", noDiscount == 300, "300걸음에서 이미 300");
 
-        // 7장: V(s) = E[r + γ * V(s')]. 상태 세 개짜리 마르코프 보상 과정에서
+        // 부록: V(s) = E[r + γ * V(s')]. 상태 세 개짜리 마르코프 보상 과정에서
         // 가치 반복으로 구한 해가 선형 방정식의 해와 같은지 확인한다.
         RealMatrix trans = MatrixUtils.createRealMatrix(new double[][] {
                 {0.5, 0.5, 0.0},
@@ -354,21 +354,21 @@ public final class Models {
         double rhs = rewards.getEntry(0) + gamma * trans.operate(v).getEntry(0);
         c.near("V(s) = r + γ·E[V(s')]", v.getEntry(0), rhs, 1e-9);
 
-        // 7장: 먼 미래의 보상은 γ, γ², γ³처럼 할인된다.
+        // 부록: 먼 미래의 보상은 γ, γ², γ³처럼 할인된다.
         c.near("10걸음 뒤 보상의 할인율", Math.pow(gamma, 10), 0.34867844, 1e-6);
     }
 
-    /** 7장 "스케일링 법칙: 손실을 예측하는 멱법칙" */
+    /** 부록 "스케일링 법칙: 손실을 예측하는 멱법칙" */
     public static void scalingLaw(Checker c) {
         c.section("스케일링 법칙: 손실을 예측하는 멱법칙");
 
-        // 7장: y = a * x^(-b)에서 a가 100, b가 0.5이면 x가 1, 100, 10,000으로 100배씩 커질 때
+        // 부록: y = a * x^(-b)에서 a가 100, b가 0.5이면 x가 1, 100, 10,000으로 100배씩 커질 때
         // y는 100, 10, 1로 10분의 1씩 줄어든다.
         c.near("y = 100 * x^(-0.5), x = 1", 100, 100 * Math.pow(1, -0.5), 1e-9);
         c.near("y = 100 * x^(-0.5), x = 100", 10, 100 * Math.pow(100, -0.5), 1e-9);
         c.near("y = 100 * x^(-0.5), x = 10,000", 1, 100 * Math.pow(10000, -0.5), 1e-9);
 
-        // 7장: 멱법칙 y = a * x^(-b)는 양변에 로그를 취하면
+        // 부록: 멱법칙 y = a * x^(-b)는 양변에 로그를 취하면
         // log y = log a - b * log x가 되어 로그-로그 그래프에서 직선이 된다.
         final double a = 12.0;
         final double b = 0.35;
@@ -382,7 +382,7 @@ public final class Models {
         c.near("로그-로그 회귀가 되찾은 지수 b", b, -reg.getSlope(), 0.01);
         c.near("로그-로그 회귀가 되찾은 계수 a", a, Math.exp(reg.getIntercept()), 0.5);
 
-        // 7장: 작은 모델 여러 개로 계수를 추정하면 훨씬 큰 모델의 손실을 외삽할 수 있다.
+        // 부록: 작은 모델 여러 개로 계수를 추정하면 훨씬 큰 모델의 손실을 외삽할 수 있다.
         double bigN = 1e11;
         double predicted = Math.exp(reg.predict(Math.log(bigN)));
         double actual = a * Math.pow(bigN, -b);
@@ -391,31 +391,31 @@ public final class Models {
                 "상대 오차 " + Checker.num(relative * 100) + "%");
         c.note("예측 %.5f, 참값 %.5f", predicted, actual);
 
-        // 7장: 손실(N, D) = E + A/N^α + B/D^β. E는 아무리 키워도 남는 손실의 바닥이다.
+        // 부록: 손실(N, D) = E + A/N^α + B/D^β. E는 아무리 키워도 남는 손실의 바닥이다.
         c.ok("N과 D를 키우면 손실이 줄어듦",
                 chinchillaLoss(1e10, 1e11) < chinchillaLoss(1e9, 1e10), "두 항이 모두 감소");
         c.near("N, D를 무한히 키운 극한이 바닥 E", 1.69, chinchillaLoss(1e30, 1e30), 1e-3);
         c.ok("바닥 아래로는 내려가지 않음", chinchillaLoss(1e12, 1e13) > 1.69,
                 "손실 " + Checker.num(chinchillaLoss(1e12, 1e13)));
 
-        // 7장: Chinchilla의 계수(E 1.69, A 406.4, B 410.7, α 0.34, β 0.28)를 넣으면
+        // 부록: Chinchilla의 계수(E 1.69, A 406.4, B 410.7, α 0.34, β 0.28)를 넣으면
         // 700억 파라미터를 1.4조 토큰으로 학습한 손실은 약 1.94, 70억이면 약 2.04다.
         c.near("N = 700억, D = 1.4조의 손실", 1.94, chinchillaLoss(7e10, 1.4e12), 5e-3);
         c.near("N = 70억, D = 1.4조의 손실", 2.04, chinchillaLoss(7e9, 1.4e12), 5e-3);
 
-        // 7장: 항별로는 1.69 + 0.083 + 0.163 ≈ 1.94이고, 파라미터 수를 10분의 1로 줄이면
+        // 부록: 항별로는 1.69 + 0.083 + 0.163 ≈ 1.94이고, 파라미터 수를 10분의 1로 줄이면
         // 모델 크기의 항만 0.083에서 0.183으로 커진다.
         c.near("N = 700억의 A/N^α", 0.083, 406.4 / Math.pow(7e10, 0.34), 5e-4);
         c.near("D = 1.4조의 B/D^β", 0.163, 410.7 / Math.pow(1.4e12, 0.28), 5e-4);
         c.near("N = 70억의 A/N^α", 0.183, 406.4 / Math.pow(7e9, 0.34), 5e-4);
 
-        // 7장: α가 0.34이면 N을 10배 키울 때 A/N^α 항이 10^0.34 ≈ 2.2분의 1로 줄어든다.
+        // 부록: α가 0.34이면 N을 10배 키울 때 A/N^α 항이 10^0.34 ≈ 2.2분의 1로 줄어든다.
         c.near("N 10배당 둘째 항의 감소 배율", 2.2, Math.pow(10, 0.34), 5e-2);
         double term1 = 406.4 / Math.pow(7e9, 0.34);
         double term10 = 406.4 / Math.pow(7e10, 0.34);
         c.near("70억→700억에서 A/N^α의 비율", Math.pow(10, 0.34), term1 / term10, 1e-9);
 
-        // 7장: Chinchilla의 결론은 파라미터 1개당 약 20토큰이라는 균형점이었다.
+        // 부록: Chinchilla의 결론은 파라미터 1개당 약 20토큰이라는 균형점이었다.
         c.near("20B 파라미터에 맞는 토큰 수", 400e9, 20e9 * 20, 1);
         c.note("파라미터 20B면 학습 토큰 400B가 균형점이라는 계산이다");
     }

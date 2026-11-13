@@ -3,26 +3,26 @@
 
 본문에서 다룬 주제를 더 깊이 공부할 때 출발점이 될 자료를 골라, 이 책의 어느 장과 이어지는지 함께 적었다. 논문은 arXiv 링크를 기준으로 했고, 링크가 바뀌어도 제목과 저자로 검색하면 찾을 수 있다.
 
-== 책
+=== 책
 
 * https://www.manning.com/books/build-a-large-language-model-from-scratch[_Build a Large Language Model (From Scratch)_] (Sebastian Raschka, Manning, 2024): PyTorch로 GPT를 바닥부터 구현하고 사전학습과 파인튜닝까지 진행한다. 이 책 2부에서 한 일을 파이썬 생태계에서 더 큰 규모로 반복해 보기에 가장 좋다. 한국어 번역서도 나와 있다.
 * https://github.com/HandsOnLLM/Hands-On-Large-Language-Models[_Hands-On Large Language Models_] (Jay Alammar, Maarten Grootendorst, O'Reilly, 2024): 토큰화, 임베딩, 시맨틱 검색, 프롬프트 엔지니어링을 그림 중심으로 설명한다. 1부와 4부의 내용을 시각 자료로 보강하기에 알맞다.
 * https://huyenchip.com/books/[_AI Engineering_] (Chip Huyen, O'Reilly, 2025): 모델 선택, 평가, RAG와 파인튜닝 사이의 결정 같은 응용 주제를 폭넓게 다룬다. 1부의 레이어 분류와 13장의 평가 논의를 실무 의사결정으로 확장한다.
-* http://incompleteideas.net/book/the-book.html[_Reinforcement Learning: An Introduction_] (Richard S. Sutton, Andrew G. Barto, MIT Press, 2판 2018): 강화학습의 표준 교과서로, 저자 사이트에서 무료로 읽을 수 있다. 7장에서 소개한 벨만 방정식과 가치 함수, 1장의 RLHF·RLVR의 이론적 바탕을 다룬다.
+* http://incompleteideas.net/book/the-book.html[_Reinforcement Learning: An Introduction_] (Richard S. Sutton, Andrew G. Barto, MIT Press, 2판 2018): 강화학습의 표준 교과서로, 저자 사이트에서 무료로 읽을 수 있다. 부록 통계 참고에서 소개한 벨만 방정식과 가치 함수, 1장의 RLHF·RLVR의 이론적 바탕을 다룬다.
 
-== 강의와 시각 자료
+=== 강의와 시각 자료
 
 * https://karpathy.ai/zero-to-hero.html[Neural Networks: Zero to Hero] (Andrej Karpathy): 자동 미분 엔진 micrograd에서 시작해 GPT-2 재현까지 코드를 직접 짜며 진행하는 영상 강의. 4장의 자동 미분과 5장의 아키텍처를 복습하는 데 가장 좋은 자료다.
 * https://www.3blue1brown.com/topics/neural-networks[3Blue1Brown: Neural networks]: 역전파와 트랜스포머 내부 동작을 애니메이션으로 시각화한 시리즈. 수식이 나타내는 계산을 그림으로 따라갈 수 있다.
 * https://jalammar.github.io/illustrated-transformer/[The Illustrated Transformer] (Jay Alammar): 어텐션의 행렬 연산을 단계별 그림으로 설명한 글. 5장의 어텐션 코드와 나란히 놓고 보면 좋다.
 
-== 1부: 정보 레이어
+=== 1부: 정보 레이어
 
 * "Language Models are Few-Shot Learners" (Brown 외, 2020, https://arxiv.org/abs/2005.14165): GPT-3 논문. 2장에서 다룬 인컨텍스트 학습이 대규모 모델에서 처음 확인된 기록이다.
 * "Training language models to follow instructions with human feedback" (Ouyang 외, 2022, https://arxiv.org/abs/2203.02155): InstructGPT 논문. 1장의 감독형 미세조정과 선호 학습(RLHF)으로 이어지는 파이프라인의 원형이다.
 * "Direct Preference Optimization" (Rafailov 외, 2023, https://arxiv.org/abs/2305.18290): 별도의 보상 모델 없이 선호 데이터로 바로 학습하는 DPO를 제안한다. 1장 선호 학습의 후속 흐름이다.
-* "Proximal Policy Optimization Algorithms" (Schulman 외, 2017, https://arxiv.org/abs/1707.06347): RLHF에 주로 쓰이는 강화학습 알고리즘 PPO의 원 논문. 7장의 벨만 방정식 절과 이어진다.
-* "Scaling Laws for Neural Language Models" (Kaplan 외, 2020, https://arxiv.org/abs/2001.08361)와 "Training Compute-Optimal Large Language Models" (Hoffmann 외, 2022, https://arxiv.org/abs/2203.15556): 7장에서 소개한 스케일링 법칙의 원 논문들이다. 후자(Chinchilla)가 파라미터당 토큰 수의 균형점을 제시했고, 1장 "기법별 데이터와 비용의 자릿수" 절의 배경이 된다.
+* "Proximal Policy Optimization Algorithms" (Schulman 외, 2017, https://arxiv.org/abs/1707.06347): RLHF에 주로 쓰이는 강화학습 알고리즘 PPO의 원 논문. 부록 통계 참고의 벨만 방정식 절과 이어진다.
+* "Scaling Laws for Neural Language Models" (Kaplan 외, 2020, https://arxiv.org/abs/2001.08361)와 "Training Compute-Optimal Large Language Models" (Hoffmann 외, 2022, https://arxiv.org/abs/2203.15556): 부록 통계 참고에서 소개한 스케일링 법칙의 원 논문들이다. 후자(Chinchilla)가 파라미터당 토큰 수의 균형점을 제시했고, 1장 "기법별 데이터와 비용의 자릿수" 절의 배경이 된다.
 * "LoRA: Low-Rank Adaptation of Large Language Models" (Hu 외, 2021, https://arxiv.org/abs/2106.09685)와 "QLoRA: Efficient Finetuning of Quantized LLMs" (Dettmers 외, 2023, https://arxiv.org/abs/2305.14314): 3장에서 회색지대로 분류한 PEFT의 근거 논문들이다.
 * "Chain-of-Thought Prompting Elicits Reasoning in Large Language Models" (Wei 외, 2022, https://arxiv.org/abs/2201.11903): 2장의 추론 패턴 유도가 처음 정리된 논문이다.
 * "Lost in the Middle: How Language Models Use Long Contexts" (Liu 외, 2023, https://arxiv.org/abs/2307.03172): 긴 컨텍스트 중간에 놓인 정보의 활용도가 떨어지는 U자형 곡선을 측정한 논문. 2장과 13장 논의의 근거다.
@@ -32,7 +32,7 @@
 * "Distilling the Knowledge in a Neural Network" (Hinton 외, 2015, https://arxiv.org/abs/1503.02531): 1장 지식 증류의 출발점이 된 논문이다.
 * https://modelcontextprotocol.io[Model Context Protocol]: 2장에서 다룬 MCP의 공식 명세와 문서.
 
-== 2부: 동작 원리와 추론 서빙
+=== 2부: 동작 원리와 추론 서빙
 
 * https://karpathy.github.io/2026/02/12/microgpt/[microgpt] (Andrej Karpathy, 2026): 이 책 2부의 바탕이 된 원문 포스트. 원본 파이썬 코드는 https://gist.github.com/karpathy/8627fe009c40f57531cb18360106ce95[gist]에 있다. 자바 포팅과 원본을 나란히 읽으면 두 언어의 표현 차이까지 보인다.
 * https://github.com/karpathy/nanoGPT[nanoGPT] (Andrej Karpathy): microGPT 다음 단계로 알맞은 프로젝트. PyTorch와 GPU로 GPT-2를 재현하는 최소 구현이다.
@@ -44,7 +44,7 @@
 * "Fast Inference from Transformers via Speculative Decoding" (Leviathan 외, 2022, https://arxiv.org/abs/2211.17192): 6장의 투기적 디코딩 원 논문이다.
 * https://kipp.ly/transformer-inference-arithmetic/[Transformer Inference Arithmetic] (kipply, 2022): 파라미터 수와 메모리 대역폭만으로 추론 지연과 비용을 계산하는 방법을 정리한 글. 6장의 측정 결과를 이론 쪽에서 뒷받침한다.
 
-== 3부: 오픈 모델 표준
+=== 3부: 오픈 모델 표준
 
 * https://github.com/huggingface/safetensors[safetensors]: 8장에서 파서를 직접 만들며 다룬 포맷의 공식 저장소. 명세 문서가 함께 있다.
 * https://github.com/ggml-org/ggml/blob/master/docs/gguf.md[GGUF 명세]: 8장에서 비교한 단일 파일 포맷의 명세. 이 포맷을 쓰는 추론 엔진 https://github.com/ggml-org/llama.cpp[llama.cpp]와 함께 보면 좋다.
@@ -57,7 +57,7 @@
 * https://github.com/openai/tiktoken[tiktoken]: OpenAI의 토크나이저 구현. 10장에서 다룬 토큰 효율을 실제 서비스 모델 기준으로 확인해 볼 수 있다.
 * https://huggingface.co/docs/transformers/chat_templating[Chat Templates 문서]: 10장 채팅 템플릿의 공식 문서. Jinja2 템플릿 문법과 적용 규칙을 설명한다.
 
-== 4부: RAG
+=== 4부: RAG
 
 * "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks" (Lewis 외, 2020, https://arxiv.org/abs/2005.11401): RAG라는 이름이 처음 등장한 논문이다.
 * "Dense Passage Retrieval for Open-Domain Question Answering" (Karpukhin 외, 2020, https://arxiv.org/abs/2004.04906): 11장 벡터 검색의 바탕이 된 밀집 검색 방식을 제안한다.
