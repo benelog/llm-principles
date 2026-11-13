@@ -39,6 +39,7 @@ public class Gpt {
     final List<Block> blocks = new ArrayList<>();
     final Value[][] lmHead; // 최종 로짓 투영 (vocabSize x nEmbd)
     final List<Value> params = new ArrayList<>(); // 옵티마이저가 갱신할 전체 파라미터 목록
+    Trace trace; // null이 아니면 forward가 어텐션의 중간값을 여기에 남긴다 (추적 출력용)
 
     // 작은 GPT를 만들고 가중치를 정규분포(표준편차 0.02)로 초기화한다.
     public Gpt(int vocabSize, Random rng) {
@@ -173,6 +174,9 @@ public class Gpt {
                         sum = sum.add(weights[t].mul(values.get(t)[lo + d]));
                     }
                     attnOut[lo + d] = sum;
+                }
+                if (trace != null) {
+                    trace.record(h, scores, weights, attnOut); // 추적 출력용 기록. 계산에는 영향이 없다
                 }
             }
             // 출력 투영을 거쳐 잔차 연결로 원래 벡터에 더한다

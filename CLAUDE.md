@@ -15,11 +15,14 @@
 - 부 구성과 partintro는 `book.adoc`에 있고, 장 파일은 `= 제목`으로 시작해 leveloffset=+1로 include된다.
 - `book/book.html`은 gitignore된 로컬 빌드 산출물이고 배포는 GitHub Actions가 한다.
 - 블로그 출처 표기는 본문에 넣지 않는다.
+- 벡터와 학습은 두 곳에서 나눠 설명한다. 도입 장은 개념만 다루고(2차원 임베딩 표 예, 확률 표가 바뀌는 학습 예, 수식 없음), 2장은 실행한 모델의 실제 값(16차원, 추적 출력)을 보여 준다. 손으로 따라가는 계산 예는 4장에 둔다.
+- 5장은 절 제목의 기법 여덟 가지와 RLHF, DPO만 본문에 두고, 변형 알고리즘과 구현 도구의 이름은 절 끝의 `찾아볼 이름::` 항목에 모은다. 새 이름을 추가할 때도 이 구분을 따른다.
 - 원고는 사용자의 블로그 글 3편(huggingface-open-model-standards, llm-information-layers, rag-system-components)과 Karpathy의 microGPT 포스트를 바탕으로 한다.
 
 ## 예제 코드
 
 - `examples/java/`: microgpt 포팅, serving 추론 비용 측정, safetensors 파서, quantize 양자화 오차 측정, bpe 토크나이저, minirag 하이브리드 검색. JDK 표준 라이브러리만 사용하고 package 선언 없이 `java Main.java`(JDK 22 이상의 다중 파일 소스 실행기)로 실행한다. 빌드 파일을 두지 않는다.
+- `examples/java/microgpt/Trace.java`의 추적 출력(시드 42, 입력 BOS·e·m·m)은 2장의 출력 블록 네 곳, `ch02-attention` 그림의 점수와 가중치, `ch02-training-loop` 그림의 손실 값, microgpt README의 예상 출력과 손으로 맞춘 쌍이다. 시드, 학습 설정, 출력 형식을 바꾸면 `java Main.java`를 다시 실행해 이들을 함께 갱신한다.
 - `examples/java-tests/`: `examples/java/` 예제들의 JUnit 5 테스트. Gradle 하위 프로젝트가 예제 디렉터리를 소스 경로로 가리키므로 예제에는 빌드 파일을 두지 않는다. 검증문은 AssertJ를 쓰고, 확률·시간처럼 통계적 불확실성이 있는 값은 범위나 관계만 확인한다. 예제 클래스나 메서드 이름을 바꾸면 이 테스트도 함께 고친다.
 - 클래스·메서드·변수 이름은 약어도 CamelCase로 쓴다(`Gpt`, `KvCache`, `baseLr`). 대문자 약어(`GPT`, `KVCache`)를 쓰지 않는다. `static final` 상수만 UPPER_SNAKE_CASE다.
 - `examples/math-lab/`: 4장과 부록 통계 참고의 수치를 Apache Commons Math로 검산하는 Gradle 프로젝트. 검산 절 순서와 제목은 4장과 부록 통계 참고의 절 구성을 따르므로 두 파일의 절을 바꾸면 함께 갱신한다.

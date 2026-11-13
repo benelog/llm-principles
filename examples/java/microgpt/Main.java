@@ -64,7 +64,7 @@ public class Main {
             }
             loss.backward();
 
-            // Adam 갱신. 학습률은 마지막 스텝에서 0이 되도록 선형 감소시킨다.
+            // Adam 갱신. 학습률은 스텝마다 선형으로 줄여 마지막 스텝에서 0에 가까워지게 한다.
             double lr = baseLr * (1 - (double) (step - 1) / numSteps);
             for (int i = 0; i < params.size(); i++) {
                 Value p = params.get(i);
@@ -84,6 +84,9 @@ public class Main {
             }
         }
         // end::training[]
+
+        // 학습을 마친 모델에 "emm"을 넣고, 다음 글자를 예측하는 forward 한 번의 중간값을 출력한다
+        Trace.run(model, tok, "emm", 'a');
 
         // tag::sampling[]
         // 샘플링: BOS 토큰으로 시작해 다음 토큰을 확률에 따라 뽑는다.

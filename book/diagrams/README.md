@@ -20,10 +20,10 @@ xvfb-run -a drawio --no-sandbox --export --format png --embed-diagram \
 |------|--------|------|
 | `ch00-generation-loop.drawio.png` | 도입 장 | 다음 토큰 예측의 반복: 생성한 토큰을 입력 끝에 붙여 모델을 다시 실행하고 종료 토큰에서 멈춤, temperature가 개입하는 곳 |
 | `ch00-token-vector.drawio.png` | 도입 장 | 토큰이 번호를 거쳐 벡터가 되는 과정과 2차원 임베딩 표 예시, 좌표평면에서 쓰임이 비슷한 토큰이 가까이 모인 모습 |
-| `ch01-microgpt-flow.drawio.png` | 1장 | microGPT 예제의 전체 흐름: Main의 학습 루프와 생성 루프, Tokenizer의 encode·decode, Gpt.forward 내부 단계, Value의 연산 기록과 backward()를 메서드 이름으로 연결 |
-| `ch02-attention.drawio.png` | 2장 | 한 위치의 어텐션: 쿼리와 캐시의 키로 점수(scores)를 매기고 softmax 가중치(weights)로 밸류를 섞는 과정, causal 구조 |
+| `ch01-microgpt-flow.drawio.png` | 1장 | microGPT 예제의 전체 흐름: Main의 학습 루프와 생성 루프, Tokenizer의 encode·decode, Gpt.forward 내부 단계, Value의 연산 기록과 backward()를 메서드 이름으로 연결, 학습과 생성 사이의 추적 출력(Trace.run) |
+| `ch02-attention.drawio.png` | 2장 | 한 위치의 어텐션: 쿼리와 캐시의 키로 점수(scores)를 매기고 softmax 가중치(weights)로 밸류를 섞는 과정, causal 구조. 점수와 가중치는 예제 추적 출력(BOS, e, m, m 입력, 헤드 0)의 값 |
 | `ch02-gpt-forward.drawio.png` | 2장 | GPT forward 계산: 임베딩 → 어텐션(Q·K·V) → MLP → 잔차 → 로짓 → 샘플링 루프 |
-| `ch02-training-loop.drawio.png` | 2장 | 학습 루프 다섯 단계: 샘플 → forward → 손실 → 역전파 → 옵티마이저 |
+| `ch02-training-loop.drawio.png` | 2장 | 학습 루프 다섯 단계: 샘플 → forward → 손실 → 역전파 → 옵티마이저, 예제 실행의 학습 전후 손실(3.34, 2.27) |
 | `ch03-batching.drawio.png` | 3장 | 정적 배칭과 연속 배칭의 자리 사용 비교, 연속 예약과 PagedAttention 블록 할당의 메모리 비교 |
 | `ch03-gqa.drawio.png` | 3장 | MHA·GQA·MQA의 K·V 헤드 공유와 128K 컨텍스트의 KV 캐시 크기(64·16·2GiB) |
 | `ch03-prefill-decode.drawio.png` | 3장 | 프리필(병렬)과 디코드(순차)의 비대칭, KV 캐시 · 프롬프트 캐싱 · 배칭 |
