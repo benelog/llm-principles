@@ -27,6 +27,15 @@ public final class Calculus {
         c.near("체인 룰 예제 dy/dx (x=1)", 12, cy.getPartialDerivative(1), 1e-12);
         c.near("x = 1.001에서의 y", 9.012, Math.pow(2 * 1.001 + 1, 2), 1e-3);
 
+        // 7장: 로컬 기울기는 dy/dg = 2g = 6, dg/dx = 2다.
+        // x가 0.001 커지면 g는 그 2배인 0.002, y는 다시 그 6배인 0.012 커진다.
+        DerivativeStructure inner = new DerivativeStructure(1, 1, 0, 3.0);
+        c.near("바깥 함수의 로컬 기울기 dy/dg (g=3)", 6, inner.pow(2).getPartialDerivative(1), 1e-12);
+        c.near("안쪽 함수의 로컬 기울기 dg/dx", 2, cx.multiply(2).add(1).getPartialDerivative(1), 1e-12);
+        c.near("x = 1.001에서의 g", 3.002, 2 * 1.001 + 1, 1e-12);
+        c.near("g의 변화량", 0.002, (2 * 1.001 + 1) - 3, 1e-12);
+        c.near("y의 변화량", 0.012, Math.pow(2 * 1.001 + 1, 2) - 9, 5e-5);
+
         // 7장: f(x) = x²에서 x = 3, 학습률 0.1로 출발하면 3, 2.4, 1.92, 1.54, 1.23이고
         // 10스텝 뒤에는 3 × 0.8^10 ≈ 0.32이다. 학습률 1.1이면 3, -3.6, 4.32, -5.18로 발산한다.
         double[] expected = {3, 2.4, 1.92, 1.54, 1.23};
@@ -50,6 +59,11 @@ public final class Calculus {
             }
         }
         c.ok("학습률 1.1의 발산 경로", badMatches, "3 → -3.6 → 4.32 → -5.18");
+
+        // 7장: 첫 스텝에서 기울기는 2 * 3 = 6이므로 학습률 0.1이면 x는 3 - 0.1 * 6 = 2.4,
+        // 학습률 1.1이면 3 - 1.1 * 6 = -3.6이 된다.
+        c.near("학습률 0.1의 첫 스텝", 2.4, 3 - 0.1 * (2 * 3), 1e-12);
+        c.near("학습률 1.1의 첫 스텝", -3.6, 3 - 1.1 * (2 * 3), 1e-12);
 
         // 7장: 한 스텝의 갱신식은 x - 학습률 * 2x = (1 - 2 * 학습률) * x다.
         // 학습률 0.1이면 매 스텝 0.8배, 1.1이면 -1.2배가 된다.
@@ -80,6 +94,19 @@ public final class Calculus {
                 "기울기 0.001, -0.5, 3, -200 모두 ±학습률만큼 이동");
         c.near("보정 없는 첫 스텝의 배율", 0.45, (1 - beta1) / Math.sqrt(1 - beta2), 5e-3);
 
+        // 7장: 첫 스텝의 이동 평균은 m = 0.9 * 0 + 0.1 * g, v = 0.95 * 0 + 0.05 * g²다. g = 3으로 확인한다.
+        c.near("첫 스텝의 m (g = 3)", 0.1 * 3, beta1 * 0 + (1 - beta1) * 3, 1e-12);
+        c.near("첫 스텝의 v (g = 3)", 0.05 * 9, beta2 * 0 + (1 - beta2) * 9, 1e-12);
+
+        // 7장: β1 = 0.9이고 m이 0에서 시작할 때, 기울기가 계속 1이면 m은 0.1, 0.19, 0.271, 0.344로
+        // 1을 향해 커지고, 1과 -1을 오가면 0.1, -0.01, 0.091, -0.018로 0 근처에 머문다.
+        c.ok("기울기가 일정할 때의 이동 평균",
+                movingAverageMatches(beta1, new double[] {1, 1, 1, 1}, new double[] {0.1, 0.19, 0.271, 0.344}),
+                "0.1 → 0.19 → 0.271 → 0.344");
+        c.ok("기울기가 요동칠 때의 이동 평균",
+                movingAverageMatches(beta1, new double[] {1, -1, 1, -1}, new double[] {0.1, -0.01, 0.091, -0.018}),
+                "0.1 → -0.01 → 0.091 → -0.018");
+
         // Commons Math의 DerivativeStructure는 4장의 autograd와 같은 자동 미분이다.
         // 값과 함께 도함수를 들고 다니면서 연산할 때마다 체인 룰을 적용한다.
         // 첫 번째 인자는 변수 개수, 두 번째는 미분 차수, 세 번째는 변수 번호, 네 번째는 값이다.
@@ -92,6 +119,16 @@ public final class Calculus {
 
         // 7장: x를 0.001만큼 키우면 f는 약 0.006만큼 커진다.
         c.near("x를 0.001 키웠을 때 변화량", 0.006, 3.001 * 3.001 - 3 * 3, 1e-5);
+
+        // 7장: 3.001² = 9.006001이고, f의 변화량 0.006을 x의 변화량 0.001로 나눈 6이 기울기다.
+        c.near("3.001²", 9.006001, 3.001 * 3.001, 1e-9);
+        c.near("f의 변화량 / x의 변화량", 6, (3.001 * 3.001 - 3 * 3) / 0.001, 5e-3);
+
+        // 7장: x = -3에서는 기울기가 -6이라서 x를 키우면 f가 줄어든다.
+        DerivativeStructure negative = new DerivativeStructure(1, 1, 0, -3.0);
+        c.near("f(x)=x²의 x=-3에서 기울기", -6, negative.multiply(negative).getPartialDerivative(1), 1e-12);
+        c.ok("기울기가 음수면 x를 키울 때 f가 줄어듦", (-2.999) * (-2.999) < (-3.0) * (-3.0),
+                "f(-2.999) < f(-3)");
 
         // 7장: 편미분은 다른 입력을 고정하고 하나만 움직여 구한 기울기이고,
         // 그것을 모두 모은 벡터가 그래디언트다.
@@ -155,5 +192,17 @@ public final class Calculus {
         }
         c.ok("학습률이 너무 작으면 느림", Math.abs(slow - 3) > 1,
                 "200걸음 뒤에도 " + Checker.num(slow) + "에 머문다");
+    }
+
+    /** 0에서 시작한 이동 평균 m = β*m + (1-β)*기울기가 본문에 적힌 수열과 맞는지 확인한다. */
+    private static boolean movingAverageMatches(double beta, double[] gradients, double[] expected) {
+        double m = 0;
+        for (int i = 0; i < gradients.length; i++) {
+            m = beta * m + (1 - beta) * gradients[i];
+            if (Math.abs(m - expected[i]) > 5e-4) {
+                return false;
+            }
+        }
+        return true;
     }
 }

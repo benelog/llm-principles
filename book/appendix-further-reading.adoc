@@ -22,7 +22,7 @@
 * "Training language models to follow instructions with human feedback" (Ouyang 외, 2022, https://arxiv.org/abs/2203.02155): InstructGPT 논문. 1장의 감독형 미세조정과 선호 학습(RLHF)으로 이어지는 파이프라인의 원형이다.
 * "Direct Preference Optimization" (Rafailov 외, 2023, https://arxiv.org/abs/2305.18290): 별도의 보상 모델 없이 선호 데이터로 바로 학습하는 DPO를 제안한다. 1장 선호 학습의 후속 흐름이다.
 * "Proximal Policy Optimization Algorithms" (Schulman 외, 2017, https://arxiv.org/abs/1707.06347): RLHF에 주로 쓰이는 강화학습 알고리즘 PPO의 원 논문. 7장의 벨만 방정식 절과 이어진다.
-* "Scaling Laws for Neural Language Models" (Kaplan 외, 2020, https://arxiv.org/abs/2001.08361)와 "Training Compute-Optimal Large Language Models" (Hoffmann 외, 2022, https://arxiv.org/abs/2203.15556): 7장에서 소개한 스케일링 법칙의 원 논문들이다. 후자(Chinchilla)가 파라미터당 토큰 수의 균형점을 제시했고, 1장 "규모의 감각" 절의 배경이 된다.
+* "Scaling Laws for Neural Language Models" (Kaplan 외, 2020, https://arxiv.org/abs/2001.08361)와 "Training Compute-Optimal Large Language Models" (Hoffmann 외, 2022, https://arxiv.org/abs/2203.15556): 7장에서 소개한 스케일링 법칙의 원 논문들이다. 후자(Chinchilla)가 파라미터당 토큰 수의 균형점을 제시했고, 1장 "기법별 데이터와 비용의 자릿수" 절의 배경이 된다.
 * "LoRA: Low-Rank Adaptation of Large Language Models" (Hu 외, 2021, https://arxiv.org/abs/2106.09685)와 "QLoRA: Efficient Finetuning of Quantized LLMs" (Dettmers 외, 2023, https://arxiv.org/abs/2305.14314): 3장에서 회색지대로 분류한 PEFT의 근거 논문들이다.
 * "Chain-of-Thought Prompting Elicits Reasoning in Large Language Models" (Wei 외, 2022, https://arxiv.org/abs/2201.11903): 2장의 추론 패턴 유도가 처음 정리된 논문이다.
 * "Lost in the Middle: How Language Models Use Long Contexts" (Liu 외, 2023, https://arxiv.org/abs/2307.03172): 긴 컨텍스트 중간에 놓인 정보의 활용도가 떨어지는 U자형 곡선을 측정한 논문. 2장과 13장 논의의 근거다.
@@ -50,7 +50,7 @@
 * https://github.com/ggml-org/ggml/blob/master/docs/gguf.md[GGUF 명세]: 8장에서 비교한 단일 파일 포맷의 명세. 이 포맷을 쓰는 추론 엔진 https://github.com/ggml-org/llama.cpp[llama.cpp]와 함께 보면 좋다.
 * "GPTQ: Accurate Post-Training Quantization for Generative Pre-trained Transformers" (Frantar 외, 2022, https://arxiv.org/abs/2210.17323)와 "AWQ: Activation-aware Weight Quantization" (Lin 외, 2023, https://arxiv.org/abs/2306.00978): 8장에서 소개한 보정 데이터 기반 양자화의 원 논문들이다.
 * "LLM.int8(): 8-bit Matrix Multiplication for Transformers at Scale" (Dettmers 외, 2022, https://arxiv.org/abs/2208.07339): 트랜스포머에서 아웃라이어가 양자화를 어떻게 어렵게 만드는지 측정하고 우회한 논문. 8장의 블록 단위 배율 논의와 이어진다.
-* https://huggingface.co/docs/transformers[Hugging Face transformers 문서]: 9장에서 규약의 진원지로 다룬 라이브러리의 공식 문서.
+* https://huggingface.co/docs/transformers[Hugging Face transformers 문서]: 9장에서 파일 규약을 정착시킨 라이브러리로 다룬 ``transformers``의 공식 문서.
 * "The Llama 3 Herd of Models" (Grattafiori 외, 2024, https://arxiv.org/abs/2407.21783): 공개 모델 기술 보고서 가운데 학습 과정과 아키텍처 결정을 가장 상세히 밝힌 문서. 9장에서 확인한 아키텍처 수렴의 대표 사례다.
 * "RoFormer: Enhanced Transformer with Rotary Position Embedding" (Su 외, 2021, https://arxiv.org/abs/2104.09864)와 "GQA: Training Generalized Multi-Query Transformer Models" (Ainslie 외, 2023, https://arxiv.org/abs/2305.13245): RoPE와 GQA의 원 논문들이다. GQA는 6장에서 KV 캐시를 줄이는 방법으로 다뤘고, 두 기법의 설정은 9장에서 본 config.json에 `rope_theta`, `num_key_value_heads` 같은 필드로 들어간다.
 * "Neural Machine Translation of Rare Words with Subword Units" (Sennrich 외, 2016, https://arxiv.org/abs/1508.07909): BPE를 신경망 언어 처리에 도입한 논문. 10장에서 구현한 병합 학습 알고리즘의 출처다.

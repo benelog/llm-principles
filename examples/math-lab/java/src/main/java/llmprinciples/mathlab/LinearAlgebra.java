@@ -57,6 +57,39 @@ public final class LinearAlgebra {
                         .dotProduct(new ArrayRealVector(new double[] {0, 1})), 1e-12);
         c.ok("반대 방향의 내적", a.dotProduct(a.mapMultiply(-1)) < 0, "a·(-a) < 0");
 
+        // 7장: 가로축 방향의 벡터 [1, 0]과 세 벡터 [2, 1], [0, 3], [-2, 1]의 내적은 2, 0, -2다.
+        RealVector axis = new ArrayRealVector(new double[] {1, 0});
+        c.near("[1,0]·[2,1] (비슷한 방향)", 2,
+                axis.dotProduct(new ArrayRealVector(new double[] {2, 1})), 1e-12);
+        c.near("[1,0]·[0,3] (수직)", 0,
+                axis.dotProduct(new ArrayRealVector(new double[] {0, 3})), 1e-12);
+        c.near("[1,0]·[-2,1] (반대쪽 방향)", -2,
+                axis.dotProduct(new ArrayRealVector(new double[] {-2, 1})), 1e-12);
+
+        // 7장: 코사인은 각이 0도일 때 1, 90도일 때 0, 180도일 때 -1이다.
+        c.near("cos 0도", 1, Math.cos(Math.toRadians(0)), 1e-12);
+        c.near("cos 90도", 0, Math.cos(Math.toRadians(90)), 1e-12);
+        c.near("cos 180도", -1, Math.cos(Math.toRadians(180)), 1e-12);
+
+        // 7장: b를 두 배로 늘린 [6, 8]은 a와의 내적이 22, 길이가 10으로 두 배가 되지만
+        // 코사인 유사도는 22 / (2.236 * 10) ≈ 0.98로 그대로다.
+        RealVector doubled = b.mapMultiply(2);
+        c.near("내적 a·[6,8]", 22, a.dotProduct(doubled), 1e-12);
+        c.near("벡터 길이 |[6,8]|", 10, doubled.getNorm(), 1e-12);
+        c.near("길이가 두 배여도 코사인은 그대로", a.cosine(b), a.cosine(doubled), 1e-12);
+
+        // 7장: 각 성분을 벡터의 길이로 나누면 길이가 1이 되고, 그런 벡터끼리의 내적이 코사인 유사도다.
+        // a / |a| ≈ [0.447, 0.894], b / |b| = [0.6, 0.8], 내적 ≈ 0.98
+        RealVector unitA = a.unitVector();
+        RealVector unitB = b.unitVector();
+        c.near("a / |a|의 첫 성분", 0.447, unitA.getEntry(0), 5e-4);
+        c.near("a / |a|의 둘째 성분", 0.894, unitA.getEntry(1), 5e-4);
+        c.near("b / |b|의 첫 성분", 0.6, unitB.getEntry(0), 1e-12);
+        c.near("b / |b|의 둘째 성분", 0.8, unitB.getEntry(1), 1e-12);
+        c.near("정규화한 벡터의 길이", 1, unitA.getNorm(), 1e-12);
+        c.near("정규화한 두 벡터의 내적", 0.98, unitA.dotProduct(unitB), 5e-3);
+        c.near("정규화한 내적 = 코사인 유사도", a.cosine(b), unitA.dotProduct(unitB), 1e-12);
+
         // 7장: lmHead는 임베딩 차원의 벡터를 어휘 크기의 로짓으로 바꾸는 행렬 곱 하나다.
         RealVector x = new ArrayRealVector(new double[] {0.5, -1.0, 0.25, 2.0});
         RealMatrix lmHead = MatrixUtils.createRealMatrix(new double[][] {
@@ -81,6 +114,17 @@ public final class LinearAlgebra {
         c.near("(W2 W1) x = W2(W1 x)", 0,
                 combined.operate(in).subtract(w2.operate(w1.operate(in))).getNorm(), 1e-12);
 
+        // 7장: W = [[2, 0], [1, 1]], x = [1, 2]이면 Wx = [2, 3]이고,
+        // 출력의 각 성분은 행렬의 한 행과 x의 내적이다.
+        c.near("Wx의 첫 성분 = 첫 행 [2,0]·x", 2, w1.getRowVector(0).dotProduct(in), 1e-12);
+        c.near("Wx의 둘째 성분 = 둘째 행 [1,1]·x", 3, w1.getRowVector(1).dotProduct(in), 1e-12);
+        c.near("행별 내적 = 행렬 곱 Wx", 0,
+                w1.operate(in).subtract(new ArrayRealVector(new double[] {2, 3})).getNorm(), 1e-12);
+
+        // 7장: W2 W1의 첫 행 첫 열 3은 W2의 첫 행 [1, 1]과 W1의 첫 열 [2, 1]의 내적이다.
+        c.near("W2의 첫 행·W1의 첫 열", combined.getEntry(0, 0),
+                w2.getRowVector(0).dotProduct(w1.getColumnVector(0)), 1e-12);
+
         // 7장: 쿼리 T개를 쌓은 T×d 행렬 Q와 키 행렬 K의 곱 Q Kᵀ는 T×T 점수 행렬이고(프리필),
         // 쿼리 하나짜리 디코드는 그 행렬의 한 행과 같다.
         RealMatrix q = randomMatrix(rnd, 3, 4);
@@ -88,6 +132,11 @@ public final class LinearAlgebra {
         RealMatrix scores = q.multiply(k.transpose());
         c.ok("Q Kᵀ의 크기는 T×T", scores.getRowDimension() == 3 && scores.getColumnDimension() == 3,
                 "3×4 곱하기 4×3 = 3×3");
+
+        // 7장: Kᵀ는 K의 행과 열을 맞바꾼 전치 행렬로, T×d인 K를 d×T로 바꾼 것이다.
+        RealMatrix kt = k.transpose();
+        c.ok("Kᵀ의 크기는 d×T", kt.getRowDimension() == 4 && kt.getColumnDimension() == 3,
+                "3×4의 전치는 4×3");
         RealVector decodeRow = k.operate(q.getRowVector(0)); // q Kᵀ = K q
         c.near("디코드의 점수 벡터 = 프리필 점수 행렬의 한 행", 0,
                 decodeRow.subtract(scores.getRowVector(0)).getNorm(), 1e-12);
@@ -122,6 +171,15 @@ public final class LinearAlgebra {
         c.near("저장할 숫자 d²", 36, d * d, 0);
         c.near("저장할 숫자 2dr", 24, 2 * d * r, 0);
 
+        // 7장: d가 4,096이고 r이 8이면 약 1,677만 개(4,096의 제곱)가
+        // 2 * 4,096 * 8 = 65,536개로, 원래의 0.4%가 된다.
+        final long bigD = 4096;
+        final long bigR = 8;
+        // 4,096의 제곱은 16,777,216이고, 본문의 1,677만은 만 단위 아래를 버린 값이다.
+        c.near("d = 4,096의 d²", 1677e4, bigD * bigD, 1e4);
+        c.near("d = 4,096, r = 8의 2dr", 65536, 2 * bigD * bigR, 0);
+        c.near("2dr / d²", 0.004, 2.0 * bigD * bigR / (bigD * bigD), 5e-4);
+
         // 7장: 랭크가 정확히 낮지 않아도 "거의 낮은" 경우에는 근사할 수 있다.
         RealMatrix noisy = deltaW.copy();
         for (int i = 0; i < d; i++) {
@@ -145,6 +203,19 @@ public final class LinearAlgebra {
                 c22.operate(diag).subtract(diag.mapMultiply(3)).getNorm(), 1e-12);
         RealVector anti = new ArrayRealVector(new double[] {1, -1});
         c.near("C × [1,-1] = 1 × [1,-1]", 0, c22.operate(anti).subtract(anti).getNorm(), 1e-12);
+
+        // 7장: [1, 0]은 곱한 뒤 [2, 1]이 되어 방향이 바뀌므로 고유벡터가 아니다.
+        RealVector unitX = new ArrayRealVector(new double[] {1, 0});
+        RealVector movedX = c22.operate(unitX);
+        c.near("C × [1,0] = [2,1]", 0,
+                movedX.subtract(new ArrayRealVector(new double[] {2, 1})).getNorm(), 1e-12);
+        c.ok("[1,0]은 곱하면 방향이 바뀜", movedX.cosine(unitX) < 1 - 1e-6,
+                "곱하기 전후의 코사인 " + Checker.num(movedX.cosine(unitX)));
+
+        // 7장: 전체 분산 4는 x의 분산 2와 y의 분산 2를 더한 값이고, 두 고유값의 합 3 + 1과 같다.
+        c.near("전체 분산 = 대각선 성분의 합", 4, c22.getTrace(), 1e-12);
+        c.near("전체 분산 = 고유값의 합", c22.getTrace(),
+                eig22.getRealEigenvalue(0) + eig22.getRealEigenvalue(1), 1e-12);
         c.near("제1주성분 방향이 [1,1]과 나란함", 1,
                 Math.abs(eig22.getEigenvector(0).cosine(diag)), 1e-9);
         c.near("제1주성분의 설명 비율 75%", 0.75, 3.0 / (3 + 1), 1e-12);
@@ -176,6 +247,18 @@ public final class LinearAlgebra {
     /** 7장 "판별 분석" */
     public static void discriminant(Checker c) {
         c.section("판별 분석");
+
+        // 7장: 한 집단의 평균이 [1, 2]이고 다른 집단의 평균이 [4, 3]이면 방향은 두 평균의 차이인 [3, 1]이다.
+        // 새 데이터가 어느 집단 쪽인지는 이 방향 벡터와의 내적이 큰지 작은지로 가늠한다.
+        RealVector meanA = new ArrayRealVector(new double[] {1, 2});
+        RealVector meanB = new ArrayRealVector(new double[] {4, 3});
+        RealVector exampleDiff = meanB.subtract(meanA);
+        c.near("평균의 차이 [4,3] - [1,2] = [3,1]", 0,
+                exampleDiff.subtract(new ArrayRealVector(new double[] {3, 1})).getNorm(), 1e-12);
+        c.ok("방향 벡터와의 내적이 두 집단에서 다름",
+                exampleDiff.dotProduct(meanB) > exampleDiff.dotProduct(meanA),
+                "[3,1]·[4,3] = " + Checker.num(exampleDiff.dotProduct(meanB))
+                        + " > [3,1]·[1,2] = " + Checker.num(exampleDiff.dotProduct(meanA)));
 
         // 3장 activation steering의 설정을 모사한다. 정직한 답변일 때의 활성값과
         // 그렇지 않을 때의 활성값을 각각 모아 두 집단으로 둔다.

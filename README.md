@@ -11,7 +11,7 @@ main 브랜치에 push하면 GitHub Actions가 원고를 빌드해서 위 주소
 ```
 book/                  AsciiDoc 원고 (4개 부, 14개 장)
   book.adoc            책 전체 (부 구성과 장별 파일 include)
-  ch01-model-layer.adoc            1부 1장. 모델 레이어: 가중치에 새기는 정보
+  ch01-model-layer.adoc            1부 1장. 모델 레이어: 학습으로 가중치에 넣는 정보
   ch02-prompt-layer.adoc           1부 2장. 프롬프트 레이어: 추론 시점에 넣는 정보
   ch03-gray-zone.adoc              1부 3장. 회색지대와 컨텍스트 공급 레이어
   ch04-microgpt-basics.adoc        2부 4장. 다음 토큰 예측과 자동 미분

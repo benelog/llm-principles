@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Random;
 
 import org.apache.commons.math3.distribution.NormalDistribution;
+import org.apache.commons.math3.stat.StatUtils;
 import org.apache.commons.math3.stat.inference.OneWayAnova;
 import org.apache.commons.math3.stat.inference.TTest;
 
@@ -27,6 +28,11 @@ public final class SearchStats {
         c.ok("드문 단어의 IDF가 더 큼", rare > common,
                 "df=2에서 " + Checker.num(rare) + ", df=500에서 " + Checker.num(common));
 
+        // 7장: 문서 1,000개 가운데 10개에만 나오는 단어는 IDF가 ln(1000 / 10) = ln(100) ≈ 4.61이고,
+        // 절반인 500개에 나오는 단어는 ln(2) ≈ 0.69다.
+        c.near("df=10의 IDF", 4.61, idf(1000, 10), 5e-3);
+        c.near("df=500의 IDF", 0.69, common, 5e-3);
+
         boolean monotone = true;
         double prev = Double.POSITIVE_INFINITY;
         for (double df : new double[] {1, 10, 100, 500, 1000}) {
@@ -47,6 +53,17 @@ public final class SearchStats {
         c.near("BM25 빈도 1의 기여", 1.0, bm25TermFrequency(1, AVG_LEN), 5e-3);
         c.near("BM25 빈도 10의 기여", 1.96, bm25TermFrequency(10, AVG_LEN), 5e-3);
         c.near("BM25 빈도 20의 기여", 2.08, bm25TermFrequency(20, AVG_LEN), 5e-3);
+
+        // 7장: 문서 길이가 평균과 같으면 괄호 안이 1이 되어 식이 tf * 2.2 / (tf + 1.2)가 되고,
+        // 상한은 k1 + 1 = 2.2다.
+        c.near("평균 길이일 때의 식 tf * 2.2 / (tf + 1.2)", 10 * 2.2 / (10 + 1.2),
+                bm25TermFrequency(10, AVG_LEN), 1e-12);
+        c.near("상한 k1 + 1", 2.2, K1 + 1, 1e-12);
+
+        // 7장: 길이가 평균의 두 배인 문서는 괄호 안이 1 - 0.75 + 0.75 * 2 = 1.75가 되어,
+        // 빈도 1의 기여가 1.0에서 0.71로 내려간다.
+        c.near("길이가 두 배일 때의 괄호 안", 1.75, 1 - B + B * 2, 1e-12);
+        c.near("길이가 두 배일 때 빈도 1의 기여", 0.71, bm25TermFrequency(1, 2 * AVG_LEN), 5e-3);
 
         // 7장: BM25는 단어 빈도의 기여에 상한을 두어 포화시키고 문서 길이로 보정한다.
         double tf10 = bm25TermFrequency(10, AVG_LEN);
@@ -80,6 +97,39 @@ public final class SearchStats {
         // 7장: 표준 오차를 절반으로 줄이려면 문항이 400개 필요하다.
         // 정밀도를 두 배로 만들려면 표본이 네 배 필요하다는 제곱근의 법칙이다.
         c.near("문항 400개의 표준 오차", se / 2, Math.sqrt(p * (1 - p) / 400), 1e-12);
+
+        // 7장: 문항 하나의 채점 결과(맞으면 1, 틀리면 0)의 분산이 p * (1 - p)이고,
+        // n개의 평균을 내면 분산이 n분의 1로 준다. 분산은 E[x²] - E[x]²로 구한다.
+        double scoreVariance = (p * 1 * 1 + (1 - p) * 0 * 0) - p * p;
+        c.near("채점 결과의 분산 p * (1 - p)", 0.16, scoreVariance, 1e-12);
+
+        // 정답률 80%인 문항 100개짜리 평가를 2만 번 되풀이해 정확도가 흩어지는 폭을 잰다.
+        // 뒤쪽 검정들의 난수 순서를 바꾸지 않도록 난수 생성기를 따로 둔다.
+        Random evalRnd = new Random(2324);
+        final int evalRuns = 20000;
+        double[] accuracies = new double[evalRuns];
+        int inside = 0;
+        for (int run = 0; run < evalRuns; run++) {
+            int correct = 0;
+            for (int item = 0; item < 100; item++) {
+                if (evalRnd.nextDouble() < p) {
+                    correct++;
+                }
+            }
+            accuracies[run] = correct / 100.0;
+            if (correct >= 72 && correct <= 88) {
+                inside++;
+            }
+        }
+        c.near("되풀이한 정확도의 표준편차 = 표준 오차", se,
+                Math.sqrt(StatUtils.variance(accuracies)), 2e-3);
+
+        // 7장: 실제 정답률이 정확히 80%여도 문항 100개로 재면 평균 ±2 표준 오차인
+        // 72%에서 88% 사이의 값이 나올 수 있다.
+        c.near("평균 - 2 표준 오차", 0.72, p - 2 * se, 1e-12);
+        c.near("평균 + 2 표준 오차", 0.88, p + 2 * se, 1e-12);
+        c.ok("되풀이한 정확도 대부분이 72%~88% 안", inside / (double) evalRuns > 0.93,
+                Checker.num(inside * 100.0 / evalRuns) + "%가 범위 안");
 
         // 7장: 79%와 83%의 차이는 우연의 범위를 벗어나지 못한다.
         double diff = 0.83 - 0.79;
@@ -170,6 +220,11 @@ public final class SearchStats {
                 "집단 4개에서 " + Checker.num(rate * 100) + "%");
         c.note("검정 6번을 반복하면 이론값은 1-0.95^6 = %.1f%%다",
                 (1 - Math.pow(0.95, 6)) * 100);
+
+        // 7장: 모델이 세 개면 쌍도 세 개다. 세 검정이 서로 독립이라고 어림하면
+        // 한 번이라도 우연히 유의하다고 나올 확률은 1 - 0.95³ ≈ 14%다.
+        c.near("모델 세 개의 쌍 수", 3, 3 * 2 / 2, 0);
+        c.near("검정 세 번의 위양성 누적 1 - 0.95³", 0.14, 1 - Math.pow(0.95, 3), 5e-3);
     }
 
     private static final double K1 = 1.2;

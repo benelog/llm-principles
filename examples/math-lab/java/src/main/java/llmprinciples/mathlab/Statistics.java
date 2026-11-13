@@ -46,6 +46,13 @@ public final class Statistics {
         c.near("예제 값들의 분산 (편차 제곱의 평균)", 4, var, 1e-12);
         c.near("예제 값들의 표준편차", 2, Math.sqrt(var), 1e-12);
 
+        // 7장: 편차를 그대로 평균 내면 양수와 음수가 상쇄되어 항상 0이 된다.
+        double deviationSum = 0;
+        for (double v : sample) {
+            deviationSum += v - mean;
+        }
+        c.near("편차의 합", 0, deviationSum, 1e-12);
+
         double[] x = {2, 4, 4, 4, 5, 5, 7, 9};
         c.near("평균", 5, StatUtils.mean(x), 1e-12);
         // 표본 분산은 n-1로 나누므로 모분산 4와는 값이 다르다.
@@ -85,6 +92,32 @@ public final class Statistics {
         }
         c.near("차원을 256으로 바꿔도 분산 1", 1, StatUtils.variance(dots2), 0.05);
 
+        // 7장: 값을 c로 나누면 표준편차는 c로, 분산은 c²으로 나뉜다.
+        double[] quartered = Arrays.stream(x).map(value -> value / 4).toArray();
+        c.near("값을 4로 나눈 뒤의 분산 = 분산 / 16",
+                StatUtils.variance(x) / 16, StatUtils.variance(quartered), 1e-12);
+        c.near("값을 4로 나눈 뒤의 표준편차 = 표준편차 / 4",
+                Math.sqrt(StatUtils.variance(x)) / 4, Math.sqrt(StatUtils.variance(quartered)), 1e-12);
+
+        // 7장: d가 256이면 나누기 전 점수의 표준편차가 sqrt(256) = 16이고,
+        // 점수 차이 16은 softmax에서 e^16, 약 890만 배의 확률 비율이 된다.
+        c.near("sqrt(256)", 16, Math.sqrt(256), 1e-12);
+        c.near("e^16", 890e4, Math.exp(16), 5e4);
+
+        // 7장: x = [3, 4]이면 제곱 평균은 12.5, RMS는 약 3.54이고 나눈 결과는 약 [0.85, 1.13]이다.
+        // 결과의 제곱 평균은 (0.72 + 1.28) / 2 = 1이고, 성분 사이의 비율 3 대 4는 그대로다.
+        RealVector pair = new ArrayRealVector(new double[] {3, 4});
+        double meanSquare = pair.dotProduct(pair) / pair.getDimension();
+        RealVector pairNormed = pair.mapDivide(Math.sqrt(meanSquare));
+        c.near("[3, 4]의 제곱 평균", 12.5, meanSquare, 1e-12);
+        c.near("[3, 4]의 RMS", 3.54, Math.sqrt(meanSquare), 5e-3);
+        c.near("정규화한 첫 성분", 0.85, pairNormed.getEntry(0), 5e-3);
+        c.near("정규화한 둘째 성분", 1.13, pairNormed.getEntry(1), 5e-3);
+        c.near("정규화한 첫 성분의 제곱", 0.72, Math.pow(pairNormed.getEntry(0), 2), 1e-12);
+        c.near("정규화한 둘째 성분의 제곱", 1.28, Math.pow(pairNormed.getEntry(1), 2), 1e-12);
+        c.near("성분 사이의 비율 3 대 4 유지", 3.0 / 4,
+                pairNormed.getEntry(0) / pairNormed.getEntry(1), 1e-12);
+
         // 7장: 5장의 RMSNorm은 벡터를 자기 크기로 나눠 규모를 되돌린다.
         RealVector v = new ArrayRealVector(new double[] {3, -4, 12, 0.5});
         double rms = v.getNorm() / Math.sqrt(v.getDimension());
@@ -110,6 +143,25 @@ public final class Statistics {
         c.near("좌우 대칭 (CDF(0) = 0.5)", 0.5, n.cumulativeProbability(0), 1e-12);
         c.near("대칭성 P(X<-1.5) = P(X>1.5)", n.cumulativeProbability(-1.5),
                 1 - n.cumulativeProbability(1.5), 1e-12);
+
+        // 7장: 주사위 두 개를 던진 합은 7이 되는 경우가 여섯 가지로 가장 많고,
+        // 2나 12가 되는 경우는 한 가지뿐이라 가운데가 높은 삼각형 모양이 된다.
+        int[] ways = new int[13];
+        for (int first = 1; first <= 6; first++) {
+            for (int second = 1; second <= 6; second++) {
+                ways[first + second]++;
+            }
+        }
+        boolean sevenIsMost = true;
+        for (int total = 2; total <= 12; total++) {
+            if (total != 7 && ways[total] >= ways[7]) {
+                sevenIsMost = false;
+            }
+        }
+        c.near("주사위 두 개의 합이 7인 경우의 수", 6, ways[7], 0);
+        c.near("합이 2인 경우의 수", 1, ways[2], 0);
+        c.near("합이 12인 경우의 수", 1, ways[12], 0);
+        c.ok("7이 가장 흔한 합", sevenIsMost, "합 2부터 12까지의 경우의 수 " + Arrays.toString(Arrays.copyOfRange(ways, 2, 13)));
 
         // 7장: 중심 극한 정리. 개별 값이 어떤 분포를 따르든 여러 개를 더하면
         // 그 합은 정규 분포에 가까워진다. 균등 분포 12개의 합으로 확인한다.
@@ -167,6 +219,46 @@ public final class Statistics {
     /** 7장 "공분산과 상관계수" */
     public static void covarianceAndCorrelation(Checker c) {
         c.section("공분산과 상관계수");
+
+        // 7장: x = [1, 2, 3, 4](평균 2.5), y = [2, 4, 5, 8](평균 4.75)이면 편차의 곱은
+        // [4.125, 0.375, 0.125, 4.875], 그 평균인 공분산은 2.375다.
+        // σ_x ≈ 1.118, σ_y ≈ 2.165이고 상관계수는 2.375 / (1.118 * 2.165) ≈ 0.98이다.
+        double[] ex = {1, 2, 3, 4};
+        double[] ey = {2, 4, 5, 8};
+        double meanX = StatUtils.mean(ex);
+        double meanY = StatUtils.mean(ey);
+        c.near("x의 평균", 2.5, meanX, 1e-12);
+        c.near("y의 평균", 4.75, meanY, 1e-12);
+
+        double[] expectedProducts = {4.125, 0.375, 0.125, 4.875};
+        boolean productsMatch = true;
+        double productSum = 0;
+        for (int i = 0; i < ex.length; i++) {
+            double product = (ex[i] - meanX) * (ey[i] - meanY);
+            productSum += product;
+            if (Math.abs(product - expectedProducts[i]) > 1e-12 || product <= 0) {
+                productsMatch = false;
+            }
+        }
+        c.ok("편차의 곱", productsMatch, "[4.125, 0.375, 0.125, 4.875], 네 쌍 모두 양수");
+
+        double exampleCov = productSum / ex.length;
+        double sigmaX = Math.sqrt(StatUtils.populationVariance(ex));
+        double sigmaY = Math.sqrt(StatUtils.populationVariance(ey));
+        double exampleCorr = exampleCov / (sigmaX * sigmaY);
+        c.near("편차의 곱의 평균 cov(x, y)", 2.375, exampleCov, 1e-12);
+        c.near("σ_x", 1.118, sigmaX, 5e-4);
+        c.near("σ_y", 2.165, sigmaY, 5e-4);
+        c.near("예제의 상관계수", 0.98, exampleCorr, 5e-3);
+        c.near("손으로 구한 상관계수 = 라이브러리 값",
+                new PearsonsCorrelation().correlation(ex, ey), exampleCorr, 1e-12);
+
+        // 7장: y를 10배 큰 단위로 적으면 공분산도 10배가 되지만 상관계수는 그대로다.
+        double[] ey10 = Arrays.stream(ey).map(value -> value * 10).toArray();
+        c.near("y를 10배 하면 공분산도 10배", 10 * exampleCov,
+                new Covariance().covariance(ex, ey10, false), 1e-9);
+        c.near("y를 10배 해도 상관계수는 그대로", exampleCorr,
+                new PearsonsCorrelation().correlation(ex, ey10), 1e-12);
 
         Random rnd = new Random(1112);
         final int n = 500;
@@ -234,6 +326,18 @@ public final class Statistics {
     public static void kmeans(Checker c) {
         c.section("k-평균 군집화");
 
+        // 7장: 1차원 값 [1, 2, 3, 10, 11, 12]에 대표점 두 개를 1과 2에 놓고 시작하면
+        // 1회 뒤 1과 7.6(38 / 5), 2회 뒤 2와 11이 되고, 3회째에는 배정이 바뀌지 않아 멈춘다.
+        double[] values = {1, 2, 3, 10, 11, 12};
+        double[] centers = lloydStep(values, new double[] {1, 2});
+        c.near("1회 뒤 첫째 대표점", 1, centers[0], 1e-12);
+        c.near("1회 뒤 둘째 대표점 (38 / 5)", 7.6, centers[1], 1e-12);
+        centers = lloydStep(values, centers);
+        c.near("2회 뒤 첫째 대표점", 2, centers[0], 1e-12);
+        c.near("2회 뒤 둘째 대표점", 11, centers[1], 1e-12);
+        c.ok("3회째에는 대표점이 그대로", Arrays.equals(lloydStep(values, centers), centers),
+                "배정이 바뀌지 않아 멈춘다");
+
         // 7장: 대표점 k개를 놓고 "가장 가까운 대표점에 배정한다, 대표점을 배정된
         // 데이터의 평균으로 옮긴다"를 반복하면 대표점이 밀집한 곳으로 이동한다.
         // Commons Math는 k-평균을 직접 제공한다.
@@ -290,6 +394,22 @@ public final class Statistics {
         }
         Arrays.sort(centers);
         return centers;
+    }
+
+    /** Lloyd 알고리즘의 한 반복이다. 각 값을 가장 가까운 대표점에 배정하고, 대표점을 배정된 값들의 평균으로 옮긴다. */
+    private static double[] lloydStep(double[] values, double[] centers) {
+        double[] sums = new double[centers.length];
+        int[] counts = new int[centers.length];
+        for (double v : values) {
+            int k = nearest(centers, v);
+            sums[k] += v;
+            counts[k]++;
+        }
+        double[] next = new double[centers.length];
+        for (int k = 0; k < centers.length; k++) {
+            next[k] = counts[k] == 0 ? centers[k] : sums[k] / counts[k];
+        }
+        return next;
     }
 
     /** 각 값을 가장 가까운 격자점으로 바꿨을 때의 평균 제곱 오차다. */

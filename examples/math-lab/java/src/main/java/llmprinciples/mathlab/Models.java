@@ -35,6 +35,10 @@ public final class Models {
         c.near("sigmoid(0)", 0.5, 1 / (1 + Math.exp(0)), 1e-12);
         c.near("sigmoid(2)", 0.88, 1 / (1 + Math.exp(-2)), 5e-3);
 
+        // 7장: sigmoid(2) = 1 / (1 + exp(-2)) = 1 / (1 + 0.135) ≈ 0.88
+        c.near("exp(-2)", 0.135, Math.exp(-2), 5e-4);
+        c.near("1 / (1 + 0.135)", 0.88, 1 / (1 + 0.135), 5e-3);
+
         // 7장: 선형 회귀는 데이터에 가장 잘 맞는 직선 y = ax + b를 찾는다.
         // 기울기 2.5, 절편 -1인 직선에 잡음을 얹고 계수를 되찾아 본다.
         Random rnd = new Random(1516);
@@ -67,6 +71,31 @@ public final class Models {
             small.addData(sx[i], sy[i]);
         }
         c.near("닫힌 해 = 라이브러리의 최소제곱 해", small.getSlope(), slope, 1e-12);
+
+        // 7장: var(x)는 공분산 절에서 구한 표준편차 1.118의 제곱이다.
+        c.near("var(x) = σ_x²", 1.25, 1.118 * 1.118, 5e-4);
+
+        // 7장: 직선 y = 1.9x의 예측은 [1.9, 3.8, 5.7, 7.6]이고,
+        // 실제 값 [2, 4, 5, 8]과 어긋난 양의 제곱합이 이보다 작은 직선은 없다.
+        double[] expectedFit = {1.9, 3.8, 5.7, 7.6};
+        boolean fitMatches = true;
+        for (int i = 0; i < sx.length; i++) {
+            if (Math.abs(slope * sx[i] + intercept - expectedFit[i]) > 1e-9) {
+                fitMatches = false;
+            }
+        }
+        c.ok("y = 1.9x의 예측", fitMatches, "[1.9, 3.8, 5.7, 7.6]");
+        double smallestSse = sse(sx, sy, slope, intercept);
+        boolean noBetterLine = true;
+        for (double da : new double[] {-0.1, 0, 0.1}) {
+            for (double db : new double[] {-0.2, 0, 0.2}) {
+                if ((da != 0 || db != 0) && sse(sx, sy, slope + da, intercept + db) <= smallestSse) {
+                    noBetterLine = false;
+                }
+            }
+        }
+        c.ok("기울기나 절편을 바꾸면 제곱합이 늘어남", noBetterLine,
+                "y = 1.9x의 제곱합 " + Checker.num(smallestSse));
 
         // 7장: "가장 잘 맞는"의 기준은 오차 제곱합을 최소로 만드는 것이다(최소제곱법).
         double base = sse(xs, ys, reg.getSlope(), reg.getIntercept());
@@ -106,6 +135,16 @@ public final class Models {
         c.ok("점수 차이가 커지면 확률이 1에 접근",
                 sigmoid(5) > 0.99 && sigmoid(1) > sigmoid(0.5),
                 "diff=5에서 " + Checker.num(sigmoid(5)));
+
+        // 7장: 1인치 = 2.54cm이므로 키를 센티미터와 인치로 두 번 입력에 넣으면
+        // 계수 (1.0, 0), (0, 2.54), (0.5, 1.27)이 모두 같은 예측을 낸다. 키 170cm로 확인한다.
+        double heightCm = 170;
+        double heightInch = heightCm / 2.54;
+        double byCm = 1.0 * heightCm + 0 * heightInch;
+        double byInch = 0 * heightCm + 2.54 * heightInch;
+        double byBoth = 0.5 * heightCm + 1.27 * heightInch;
+        c.near("계수 (0, 2.54)의 예측 = 계수 (1.0, 0)의 예측", byCm, byInch, 1e-9);
+        c.near("계수 (0.5, 1.27)의 예측 = 계수 (1.0, 0)의 예측", byCm, byBoth, 1e-9);
 
         // 7장: 다중공선성은 입력 변수들끼리 강하게 상관되어 있을 때,
         // 예측은 멀쩡한데 개별 계수의 추정이 불안정해지는 현상이다.
@@ -253,6 +292,22 @@ public final class Models {
         c.near("두 걸음 전의 가치 γ²", 0.81, 0.9 * 0.9, 1e-12);
         c.near("세 걸음 전의 가치 γ³", 0.73, 0.9 * 0.9 * 0.9, 5e-3);
 
+        // 7장: 기댓값은 가능한 결과들을 확률로 가중한 평균이다.
+        // 확률 0.3으로 보상 10을 받고 확률 0.7로 0을 받으면 기댓값은 3이다.
+        c.near("기댓값 0.3 * 10 + 0.7 * 0", 3, 0.3 * 10 + 0.7 * 0, 1e-12);
+
+        // 7장: 벨만 방정식의 r + γ * V(s')에 r = 0을 넣어, 보상 1에 도착한 상태(가치 1)에서
+        // 거슬러 계산하면 0.9, 0.81, 0.73이 차례로 나온다.
+        double[] backedUp = new double[3];
+        double next = 1;
+        for (int i = 0; i < backedUp.length; i++) {
+            next = 0 + 0.9 * next;
+            backedUp[i] = next;
+        }
+        c.near("거슬러 계산한 한 걸음 전의 가치", 0.9, backedUp[0], 1e-12);
+        c.near("거슬러 계산한 두 걸음 전의 가치", 0.81, backedUp[1], 1e-12);
+        c.near("거슬러 계산한 세 걸음 전의 가치", 0.73, backedUp[2], 5e-3);
+
         // 7장: 매 걸음 보상 1을 받고 할인율이 γ면, 가치는 등비급수의 합 1/(1-γ)다.
         final double gamma = 0.9;
         c.near("등비급수의 합 1/(1-γ)", 10, 1 / (1 - gamma), 1e-12);
@@ -307,6 +362,12 @@ public final class Models {
     public static void scalingLaw(Checker c) {
         c.section("스케일링 법칙: 손실을 예측하는 멱법칙");
 
+        // 7장: y = a * x^(-b)에서 a가 100, b가 0.5이면 x가 1, 100, 10,000으로 100배씩 커질 때
+        // y는 100, 10, 1로 10분의 1씩 줄어든다.
+        c.near("y = 100 * x^(-0.5), x = 1", 100, 100 * Math.pow(1, -0.5), 1e-9);
+        c.near("y = 100 * x^(-0.5), x = 100", 10, 100 * Math.pow(100, -0.5), 1e-9);
+        c.near("y = 100 * x^(-0.5), x = 10,000", 1, 100 * Math.pow(10000, -0.5), 1e-9);
+
         // 7장: 멱법칙 y = a * x^(-b)는 양변에 로그를 취하면
         // log y = log a - b * log x가 되어 로그-로그 그래프에서 직선이 된다.
         final double a = 12.0;
@@ -341,6 +402,12 @@ public final class Models {
         // 700억 파라미터를 1.4조 토큰으로 학습한 손실은 약 1.94, 70억이면 약 2.04다.
         c.near("N = 700억, D = 1.4조의 손실", 1.94, chinchillaLoss(7e10, 1.4e12), 5e-3);
         c.near("N = 70억, D = 1.4조의 손실", 2.04, chinchillaLoss(7e9, 1.4e12), 5e-3);
+
+        // 7장: 항별로는 1.69 + 0.083 + 0.163 ≈ 1.94이고, 파라미터 수를 10분의 1로 줄이면
+        // 모델 크기의 항만 0.083에서 0.183으로 커진다.
+        c.near("N = 700억의 A/N^α", 0.083, 406.4 / Math.pow(7e10, 0.34), 5e-4);
+        c.near("D = 1.4조의 B/D^β", 0.163, 410.7 / Math.pow(1.4e12, 0.28), 5e-4);
+        c.near("N = 70억의 A/N^α", 0.183, 406.4 / Math.pow(7e9, 0.34), 5e-4);
 
         // 7장: α가 0.34이면 N을 10배 키울 때 A/N^α 항이 10^0.34 ≈ 2.2분의 1로 줄어든다.
         c.near("N 10배당 둘째 항의 감소 배율", 2.2, Math.pow(10, 0.34), 5e-2);
